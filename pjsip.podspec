@@ -31,7 +31,7 @@ PJSIP may include third party software in its source code distribution. Third Pa
 
   s.header_mappings_dir = 'pjproject-2.1.0'
 
-  s.libraries = 'g7221codec-arm-apple-darwin9', 'ilbccodec-arm-apple-darwin9', 'milenage-arm-apple-darwin9', 'pjsdp-arm-apple-darwin9', 'speex-arm-apple-darwin9', 'srtp-arm-apple-darwin9', 'gsmcodec-arm-apple-darwin9', 'pj-arm-apple-darwin9', 'pjlib-util-arm-apple-darwin9', 'pjmedia-arm-apple-darwin9', 'pjmedia-audiodev-arm-apple-darwin9', 'pjmedia-codec-arm-apple-darwin9', 'pjmedia-videodev-arm-apple-darwin9', 'pjnath-arm-apple-darwin9', 'pjsip-arm-apple-darwin9', 'pjsip-simple-arm-apple-darwin9', 'pjsip-ua-arm-apple-darwin9', 'pjsua-arm-apple-darwin9', 'resample-arm-apple-darwin9'
+  s.libraries = 'g7221codec-arm-apple-darwin9', 'ilbccodec-arm-apple-darwin9', 'milenage-arm-apple-darwin9', 'pjsdp-arm-apple-darwin9', 'speex-arm-apple-darwin9', 'srtp-arm-apple-darwin9', 'gsmcodec-arm-apple-darwin9', 'pj-arm-apple-darwin9', 'pjlib-util-arm-apple-darwin9', 'pjmedia-arm-apple-darwin9', 'pjmedia-audiodev-arm-apple-darwin9', 'pjmedia-codec-arm-apple-darwin9', 'pjnath-arm-apple-darwin9', 'pjsip-arm-apple-darwin9', 'pjsip-simple-arm-apple-darwin9', 'pjsip-ua-arm-apple-darwin9', 'pjsua-arm-apple-darwin9', 'resample-arm-apple-darwin9'
 
   s.xcconfig = { 
     'HEADER_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/pjproject-2.1.0/pjsip/include $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjlib/include $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjlib-util/include $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjnath/include $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjmedia/include', 
