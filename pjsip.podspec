@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   s.summary      = "Open Source SIP, Media and NAT Traversal Library."
   s.homepage     = "http://www.pjsip.org"
   s.author       = 'www.pjsip.org'
-  s.source       = { :git => "https://github.com/chebur/pjsip.git", :tag => "#{spec.version}" }
+  s.source       = { :git => "https://github.com/chebur/pjsip.git", :tag => "#{s.version}" }
   s.platform     = :ios, '5.0'
 
   s.description  = <<-DESC
@@ -25,13 +25,13 @@ PJSIP may include third party software in its source code distribution. Third Pa
      LICENSE
    }
   
-  s.public_header_files = 'pjproject-#{spec.version}/pjsip/include/**', 'pjproject-#{spec.version}/pjlib/include/**', 'pjproject-#{spec.version}/pjlib-util/include/**', 'pjproject-#{spec.version}/pjnath/include/**', 'pjproject-#{spec.version}/pjmedia/include/**'
+  s.public_header_files = 'pjproject-2.1.0/pjsip/include/**', 'pjproject-2.1.0/pjlib/include/**', 'pjproject-2.1.0/pjlib-util/include/**', 'pjproject-2.1.0/pjnath/include/**', 'pjproject-2.1.0/pjmedia/include/**'
 
-  s.preserve_paths = "**/lib/**/*.a", 'pjproject-#{spec.version}/pjsip/include/**/*.h', 'pjproject-#{spec.version}/pjlib/include/**/*.h', 'pjproject-#{spec.version}/pjlib-util/include/**/*.h', 'pjproject-#{spec.version}/pjnath/include/**/*.h', 'pjproject-#{spec.version}/pjmedia/include/**/*.h'
+  s.preserve_paths = "**/lib/**/*.a", 'pjproject-2.1.0/pjsip/include/**/*.h', 'pjproject-2.1.0/pjlib/include/**/*.h', 'pjproject-2.1.0/pjlib-util/include/**/*.h', 'pjproject-2.1.0/pjnath/include/**/*.h', 'pjproject-2.1.0/pjmedia/include/**/*.h'
 
-  s.header_mappings_dir = 'pjproject-#{spec.version}'
+  s.header_mappings_dir = 'pjproject-2.1.0'
 
   s.libraries = 'libg7221codec-arm-apple-darwin9', 'libilbccodec-arm-apple-darwin9', 'libmilenage-arm-apple-darwin9', 'libpjsdp-arm-apple-darwin9', 'libspeex-arm-apple-darwin9', 'libsrtp-arm-apple-darwin9', 'libgsmcodec-arm-apple-darwin9', 'libpj-arm-apple-darwin9', 'libpjlib-util-arm-apple-darwin9', 'libpjmedia-arm-apple-darwin9', 'libpjmedia-audiodev-arm-apple-darwin9', 'libpjmedia-codec-arm-apple-darwin9', 'libpjmedia-videodev-arm-apple-darwin9', 'libpjnath-arm-apple-darwin9', 'libpjsip-arm-apple-darwin9', 'libpjsip-simple-arm-apple-darwin9', 'libpjsip-ua-arm-apple-darwin9', 'libpjsua-arm-apple-darwin9', 'libresample-arm-apple-darwin9'
 
-  s.xcconfig = { 'HEADER_SEARCH_PATHS' => 'pjproject-#{spec.version}/pjsip/include pjproject-#{spec.version}/pjlib/include pjproject-#{spec.version}/pjlib-util/include pjproject-#{spec.version}/pjnath/include pjproject-#{spec.version}/pjmedia/include', 'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1' }
+  s.xcconfig = { 'HEADER_SEARCH_PATHS' => 'pjproject-2.1.0/pjsip/include pjproject-2.1.0/pjlib/include pjproject-2.1.0/pjlib-util/include pjproject-2.1.0/pjnath/include pjproject-2.1.0/pjmedia/include', 'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1' }
 end
