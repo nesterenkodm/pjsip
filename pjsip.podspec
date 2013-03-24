@@ -31,7 +31,10 @@ PJSIP may include third party software in its source code distribution. Third Pa
 
   s.header_mappings_dir = 'pjproject-2.1.0'
 
-  s.libraries = 'libg7221codec-arm-apple-darwin9', 'libilbccodec-arm-apple-darwin9', 'libmilenage-arm-apple-darwin9', 'libpjsdp-arm-apple-darwin9', 'libspeex-arm-apple-darwin9', 'libsrtp-arm-apple-darwin9', 'libgsmcodec-arm-apple-darwin9', 'libpj-arm-apple-darwin9', 'libpjlib-util-arm-apple-darwin9', 'libpjmedia-arm-apple-darwin9', 'libpjmedia-audiodev-arm-apple-darwin9', 'libpjmedia-codec-arm-apple-darwin9', 'libpjmedia-videodev-arm-apple-darwin9', 'libpjnath-arm-apple-darwin9', 'libpjsip-arm-apple-darwin9', 'libpjsip-simple-arm-apple-darwin9', 'libpjsip-ua-arm-apple-darwin9', 'libpjsua-arm-apple-darwin9', 'libresample-arm-apple-darwin9'
+  s.libraries = 'g7221codec-arm-apple-darwin9', 'ilbccodec-arm-apple-darwin9', 'milenage-arm-apple-darwin9', 'pjsdp-arm-apple-darwin9', 'speex-arm-apple-darwin9', 'srtp-arm-apple-darwin9', 'gsmcodec-arm-apple-darwin9', 'pj-arm-apple-darwin9', 'pjlib-util-arm-apple-darwin9', 'pjmedia-arm-apple-darwin9', 'pjmedia-audiodev-arm-apple-darwin9', 'pjmedia-codec-arm-apple-darwin9', 'pjmedia-videodev-arm-apple-darwin9', 'pjnath-arm-apple-darwin9', 'pjsip-arm-apple-darwin9', 'pjsip-simple-arm-apple-darwin9', 'pjsip-ua-arm-apple-darwin9', 'pjsua-arm-apple-darwin9', 'resample-arm-apple-darwin9'
 
-  s.xcconfig = { 'HEADER_SEARCH_PATHS' => 'pjproject-2.1.0/pjsip/include pjproject-2.1.0/pjlib/include pjproject-2.1.0/pjlib-util/include pjproject-2.1.0/pjnath/include pjproject-2.1.0/pjmedia/include', 'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1' }
+  s.xcconfig = { 
+    'HEADER_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/pjproject-2.1.0/pjsip/include $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjlib/include $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjlib-util/include $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjnath/include $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjmedia/include', 
+    'LIBRARY_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/pjproject-2.1.0/pjsip/lib $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjlib/lib $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjlib-util/lib $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjnath/lib $(PODS_ROOT)/pjsip/pjproject-2.1.0/pjmedia/lib $(PODS_ROOT)/pjsip/pjproject-2.1.0/third_party/lib',
+    'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1' }
 end
