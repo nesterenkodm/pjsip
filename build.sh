@@ -165,7 +165,7 @@ echo "#define PJ_CONFIG_IPHONE 1
 cd ${PROJECT_DIR}
 
 echo "Building for armv7..."
-make distclean > /dev/null
+make distclean > /dev/null 2>&1
 ARCH="-arch armv7" \
 ./configure-iphone > /dev/null
 make dep > /dev/null 
