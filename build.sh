@@ -1,7 +1,7 @@
 #!/bin/sh
 
-SOURCE_URL="http://www.pjsip.org/release/2.1/pjproject-2.1.tar.bz2"
-PROJECT_DIR="pjproject-2.1.0"
+SOURCE_URL="http://www.pjsip.org/release/2.2/pjproject-2.2.tar.bz2"
+PROJECT_DIR="pjproject-2.2"
 
 copy_libs () {
 	DST=${1}
@@ -62,7 +62,6 @@ copy_libs () {
 	cp third_party/lib/libg7221codec-arm-apple-darwin9.a third_party/lib-${DST}/libg7221codec-arm-apple-darwin9.a
 	cp third_party/lib/libgsmcodec-arm-apple-darwin9.a third_party/lib-${DST}/libgsmcodec-arm-apple-darwin9.a
 	cp third_party/lib/libilbccodec-arm-apple-darwin9.a third_party/lib-${DST}/libilbccodec-arm-apple-darwin9.a
-	cp third_party/lib/libmilenage-arm-apple-darwin9.a third_party/lib-${DST}/libmilenage-arm-apple-darwin9.a
 	cp third_party/lib/libresample-arm-apple-darwin9.a third_party/lib-${DST}/libresample-arm-apple-darwin9.a
 	cp third_party/lib/libspeex-arm-apple-darwin9.a third_party/lib-${DST}/libspeex-arm-apple-darwin9.a
 	cp third_party/lib/libsrtp-arm-apple-darwin9.a third_party/lib-${DST}/libsrtp-arm-apple-darwin9.a
@@ -134,10 +133,6 @@ xcrun -sdk iphoneos lipo -arch i386   third_party/lib-iPhoneSimulator/libilbccod
 					 	 -arch armv7  third_party/lib-armv7/libilbccodec-arm-apple-darwin9.a \
 						 -arch armv7s third_party/lib-armv7s/libilbccodec-arm-apple-darwin9.a \
 				 	  -create -output third_party/lib/libilbccodec-arm-apple-darwin9.a
-xcrun -sdk iphoneos lipo -arch i386   third_party/lib-iPhoneSimulator/libmilenage-arm-apple-darwin9.a \
-					 	 -arch armv7  third_party/lib-armv7/libmilenage-arm-apple-darwin9.a \
-						 -arch armv7s third_party/lib-armv7s/libmilenage-arm-apple-darwin9.a \
-				 	  -create -output third_party/lib/libmilenage-arm-apple-darwin9.a
 xcrun -sdk iphoneos lipo -arch i386   third_party/lib-iPhoneSimulator/libresample-arm-apple-darwin9.a \
 					 	 -arch armv7  third_party/lib-armv7/libresample-arm-apple-darwin9.a \
 						 -arch armv7s third_party/lib-armv7s/libresample-arm-apple-darwin9.a \
@@ -185,8 +180,8 @@ copy_libs armv7s
 echo "Building for iPhoneSimulator..."
 make distclean > /dev/null
 DEVPATH=/Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/ \
-CC=/Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/llvm-gcc \
-CFLAGS="-O2 -m32 -miphoneos-version-min=5.0" LDFLAGS="-O2 -m32" \
+ARCH="-arch i386" \
+CFLAGS="-O2 -m32 -miphoneos-version-min=5.0" LDFLAGS="-O2 -m32 -miphoneos-version-min=5.0" \
 ./configure-iphone > /dev/null
 make dep > /dev/null 
 make clean > /dev/null
