@@ -1,0 +1,3 @@
+[submodule "OpenSSL"]
+	path = OpenSSL
+	url = https://github.com/proger/ios-openssl.git

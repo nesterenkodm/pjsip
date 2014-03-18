@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/sh 
 
-SOURCE_URL="http://www.pjsip.org/release/2.2/pjproject-2.2.tar.bz2"
-PROJECT_DIR="pjproject-2.2"
+SOURCE_URL="http://www.pjsip.org/release/2.2.1/pjproject-2.2.1.tar.bz2"
+PROJECT_DIR="pjproject-2.2.1"
+ARCHIVE="${PROJECT_DIR}.tar.bz2"
 
 copy_libs () {
 	DST=${1}
@@ -165,11 +166,15 @@ xcrun -sdk iphoneos lipo -arch i386   third_party/lib-iPhoneSimulator/libsrtp-ar
 				 	  -create -output third_party/lib/libsrtp-arm-apple-darwin9.a
 }
 
-echo "Downloading source code..."
 if [ -d ${PROJECT_DIR} ]; then
+	echo "Cleaning up..."
 	rm -rf ${PROJECT_DIR}
 fi
-curl ${SOURCE_URL} | tar zxf -
+if [ ! -f ${ARCHIVE} ]; then
+	echo "Downloading source code..."
+	curl -o ${ARCHIVE} ${SOURCE_URL}
+fi
+tar xvjf ${ARCHIVE}
 
 echo "Creating config.h..."
 echo "#define PJ_CONFIG_IPHONE 1 
@@ -177,42 +182,45 @@ echo "#define PJ_CONFIG_IPHONE 1
 
 cd ${PROJECT_DIR}
 
+CFLAGS="-I${PWD}/../OpenSSL/ios/include"
+configure="./configure-iphone --with-ssl=${PWD}/../OpenSSL/ios"
+
 echo "Building for armv7..."
 make distclean > /dev/null 2>&1
 ARCH="-arch armv7" \
-./configure-iphone > /dev/null
-make dep > /dev/null 
-make clean > /dev/null
-make > /dev/null 2>&1
+$configure
+make -j dep
+make clean
+make -j
 copy_libs armv7
 
 echo "Building for armv7s..."
 make distclean > /dev/null
 ARCH='-arch armv7s' \
-./configure-iphone > /dev/null
-make dep > /dev/null 
+$configure > /dev/null
+make -j dep > /dev/null 
 make clean > /dev/null
-make > /dev/null 2>&1
+make -j > /dev/null 2>&1
 copy_libs armv7s
 
 echo "Building for arm64..."
 make distclean > /dev/null
 ARCH='-arch arm64' \
-./configure-iphone > /dev/null
-make dep > /dev/null
+$configure > /dev/null
+make -j dep > /dev/null
 make clean > /dev/null
-make > /dev/null 2>&1
+make -j > /dev/null 2>&1
 copy_libs arm64
 
 echo "Building for iPhoneSimulator..."
 make distclean > /dev/null
 DEVPATH=/Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/ \
 ARCH="-arch i386" \
-CFLAGS="-O2 -m32 -miphoneos-version-min=5.0" LDFLAGS="-O2 -m32 -miphoneos-version-min=5.0" \
-./configure-iphone > /dev/null
-make dep > /dev/null 
+CFLAGS="$CFLAGS -O2 -m32 -miphoneos-version-min=5.0" LDFLAGS="-O2 -m32 -miphoneos-version-min=5.0" \
+$configure > /dev/null
+make -j dep > /dev/null 
 make clean > /dev/null
-make > /dev/null 2>&1
+make -j > /dev/null 2>&1
 copy_libs iPhoneSimulator
 
 echo "Making universal lib..."
