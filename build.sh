@@ -1,7 +1,7 @@
 #!/bin/sh
 
-SOURCE_URL="http://www.pjsip.org/release/2.2/pjproject-2.2.tar.bz2"
-PROJECT_DIR="pjproject-2.2"
+SOURCE_URL="http://www.pjsip.org/release/2.2.1/pjproject-2.2.1.tar.bz2"
+PROJECT_DIR="pjproject-2.2.1"
 
 copy_libs () {
 	DST=${1}
