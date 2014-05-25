@@ -16,6 +16,6 @@ Check the `Podfile` configuration:
 ```
 platform :ios, '5.0'
 
-pod 'pjsip', '2.2'
+pod 'pjsip'
 ```
 and run `pod install`
