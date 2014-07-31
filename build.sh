@@ -1,8 +1,18 @@
 #!/bin/sh
 
+# see http://stackoverflow.com/a/3915420/318790
+function realpath { echo $(cd $(dirname "$1"); pwd)/$(basename "$1"); }
+
+BUILD_DIR=$(realpath "build")
+if [ ! -d ${BUILD_DIR} ]; then
+	mkdir ${BUILD_DIR}
+fi
+
 PJSIP_URL="http://www.pjsip.org/release/2.2.1/pjproject-2.2.1.tar.bz2"
-ARCHIVE=`basename ${PJSIP_URL}`
-PROJECT_DIR="pjproject-2.2.1"
+PJSIP_ARCHIVE=${BUILD_DIR}/`basename ${PJSIP_URL}`
+OPENSSL_URL="https://raw.githubusercontent.com/x2on/OpenSSL-for-iPhone/master/build-libssl.sh"
+OPENSSL_DIR=${BUILD_DIR}/openssl
+OPENSSL_SH=${OPENSSL_DIR}/`basename ${OPENSSL_DIR}`
 
 copy_libs () {
 	DST=${1}
@@ -29,7 +39,7 @@ copy_libs () {
 	if [ ! -d pjmedia/lib-${DST}/ ]; then
 		mkdir pjmedia/lib-${DST}/
 	fi
-	cp pjmedia/lib/libpjmedia-arm-apple-darwin9.a pjmedia/lib-${DST}/libpjmedia-arm-apple-darwin9.a 
+	cp pjmedia/lib/libpjmedia-arm-apple-darwin9.a pjmedia/lib-${DST}/libpjmedia-arm-apple-darwin9.a
 	cp pjmedia/lib/libpjmedia-audiodev-arm-apple-darwin9.a pjmedia/lib-${DST}/libpjmedia-audiodev-arm-apple-darwin9.a
 	cp pjmedia/lib/libpjmedia-codec-arm-apple-darwin9.a pjmedia/lib-${DST}/libpjmedia-codec-arm-apple-darwin9.a
 	cp pjmedia/lib/libpjmedia-videodev-arm-apple-darwin9.a pjmedia/lib-${DST}/libpjmedia-videodev-arm-apple-darwin9.a
@@ -52,7 +62,7 @@ copy_libs () {
 	cp pjsip/lib/libpjsip-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsip-arm-apple-darwin9.a
 	cp pjsip/lib/libpjsip-simple-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsip-simple-arm-apple-darwin9.a
 	cp pjsip/lib/libpjsip-ua-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsip-ua-arm-apple-darwin9.a
-	cp pjsip/lib/libpjsua-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsua-arm-apple-darwin9.a 
+	cp pjsip/lib/libpjsua-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsua-arm-apple-darwin9.a
 
 	if [ -d third_party/lib-${DST}/ ]; then
 		rm -rf third_party/lib-${DST}/
@@ -166,30 +176,54 @@ xcrun -sdk iphoneos lipo -arch i386   third_party/lib-iPhoneSimulator/libsrtp-ar
 				 	  -create -output third_party/lib/libsrtp-arm-apple-darwin9.a
 }
 
-if [ ! -f ${ARCHIVE} ]; then
-  echo "Downloading source code..."
-  curl -o ${ARCHIVE} ${PJSIP_URL}
+
+if [ ! -f ${OPENSSL_SH} ]; then
+	echo "Downloading openssl..."
+	curl -# --create-dirs -o ${OPENSSL_SH} ${OPENSSL_URL}
 fi
 
-if [ -d ${PROJECT_DIR} ]; then
+if [ ! -f "${OPENSSL_DIR}/lib/libssl.a" ]; then
+	pushd . > /dev/null
+	cd ${OPENSSL_DIR}
+	/bin/sh ${OPENSSL_SH}
+	popd > /dev/null
+fi
+
+if [ ! -f ${PJSIP_ARCHIVE} ]; then
+  echo "Downloading pjsip..."
+  curl -# -o ${PJSIP_ARCHIVE} ${PJSIP_URL}
+fi
+
+PJSIP_NAME=`tar tzf ${PJSIP_ARCHIVE} | sed -e 's@/.*@@' | uniq`
+PJSIP_DIR=${BUILD_DIR}/${PJSIP_NAME}
+echo "Using ${PJSIP_NAME}..."
+
+if [ -d ${PJSIP_DIR} ]; then
 	echo "Cleaning up..."
-	rm -rf ${PROJECT_DIR}
+	rm -rf ${PJSIP_DIR}
 fi
 
 echo "Unarchiving..."
-tar -xf ${ARCHIVE}
+pushd . > /dev/null
+cd ${BUILD_DIR}
+tar -xf ${PJSIP_ARCHIVE}
+popd > /dev/null
 
 echo "Creating config.h..."
-echo "#define PJ_CONFIG_IPHONE 1 
-#include <pj/config_site_sample.h>" > ${PROJECT_DIR}/pjlib/include/pj/config_site.h
+echo "#define PJ_CONFIG_IPHONE 1
+#include <pj/config_site_sample.h>" > ${PJSIP_DIR}/pjlib/include/pj/config_site.h
 
-cd ${PROJECT_DIR}
+export CFLAGS="-Wno-unused-label -I${OPENSSL_DIR}/include"
+export LDFLAGS="-L${OPENSSL_DIR}/lib"
+configure="./configure-iphone --with-ssl=${OPENSSL_DIR}"
+
+cd ${PJSIP_DIR}
 
 echo "Building for armv7..."
 make distclean > /dev/null 2>&1
 ARCH="-arch armv7" \
-./configure-iphone > /dev/null
-make dep > /dev/null 
+$configure > /dev/null
+make dep > /dev/null
 make clean > /dev/null
 make > /dev/null 2>&1
 copy_libs armv7
@@ -197,8 +231,8 @@ copy_libs armv7
 echo "Building for armv7s..."
 make distclean > /dev/null
 ARCH='-arch armv7s' \
-./configure-iphone > /dev/null
-make dep > /dev/null 
+$configure > /dev/null
+make dep > /dev/null
 make clean > /dev/null
 make > /dev/null 2>&1
 copy_libs armv7s
@@ -206,7 +240,7 @@ copy_libs armv7s
 echo "Building for arm64..."
 make distclean > /dev/null
 ARCH='-arch arm64' \
-./configure-iphone > /dev/null
+$configure > /dev/null
 make dep > /dev/null
 make clean > /dev/null
 make > /dev/null 2>&1
@@ -216,9 +250,9 @@ echo "Building for iPhoneSimulator..."
 make distclean > /dev/null
 DEVPATH=/Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/ \
 ARCH="-arch i386" \
-CFLAGS="-O2 -m32 -miphoneos-version-min=5.0" LDFLAGS="-O2 -m32 -miphoneos-version-min=5.0" \
-./configure-iphone > /dev/null
-make dep > /dev/null 
+CFLAGS="$CFLAGS -O2 -m32 -miphoneos-version-min=5.0" LDFLAGS="$CFLAGS -O2 -m32 -miphoneos-version-min=5.0" \
+$configure > /dev/null
+make dep > /dev/null
 make clean > /dev/null
 make > /dev/null 2>&1
 copy_libs iPhoneSimulator
@@ -226,3 +260,5 @@ copy_libs iPhoneSimulator
 echo "Making universal lib..."
 make distclean > /dev/null
 lipo_libs
+
+echo "Done"
