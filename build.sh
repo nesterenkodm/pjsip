@@ -1,6 +1,7 @@
 #!/bin/sh
 
-SOURCE_URL="http://www.pjsip.org/release/2.2.1/pjproject-2.2.1.tar.bz2"
+PJSIP_URL="http://www.pjsip.org/release/2.2.1/pjproject-2.2.1.tar.bz2"
+ARCHIVE=`basename ${PJSIP_URL}`
 PROJECT_DIR="pjproject-2.2.1"
 
 copy_libs () {
@@ -165,11 +166,18 @@ xcrun -sdk iphoneos lipo -arch i386   third_party/lib-iPhoneSimulator/libsrtp-ar
 				 	  -create -output third_party/lib/libsrtp-arm-apple-darwin9.a
 }
 
-echo "Downloading source code..."
+if [ ! -f ${ARCHIVE} ]; then
+  echo "Downloading source code..."
+  curl -o ${ARCHIVE} ${PJSIP_URL}
+fi
+
 if [ -d ${PROJECT_DIR} ]; then
+	echo "Cleaning up..."
 	rm -rf ${PROJECT_DIR}
 fi
-curl ${SOURCE_URL} | tar zxf -
+
+echo "Unarchiving..."
+tar -xf ${ARCHIVE}
 
 echo "Creating config.h..."
 echo "#define PJ_CONFIG_IPHONE 1 
