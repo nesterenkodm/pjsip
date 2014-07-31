@@ -1,33 +1,42 @@
 .DS_Store
 build/*
-!build/pj*/
+
+# OpenSSL
 !build/openssl*/
-
-build/pj*/*
 build/openssl*/*
-
 !build/openssl*/lib/
+!build/openssl*/include/
+
+# pjsip
+!build/pj*/
+build/pj*/*
 
 !build/pj*/pjlib/
 build/pj*/pjlib/*
 !build/pj*/pjlib/lib/
+!build/pj*/pjlib/include/
 
 !build/pj*/pjlib-util/
 build/pj*/pjlib-util/*
 !build/pj*/pjlib-util/lib/
+!build/pj*/pjlib-util/include/
 
 !build/pj*/pjmedia/
 build/pj*/pjmedia/*
 !build/pj*/pjmedia/lib/
+!build/pj*/pjmedia/include/
 
 !build/pj*/pjnath/
 build/pj*/pjnath/*
 !build/pj*/pjnath/lib/
+!build/pj*/pjnath/include/
 
 !build/pj*/pjsip/
 build/pj*/pjsip/*
 !build/pj*/pjsip/lib/
+!build/pj*/pjsip/include/
 
 !build/pj*/third_party/
 build/pj*/third_party/*
 !build/pj*/third_party/lib/
+!build/pj*/third_party/include/
