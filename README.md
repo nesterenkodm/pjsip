@@ -4,13 +4,14 @@ PJSIP
 
 PJSIP is open source SIP, Media and NAT traversal library (www.pjsip.org)
 
-This is a prebuild pjsip library included universal libraries for armv7, armv7s, arm64, iPhoneSimulator
+This is a prebuilt pjsip library for armv7, armv7s, arm64, i386 architectures.
 
+Compiled with the latest OpenSSL support.
 
 How to install?
 ---------------
 
-The best way is using cocoapods.
+The best way is to use cocoapods.
 
 Check the `Podfile` configuration:
 ```
