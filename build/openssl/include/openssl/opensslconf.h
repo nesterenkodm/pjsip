@@ -35,6 +35,9 @@
 #ifndef OPENSSL_NO_STORE
 # define OPENSSL_NO_STORE
 #endif
+#ifndef OPENSSL_NO_UNIT_TEST
+# define OPENSSL_NO_UNIT_TEST
+#endif
 
 #endif /* OPENSSL_DOING_MAKEDEPEND */
 
@@ -77,6 +80,9 @@
 # if defined(OPENSSL_NO_STORE) && !defined(NO_STORE)
 #  define NO_STORE
 # endif
+# if defined(OPENSSL_NO_UNIT_TEST) && !defined(NO_UNIT_TEST)
+#  define NO_UNIT_TEST
+# endif
 #endif
 
 /* crypto/opensslconf.h.in */
@@ -86,8 +92,8 @@
 
 #if !(defined(VMS) || defined(__VMS)) /* VMS uses logical names instead */
 #if defined(HEADER_CRYPTLIB_H) && !defined(OPENSSLDIR)
-#define ENGINESDIR "/Users/chebur/Documents/Projects/ObjC/pjsip/build/openssl/bin/iPhoneSimulator7.1-i386.sdk/lib/engines"
-#define OPENSSLDIR "/Users/chebur/Documents/Projects/ObjC/pjsip/build/openssl/bin/iPhoneSimulator7.1-i386.sdk"
+#define ENGINESDIR "/Users/chebur/Documents/Projects/ObjC/pjsip/build/openssl/bin/iPhoneSimulator8.0-i386.sdk/lib/engines"
+#define OPENSSLDIR "/Users/chebur/Documents/Projects/ObjC/pjsip/build/openssl/bin/iPhoneSimulator8.0-i386.sdk"
 #endif
 #endif
 
