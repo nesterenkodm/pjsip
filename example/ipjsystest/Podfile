@@ -1,3 +1,4 @@
 platform :ios, '6.0'
-#pod 'pjsip', :git => 'https://github.com/chebur/pjsip.git'
-pod 'pjsip', :git => 'https://github.com/chebur/pjsip.git', :commit => '7ec39c52ffba41cd76b1ba0f5984a647e6ef5a06'
+
+pod 'pjsip', :git => 'https://github.com/chebur/pjsip.git'
+#pod 'pjsip', :path => '/Users/chebur/Documents/Projects/ObjC/pjsip/'
