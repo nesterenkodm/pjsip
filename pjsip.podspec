@@ -25,63 +25,44 @@ LICENSE
    }
 
   s.subspec 'pjsip' do |sub|
-    sub.private_header_files =
-    sub.source_files         = 'build/pjproject-2.3/pjsip/include/**/*'
+    sub.public_header_files  = 'build/pjproject-2.3/pjsip/include/**'
+    sub.preserve_paths       = 'build/pjproject-2.3/pjsip/include/**/*'
     sub.vendored_libraries   = 'build/pjproject-2.3/pjsip/lib/*.a'
-    # sub.libraries           = 'pjsua-arm-apple-darwin9', 'pjsip-arm-apple-darwin9', 'pjsip-simple-arm-apple-darwin9', 'pjsip-ua-arm-apple-darwin9'
-    sub.xcconfig             = { 'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"',
-      # 'LIBRARY_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/lib'
-    }
+    sub.xcconfig             = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"'}
   end
 
   s.subspec 'pjlib' do |sub|
-    sub.private_header_files =
-    sub.source_files         = 'build/pjproject-2.3/pjlib/include/**/*'
-    sub.vendored_libraries   = 'build/pjproject-2.3/pjlib/lib/*.a'
+    sub.public_header_files = 'build/pjproject-2.3/pjlib/include/**'
+    sub.preserve_paths      = 'build/pjproject-2.3/pjlib/include/**/*'
+    sub.vendored_libraries  = 'build/pjproject-2.3/pjlib/lib/*.a'
     # sub.frameworks          = 'CFNetwork'
-    # sub.libraries           = 'pj-arm-apple-darwin9'
-    sub.xcconfig            = { 'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"',
-      # 'LIBRARY_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/lib'
-    }
+    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"'}
   end
 
   s.subspec 'pjlib_util' do |sub|
-    sub.private_header_files =
-    sub.source_files         = 'build/pjproject-2.3/pjlib-util/include/**/*'
-    sub.vendored_libraries   = 'build/pjproject-2.3/pjlib-util/lib/*.a'
-    # sub.libraries           = 'pjlib-util-arm-apple-darwin9'
-    sub.xcconfig             = { 'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"',
-    #   'LIBRARY_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/lib'
-    }
+    sub.public_header_files = 'build/pjproject-2.3/pjlib-util/include/**'
+    sub.preserve_paths      = 'build/pjproject-2.3/pjlib-util/include/**/*'
+    sub.vendored_libraries  = 'build/pjproject-2.3/pjlib-util/lib/*.a'
+    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"',}
   end
 
   s.subspec 'pjnath' do |sub|
-    sub.private_header_files =
-    sub.source_files         = 'build/pjproject-2.3/pjnath/include/**/*'
-    sub.vendored_libraries   = 'build/pjproject-2.3/pjnath/lib/*.a'
-    # sub.libraries           = 'pjnath-arm-apple-darwin9'
-    sub.xcconfig            = { 'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjnath/include"',
-    #   'LIBRARY_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjnath/lib'
-    }
+    sub.public_header_files = 'build/pjproject-2.3/pjnath/include/**'
+    sub.preserve_paths      = 'build/pjproject-2.3/pjnath/include/**/*'
+    sub.vendored_libraries  = 'build/pjproject-2.3/pjnath/lib/*.a'
+    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjnath/include"'}
   end
 
   s.subspec 'pjmedia' do |sub|
-    sub.private_header_files =
-    sub.source_files         = 'build/pjproject-2.3/pjmedia/include/**/*'
-    sub.vendored_libraries   = 'build/pjproject-2.3/pjmedia/lib/*.a'
-    # sub.libraries           = 'pjmedia-arm-apple-darwin9', 'pjmedia-audiodev-arm-apple-darwin9', 'pjmedia-codec-arm-apple-darwin9', 'pjmedia-videodev-arm-apple-darwin9', 'pjsdp-arm-apple-darwin9'
+    sub.public_header_files = 'build/pjproject-2.3/pjmedia/include/**'
+    sub.preserve_paths      = 'build/pjproject-2.3/pjmedia/include/**/*'
+    sub.vendored_libraries  = 'build/pjproject-2.3/pjmedia/lib/*.a'
     # sub.frameworks          = 'AudioToolbox', 'AVFoundation'
-    sub.xcconfig            = { 'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"',
-    #   'LIBRARY_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/lib'
-    }
+    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"'}
   end
 
   s.subspec 'third_party' do |sub|
     sub.vendored_libraries   = 'build/pjproject-2.3/third_party/lib/*.a'
-    # sub.libraries           = 'g7221codec-arm-apple-darwin9', 'ilbccodec-arm-apple-darwin9', 'speex-arm-apple-darwin9', 'srtp-arm-apple-darwin9', 'gsmcodec-arm-apple-darwin9', 'resample-arm-apple-darwin9'
-    # sub.xcconfig            = {
-    #   'LIBRARY_SEARCH_PATHS' => '$(PODS_ROOT)/pjsip/build/pjproject-2.3/third_party/lib'
-    # }
   end
 
   s.header_mappings_dir = 'build/pjproject-2.3'
