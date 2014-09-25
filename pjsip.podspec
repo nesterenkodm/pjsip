@@ -65,6 +65,10 @@ LICENSE
     sub.vendored_libraries   = 'build/pjproject-2.3/third_party/lib/*.a'
   end
 
+  s.subspec 'openssl' do |sub|
+    sub.vendored_libraries  = 'build/openssl/lib/*.a'
+  end
+
   s.header_mappings_dir = 'build/pjproject-2.3'
 
   s.xcconfig = {'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1' }
