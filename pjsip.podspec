@@ -41,7 +41,7 @@ LICENSE
                           'build/pjproject-2.3/pjlib-util/lib/*.a',
                           'build/pjproject-2.3/pjnath/lib/*.a',
                           'build/pjproject-2.3/pjmedia/lib/*.a',
-                          'build/pjproject-2.3/third_party/lib/*.a',
+                          'build/pjproject-2.3/third_party/lib/*.a'
 
   s.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"',
                                                     '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"',
