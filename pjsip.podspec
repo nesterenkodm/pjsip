@@ -35,7 +35,7 @@ LICENSE
     sub.public_header_files = 'build/pjproject-2.3/pjlib/include/**'
     sub.preserve_paths      = 'build/pjproject-2.3/pjlib/include/**/*'
     sub.vendored_libraries  = 'build/pjproject-2.3/pjlib/lib/*.a'
-    # sub.frameworks          = 'CFNetwork'
+    sub.frameworks          = 'CFNetwork'
     sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"'}
   end
 
@@ -57,7 +57,7 @@ LICENSE
     sub.public_header_files = 'build/pjproject-2.3/pjmedia/include/**'
     sub.preserve_paths      = 'build/pjproject-2.3/pjmedia/include/**/*'
     sub.vendored_libraries  = 'build/pjproject-2.3/pjmedia/lib/*.a'
-    # sub.frameworks          = 'AudioToolbox', 'AVFoundation'
+    sub.frameworks          = 'AudioToolbox', 'AVFoundation'
     sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"'}
   end
 
