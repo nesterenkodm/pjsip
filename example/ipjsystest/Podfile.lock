@@ -1,0 +1,29 @@
+PODS:
+  - pjsip (2.3):
+    - pjsip/openssl
+    - pjsip/pjlib
+    - pjsip/pjlib_util
+    - pjsip/pjmedia
+    - pjsip/pjnath
+    - pjsip/pjsip
+    - pjsip/third_party
+  - pjsip/openssl (2.3)
+  - pjsip/pjlib (2.3)
+  - pjsip/pjlib_util (2.3)
+  - pjsip/pjmedia (2.3)
+  - pjsip/pjnath (2.3)
+  - pjsip/pjsip (2.3)
+  - pjsip/third_party (2.3)
+
+DEPENDENCIES:
+  - pjsip (from `https://github.com/chebur/pjsip.git`, commit `832cce84de4e02ae7ea92f15e3b4fa3616119c4e`)
+
+EXTERNAL SOURCES:
+  pjsip:
+    :commit: 832cce84de4e02ae7ea92f15e3b4fa3616119c4e
+    :git: https://github.com/chebur/pjsip.git
+
+SPEC CHECKSUMS:
+  pjsip: f3fe221e1246f87f9621b9336b0f16e800536af0
+
+COCOAPODS: 0.33.1
