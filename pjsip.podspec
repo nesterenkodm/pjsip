@@ -50,7 +50,7 @@ LICENSE
                           '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"'
 
   s.xcconfig            = {'HEADER_SEARCH_PATHS'          => header_search_paths.join(' '),
-                           'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) PJ_AUTOCONF=1'}
+                           'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1'}
 
   s.dependency          'OpenSSL-Universal', '1.0.1.i'
   s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation'
