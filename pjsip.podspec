@@ -41,15 +41,16 @@ LICENSE
                           'build/pjproject-2.3/pjlib-util/lib/*.a',
                           'build/pjproject-2.3/pjnath/lib/*.a',
                           'build/pjproject-2.3/pjmedia/lib/*.a',
-                          'build/pjproject-2.3/third_party/lib/*.a'
+                          'build/pjproject-2.3/third_party/lib/*.a',
 
-  s.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"',
-                                                    '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"',
-                                                    '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"',
-                                                    '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjnath/include"',
-                                                    '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"'}
+  header_search_path    = '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjnath/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"'
+  s.xcconfig            = {'HEADER_SEARCH_PATHS' => header_search_path}
 
-  s.dependency          = 'OpenSSL-Universal', '~> 1.0.1'
+  s.dependency          'OpenSSL-Universal', '1.0.1.i'
   s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation'
   s.header_mappings_dir = 'build/pjproject-2.3'
   s.requires_arc        = false
