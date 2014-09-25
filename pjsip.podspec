@@ -70,7 +70,7 @@ LICENSE
   end
 
   s.header_mappings_dir = 'build/pjproject-2.3'
-
+  s.requires_arc = false
   s.xcconfig = {'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1' }
 
 end
