@@ -24,53 +24,35 @@ PJSIP may include third party software in its source code distribution. Third Pa
 LICENSE
    }
 
-  s.subspec 'pjsip' do |sub|
-    sub.public_header_files = 'build/pjproject-2.3/pjsip/include/**'
-    sub.preserve_paths      = 'build/pjproject-2.3/pjsip/include/**/*'
-    sub.vendored_libraries  = 'build/pjproject-2.3/pjsip/lib/*.a'
-    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"'}
-  end
+  s.public_header_files = 'build/pjproject-2.3/pjsip/include/**',
+                          'build/pjproject-2.3/pjlib/include/**',
+                          'build/pjproject-2.3/pjlib-util/include/**',
+                          'build/pjproject-2.3/pjnath/include/**',
+                          'build/pjproject-2.3/pjmedia/include/**'
 
-  s.subspec 'pjlib' do |sub|
-    sub.public_header_files = 'build/pjproject-2.3/pjlib/include/**'
-    sub.preserve_paths      = 'build/pjproject-2.3/pjlib/include/**/*'
-    sub.vendored_libraries  = 'build/pjproject-2.3/pjlib/lib/*.a'
-    sub.frameworks          = 'CFNetwork'
-    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"'}
-  end
+  s.preserve_paths      = 'build/pjproject-2.3/pjsip/include/**/*',
+                          'build/pjproject-2.3/pjlib/include/**/*',
+                          'build/pjproject-2.3/pjlib-util/include/**/*',
+                          'build/pjproject-2.3/pjnath/include/**/*',
+                          'build/pjproject-2.3/pjmedia/include/**/*'
 
-  s.subspec 'pjlib_util' do |sub|
-    sub.public_header_files = 'build/pjproject-2.3/pjlib-util/include/**'
-    sub.preserve_paths      = 'build/pjproject-2.3/pjlib-util/include/**/*'
-    sub.vendored_libraries  = 'build/pjproject-2.3/pjlib-util/lib/*.a'
-    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"'}
-  end
+  s.vendored_libraries  = 'build/pjproject-2.3/pjsip/lib/*.a',
+                          'build/pjproject-2.3/pjlib/lib/*.a',
+                          'build/pjproject-2.3/pjlib-util/lib/*.a',
+                          'build/pjproject-2.3/pjnath/lib/*.a',
+                          'build/pjproject-2.3/pjmedia/lib/*.a',
+                          'build/pjproject-2.3/third_party/lib/*.a',
 
-  s.subspec 'pjnath' do |sub|
-    sub.public_header_files = 'build/pjproject-2.3/pjnath/include/**'
-    sub.preserve_paths      = 'build/pjproject-2.3/pjnath/include/**/*'
-    sub.vendored_libraries  = 'build/pjproject-2.3/pjnath/lib/*.a'
-    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjnath/include"'}
-  end
+  s.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"',
+                                                    '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"',
+                                                    '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"',
+                                                    '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjnath/include"',
+                                                    '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"'}
 
-  s.subspec 'pjmedia' do |sub|
-    sub.public_header_files = 'build/pjproject-2.3/pjmedia/include/**'
-    sub.preserve_paths      = 'build/pjproject-2.3/pjmedia/include/**/*'
-    sub.vendored_libraries  = 'build/pjproject-2.3/pjmedia/lib/*.a'
-    sub.frameworks          = 'AudioToolbox', 'AVFoundation'
-    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"'}
-  end
-
-  s.subspec 'third_party' do |sub|
-    sub.vendored_libraries  = 'build/pjproject-2.3/third_party/lib/*.a'
-  end
-
-  s.subspec 'openssl' do |sub|
-    sub.vendored_libraries  = 'build/openssl/lib/*.a'
-  end
-
+  s.dependency          = 'OpenSSL-Universal', '~> 1.0.1'
+  s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation'
   s.header_mappings_dir = 'build/pjproject-2.3'
-  s.requires_arc = false
-  s.xcconfig = {'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) PJ_AUTOCONF=1'}
+  s.requires_arc        = false
+  s.xcconfig            = {'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) PJ_AUTOCONF=1'}
 
 end
