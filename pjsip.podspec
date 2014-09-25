@@ -25,10 +25,10 @@ LICENSE
    }
 
   s.subspec 'pjsip' do |sub|
-    sub.public_header_files  = 'build/pjproject-2.3/pjsip/include/**'
-    sub.preserve_paths       = 'build/pjproject-2.3/pjsip/include/**/*'
-    sub.vendored_libraries   = 'build/pjproject-2.3/pjsip/lib/*.a'
-    sub.xcconfig             = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"'}
+    sub.public_header_files = 'build/pjproject-2.3/pjsip/include/**'
+    sub.preserve_paths      = 'build/pjproject-2.3/pjsip/include/**/*'
+    sub.vendored_libraries  = 'build/pjproject-2.3/pjsip/lib/*.a'
+    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"'}
   end
 
   s.subspec 'pjlib' do |sub|
@@ -43,7 +43,7 @@ LICENSE
     sub.public_header_files = 'build/pjproject-2.3/pjlib-util/include/**'
     sub.preserve_paths      = 'build/pjproject-2.3/pjlib-util/include/**/*'
     sub.vendored_libraries  = 'build/pjproject-2.3/pjlib-util/lib/*.a'
-    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"',}
+    sub.xcconfig            = {'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"'}
   end
 
   s.subspec 'pjnath' do |sub|
@@ -62,7 +62,7 @@ LICENSE
   end
 
   s.subspec 'third_party' do |sub|
-    sub.vendored_libraries   = 'build/pjproject-2.3/third_party/lib/*.a'
+    sub.vendored_libraries  = 'build/pjproject-2.3/third_party/lib/*.a'
   end
 
   s.subspec 'openssl' do |sub|
@@ -71,6 +71,6 @@ LICENSE
 
   s.header_mappings_dir = 'build/pjproject-2.3'
   s.requires_arc = false
-  s.xcconfig = {'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1' }
+  s.xcconfig = {'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1'}
 
 end
