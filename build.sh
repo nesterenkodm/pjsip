@@ -259,54 +259,38 @@ configure="./configure-iphone --with-ssl=${OPENSSL_DIR}"
 
 cd ${PJSIP_DIR}
 
-echo "Building for armv7..."
-make distclean > /dev/null 2>&1
-ARCH="-arch armv7" \
-$configure > /dev/null 2>&1
-make dep > /dev/null 2>&1
-make clean > /dev/null
-make > /dev/null 2>&1
-copy_libs armv7
+function _build() {
+  ARCH=$1
+  LOG=${BUILD_DIR}/${ARCH}.log
 
-echo "Building for armv7s..."
-make distclean > /dev/null
-ARCH='-arch armv7s' \
-$configure > /dev/null 2>&1
-make dep > /dev/null 2>&1
-make clean > /dev/null
-make > /dev/null 2>&1
-copy_libs armv7s
+  echo "Building for ${ARCH}..."
 
-echo "Building for arm64..."
-make distclean > /dev/null
-ARCH='-arch arm64' \
-$configure > /dev/null 2>&1
-make dep > /dev/null 2>&1
-make clean > /dev/null
-make > /dev/null 2>&1
-copy_libs arm64
+  make distclean > ${LOG} 2>&1
+  ARCH="-arch ${ARCH}" ./configure-iphone --with-ssl=${OPENSSL_DIR} >> ${LOG} 2>&1
+  make dep >> ${LOG} 2>&1
+  make clean >> ${LOG}
+  make >> ${LOG} 2>&1
 
-echo "Building for iPhoneSimulator (i386)..."
-make distclean > /dev/null
-DEVPATH="`xcrun -sdk iphonesimulator --show-sdk-platform-path`/Developer" \
-ARCH="-arch i386" \
-CFLAGS="$CFLAGS -O2 -m32 -miphoneos-version-min=6.0" LDFLAGS="$CFLAGS -O2 -m32 -miphoneos-version-min=6.0" \
-$configure > /dev/null 2>&1
-make dep > /dev/null 2>&1
-make clean > /dev/null
-make > /dev/null 2>&1
-copy_libs i386
+  copy_libs ${ARCH}
+}
 
-echo "Building for iPhoneSimulator (x86_64)..."
-make distclean > /dev/null
-DEVPATH="`xcrun -sdk iphonesimulator --show-sdk-platform-path`/Developer" \
-ARCH="-arch x86_64" \
-CFLAGS="$CFLAGS -O2 -m32 -miphoneos-version-min=6.0" LDFLAGS="$CFLAGS -O2 -m32 -miphoneos-version-min=6.0" \
-$configure > /dev/null 2>&1
-make dep > /dev/null 2>&1
-make clean > /dev/null
-make > /dev/null 2>&1
-copy_libs x86_64
+function armv7() { _build "armv7"; }
+function armv7s() { _build "armv7s"; }
+function arm64() { _build "arm64"; }
+function i386() {
+  export DEVPATH="`xcrun -sdk iphonesimulator --show-sdk-platform-path`/Developer"
+  export CFLAGS="-I${OPENSSL_DIR}/include -O2 -m32 -mios-simulator-version-min=6.0"
+  export LDFLAGS="-L${OPENSSL_DIR}/lib -O2 -m32 -mios-simulator-version-min=6.0"
+  _build "i386"
+}
+function x86_64() {
+  export DEVPATH="`xcrun -sdk iphonesimulator --show-sdk-platform-path`/Developer"
+  export CFLAGS="-I${OPENSSL_DIR}/include -O2 -m32 -mios-simulator-version-min=6.0"
+  export LDFLAGS="-L${OPENSSL_DIR}/lib -O2 -m32 -mios-simulator-version-min=6.0"
+  _build "x86_64"
+}
+
+armv7 && armv7s && arm64 && i386 && x86_64
 
 echo "Making universal lib..."
 make distclean > /dev/null
