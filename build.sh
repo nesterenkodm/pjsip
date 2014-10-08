@@ -63,6 +63,7 @@ copy_libs () {
     cp pjsip/lib/libpjsip-simple-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsip-simple-arm-apple-darwin9.a
     cp pjsip/lib/libpjsip-ua-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsip-ua-arm-apple-darwin9.a
     cp pjsip/lib/libpjsua-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsua-arm-apple-darwin9.a
+    cp pjsip/lib/libpjsua2-arm-apple-darwin9.a pjsip/lib-${DST}/libpjsua2-arm-apple-darwin9.a
 
     if [ -d third_party/lib-${DST}/ ]; then
         rm -rf third_party/lib-${DST}/
@@ -162,6 +163,13 @@ xcrun -sdk iphoneos lipo -arch i386   pjsip/lib-i386/libpjsua-arm-apple-darwin9.
                          -arch armv7s pjsip/lib-armv7s/libpjsua-arm-apple-darwin9.a \
                          -arch arm64  pjsip/lib-arm64/libpjsua-arm-apple-darwin9.a \
                          -create -output pjsip/lib/libpjsua-arm-apple-darwin9.a
+
+xcrun -sdk iphoneos lipo -arch i386   pjsip/lib-i386/libpjsua2-arm-apple-darwin9.a \
+                         -arch x86_64 pjsip/lib-x86_64/libpjsua2-arm-apple-darwin9.a \
+                         -arch armv7  pjsip/lib-armv7/libpjsua2-arm-apple-darwin9.a \
+                         -arch armv7s pjsip/lib-armv7s/libpjsua2-arm-apple-darwin9.a \
+                         -arch arm64  pjsip/lib-arm64/libpjsua2-arm-apple-darwin9.a \
+                         -create -output pjsip/lib/libpjsua2-arm-apple-darwin9.a
 
 xcrun -sdk iphoneos lipo -arch i386   third_party/lib-i386/libg7221codec-arm-apple-darwin9.a \
                          -arch x86_64 third_party/lib-x86_64/libg7221codec-arm-apple-darwin9.a \
