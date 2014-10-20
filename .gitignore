@@ -1,12 +1,6 @@
 .DS_Store
 build/*
 
-# OpenSSL
-!build/openssl*/
-build/openssl*/*
-!build/openssl*/lib/
-!build/openssl*/include/
-
 # pjsip
 !build/pj*/
 build/pj*/*
