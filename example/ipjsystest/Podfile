@@ -1,5 +1,5 @@
 platform :ios, '6.0'
 source 'https://github.com/CocoaPods/Specs.git'
 
-pod 'pjsip', :git => 'https://github.com/chebur/pjsip.git'
+pod 'pjsip'
 #pod 'pjsip', :path => '/Users/chebur/Documents/Projects/ObjC/pjsip/'

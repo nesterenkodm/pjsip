@@ -1,17 +1,13 @@
 PODS:
-  - OpenSSL-Universal (1.0.1.i)
-  - pjsip (2.3.0.4):
-    - OpenSSL-Universal (= 1.0.1.i)
+  - OpenSSL-Universal (1.0.1.j-2)
+  - pjsip (2.3.0.6):
+    - OpenSSL-Universal (= 1.0.1.j-2)
 
 DEPENDENCIES:
-  - pjsip (from `https://github.com/chebur/pjsip.git`)
-
-EXTERNAL SOURCES:
-  pjsip:
-    :git: https://github.com/chebur/pjsip.git
+  - pjsip
 
 SPEC CHECKSUMS:
-  OpenSSL-Universal: 47c29b0c3e5b781ac74276a662c4fbe78ea5d4d8
-  pjsip: ab53133e501747f5546e294a40c7eab33ef9ff07
+  OpenSSL-Universal: 59e0fe9f0e78df35ca0c366ba0d1e714ebd6397a
+  pjsip: 7145a5bd35e9396ff8b70506941964f0c67e4e9b
 
-COCOAPODS: 0.34.1
+COCOAPODS: 0.35.0
