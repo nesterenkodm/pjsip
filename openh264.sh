@@ -3,13 +3,8 @@
 # see http://stackoverflow.com/a/3915420/318790
 function realpath { echo $(cd $(dirname "$1"); pwd)/$(basename "$1"); }
 
-BUILD_DIR=$(realpath "build")
-if [ ! -d ${BUILD_DIR} ]; then
-    mkdir ${BUILD_DIR}
-fi
-
-BASEDIR_PATH="${BUILD_DIR}/openh264"
-TARGET_URL="https://github.com/cisco/openh264/archive/v1.3.1.zip"
+BASEDIR_PATH="$1"
+TARGET_URL="https://github.com/cisco/openh264/archive/v1.0.0.zip"
 TARGET_PATH="${BASEDIR_PATH}/src"
 
 # download
@@ -41,9 +36,9 @@ function build() {
     sed -i.deleteme "s/${SED_SRC}/${SED_DST}/" "${MAKEFILE}"
     rm ${MAKEFILE}.deleteme
 
-    make clean > /dev/null
     make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No > /dev/null
     make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No install > /dev/null
+    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No clean > /dev/null
 
     popd > /dev/null
 
