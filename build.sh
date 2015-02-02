@@ -279,14 +279,14 @@ function armv7s() { _build "armv7s"; }
 function arm64() { _build "arm64"; }
 function i386() {
   export DEVPATH="`xcrun -sdk iphonesimulator --show-sdk-platform-path`/Developer"
-  export CFLAGS="-I${OPENSSL_DIR}/include -O2 -m32 -mios-simulator-version-min=6.0"
-  export LDFLAGS="-L${OPENSSL_DIR}/lib -O2 -m32 -mios-simulator-version-min=6.0"
+  export CFLAGS="-I${OPENSSL_DIR}/include -O2 -m32 -mios-simulator-version-min=7.0"
+  export LDFLAGS="-L${OPENSSL_DIR}/lib -O2 -m32 -mios-simulator-version-min=7.0"
   _build "i386"
 }
 function x86_64() {
   export DEVPATH="`xcrun -sdk iphonesimulator --show-sdk-platform-path`/Developer"
-  export CFLAGS="-I${OPENSSL_DIR}/include -O2 -m32 -mios-simulator-version-min=6.0"
-  export LDFLAGS="-L${OPENSSL_DIR}/lib -O2 -m32 -mios-simulator-version-min=6.0"
+  export CFLAGS="-I${OPENSSL_DIR}/include -O2 -m32 -mios-simulator-version-min=7.0"
+  export LDFLAGS="-L${OPENSSL_DIR}/lib -O2 -m32 -mios-simulator-version-min=7.0"
   _build "x86_64"
 }
 
