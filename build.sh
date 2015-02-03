@@ -47,7 +47,7 @@ function openh264() {
     OPENH264_ENABLED=1
 }
 
-PJSIP_DIR="${BUILD_DIR}/pjproject/src"
+PJSIP_DIR="${BUILD_DIR}/pjproject"
 function pjsip() {
     `realpath "pjsip.sh"` "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-openh264 "${OPENH264_DIR}"
 }
