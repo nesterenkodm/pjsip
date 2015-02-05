@@ -24,36 +24,37 @@ PJSIP may include third party software in its source code distribution. Third Pa
 LICENSE
    }
 
-  s.public_header_files = 'build/pjproject-2.3/pjsip/include/**',
-                          'build/pjproject-2.3/pjlib/include/**',
-                          'build/pjproject-2.3/pjlib-util/include/**',
-                          'build/pjproject-2.3/pjnath/include/**',
-                          'build/pjproject-2.3/pjmedia/include/**'
+  s.public_header_files = 'build/pjproject/src/pjsip/include/**',
+                          'build/pjproject/src/pjlib/include/**',
+                          'build/pjproject/src/pjlib-util/include/**',
+                          'build/pjproject/src/pjnath/include/**',
+                          'build/pjproject/src/pjmedia/include/**'
 
-  s.preserve_paths      = 'build/pjproject-2.3/pjsip/include/**/*',
-                          'build/pjproject-2.3/pjlib/include/**/*',
-                          'build/pjproject-2.3/pjlib-util/include/**/*',
-                          'build/pjproject-2.3/pjnath/include/**/*',
-                          'build/pjproject-2.3/pjmedia/include/**/*'
+  s.preserve_paths      = 'build/pjproject/src/pjsip/include/**/*',
+                          'build/pjproject/src/pjlib/include/**/*',
+                          'build/pjproject/src/pjlib-util/include/**/*',
+                          'build/pjproject/src/pjnath/include/**/*',
+                          'build/pjproject/src/pjmedia/include/**/*'
 
-  s.vendored_libraries  = 'build/pjproject-2.3/pjsip/lib/*.a',
-                          'build/pjproject-2.3/pjlib/lib/*.a',
-                          'build/pjproject-2.3/pjlib-util/lib/*.a',
-                          'build/pjproject-2.3/pjnath/lib/*.a',
-                          'build/pjproject-2.3/pjmedia/lib/*.a',
-                          'build/pjproject-2.3/third_party/lib/*.a'
+  s.vendored_libraries  = 'build/openh264/lib/*.a',
+                          'build/pjproject/src/pjsip/lib/*.a',
+                          'build/pjproject/src/pjlib/lib/*.a',
+                          'build/pjproject/src/pjlib-util/lib/*.a',
+                          'build/pjproject/src/pjnath/lib/*.a',
+                          'build/pjproject/src/pjmedia/lib/*.a',
+                          'build/pjproject/src/third_party/lib/*.a'
 
-  header_search_paths   = '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjsip/include"',
-                          '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib/include"',
-                          '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjlib-util/include"',
-                          '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjnath/include"',
-                          '"$(PODS_ROOT)/pjsip/build/pjproject-2.3/pjmedia/include"'
+  header_search_paths   = '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjsip/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjlib/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjlib-util/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjnath/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjmedia/include"'
 
   s.xcconfig            = {'HEADER_SEARCH_PATHS'          => header_search_paths.join(' '),
                            'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1'}
 
   s.dependency            'OpenSSL-Universal', '1.0.1.k'
-  s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation'
+  s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'libstdc++', 'CoreMedia'
   s.header_mappings_dir = 'build/pjproject-2.3'
 
 end
