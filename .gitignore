@@ -1,6 +1,13 @@
 .DS_Store
 build/*
 
+# openh264
+!build/openh264
+build/openh264/*
+
+!build/openh264/lib
+!build/openh264/lib/*
+
 # pjsip
 !build/pjproject
 build/pjproject/*
