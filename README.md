@@ -8,7 +8,7 @@ PJSIP is a free and open source multimedia communication library written in C la
 - Supported platforms: iOS7, iOS8
 - Supported architectures: armv7, armv7s, arm64, i386, x86_64
 - OpenSSL support provided by the [OpenSSL-for-iPhone](https://github.com/x2on/OpenSSL-for-iPhone) build script and the [OpenSSL-Universal](https://github.com/krzak/OpenSSL.git) pod
-- Video support provided by OpenH264
+- Video support provided by the [OpenH264](https://github.com/cisco/openh264)
 
 ## Installation
 
