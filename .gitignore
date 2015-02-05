@@ -1,36 +1,46 @@
 .DS_Store
 build/*
 
+# openh264
+!build/openh264
+build/openh264/*
+
+!build/openh264/lib
+!build/openh264/lib/*
+
 # pjsip
-!build/pj*/
-build/pj*/*
+!build/pjproject
+build/pjproject/*
 
-!build/pj*/pjlib/
-build/pj*/pjlib/*
-!build/pj*/pjlib/lib/
-!build/pj*/pjlib/include/
+!build/pjproject/src
+build/pjproject/src/*
 
-!build/pj*/pjlib-util/
-build/pj*/pjlib-util/*
-!build/pj*/pjlib-util/lib/
-!build/pj*/pjlib-util/include/
+!build/pjproject/src/pjlib/
+build/pjproject/src/pjlib/*
+!build/pjproject/src/pjlib/lib/
+!build/pjproject/src/pjlib/include/
 
-!build/pj*/pjmedia/
-build/pj*/pjmedia/*
-!build/pj*/pjmedia/lib/
-!build/pj*/pjmedia/include/
+!build/pjproject/src/pjlib-util/
+build/pjproject/src/pjlib-util/*
+!build/pjproject/src/pjlib-util/lib/
+!build/pjproject/src/pjlib-util/include/
 
-!build/pj*/pjnath/
-build/pj*/pjnath/*
-!build/pj*/pjnath/lib/
-!build/pj*/pjnath/include/
+!build/pjproject/src/pjmedia/
+build/pjproject/src/pjmedia/*
+!build/pjproject/src/pjmedia/lib/
+!build/pjproject/src/pjmedia/include/
 
-!build/pj*/pjsip/
-build/pj*/pjsip/*
-!build/pj*/pjsip/lib/
-!build/pj*/pjsip/include/
+!build/pjproject/src/pjnath/
+build/pjproject/src/pjnath/*
+!build/pjproject/src/pjnath/lib/
+!build/pjproject/src/pjnath/include/
 
-!build/pj*/third_party/
-build/pj*/third_party/*
-!build/pj*/third_party/lib/
-!build/pj*/third_party/include/
+!build/pjproject/src/pjsip/
+build/pjproject/src/pjsip/*
+!build/pjproject/src/pjsip/lib/
+!build/pjproject/src/pjsip/include/
+
+!build/pjproject/src/third_party/
+build/pjproject/src/third_party/*
+!build/pjproject/src/third_party/lib/
+!build/pjproject/src/third_party/include/
