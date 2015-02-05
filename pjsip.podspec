@@ -57,5 +57,5 @@ LICENSE
   s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'CoreMedia'
   s.libraries           = 'stdc++'
   s.header_mappings_dir = 'build/pjproject-2.3'
-
+  s.requires_arc        = false
 end
