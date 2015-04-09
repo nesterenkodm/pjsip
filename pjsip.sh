@@ -20,6 +20,8 @@ LIB_PATHS=("pjlib/lib" \
 
 OPENSSL_PREFIX=
 OPENH264_PREFIX=
+LIBYUV_PREFIX=
+DNDEBUG_FLAG=
 while [ "$#" -gt 0 ]; do
     case $1 in
         --with-openssl)
@@ -39,6 +41,26 @@ while [ "$#" -gt 0 ]; do
                 continue
             else
                 echo 'ERROR: Must specify a non-empty "--with-openh264 PREFIX" argument.' >&2
+                exit 1
+            fi
+            ;;
+        --with-libyuv)
+            if [ "$#" -gt 1 ]; then
+                LIBYUV_PREFIX=$2
+                shift 2
+                continue
+            else
+                echo 'ERROR: Must specify a non-empty "--with-libyuv PREFIX" argument.' >&2
+                exit 1
+            fi
+            ;;
+        -DNDEBUG)
+            if [ "$#" -gt 1 ]; then
+                DNDEBUG_FLAG=$1
+                shift 2
+                continue
+            else
+                echo 'ERROR: Must specify a non-empty "--with-libyuv PREFIX" argument.' >&2
                 exit 1
             fi
             ;;
@@ -70,6 +92,10 @@ function config_site() {
         echo "#define PJMEDIA_VIDEO_DEV_HAS_IOS_OPENGL 1" >> "${PJSIP_CONFIG_PATH}"
         echo "#include <OpenGLES/ES3/glext.h>" >> "${PJSIP_CONFIG_PATH}"
     fi
+    if [[ ${LIBYUV_PREFIX} ]]; then
+        echo "#define PJMEDIA_HAS_LIBYUV 1" >> "${PJSIP_CONFIG_PATH}"
+    fi
+    
     echo "#include <pj/config_site_sample.h>" >> "${PJSIP_CONFIG_PATH}"
 }
 
@@ -101,6 +127,9 @@ function _build() {
     if [[ ${OPENH264_PREFIX} ]]; then
         CONFIGURE="${CONFIGURE} --with-openh264=${OPENH264_PREFIX}"
     fi
+    if [[ ${LIBYUV_PREFIX} ]]; then
+        CONFIGURE="${CONFIGURE} --with-libyuv=${LIBYUV_PREFIX}"
+    fi
 
     # flags
     if [[ ! ${CFLAGS} ]]; then
@@ -109,6 +138,9 @@ function _build() {
     if [[ ! ${LDFLAGS} ]]; then
         export LDFLAGS=
     fi
+    if [[ ${DNDEBUG_FLAG} ]]; then
+        export CFLAGS="${CFLAGS} -DNDEBUG"
+    fi
     if [[ ${OPENSSL_PREFIX} ]]; then
         export CFLAGS="${CFLAGS} -I${OPENSSL_PREFIX}/include"
         export LDFLAGS="${LDFLAGS} -L${OPENSSL_PREFIX}/lib"
@@ -116,6 +148,10 @@ function _build() {
     if [[ ${OPENH264_PREFIX} ]]; then
         export CFLAGS="${CFLAGS} -I${OPENH264_PREFIX}/include"
         export LDFLAGS="${LDFLAGS} -L${OPENH264_PREFIX}/lib"
+    fi
+    if [[ ${LIBYUV_PREFIX} ]]; then
+        export CFLAGS="${CFLAGS} -I${LIBYUV_PREFIX}/include"
+        export LDFLAGS="${LDFLAGS} -L${LIBYUV_PREFIX}/lib"
     fi
     export LDFLAGS="${LDFLAGS} -lstdc++"
 
