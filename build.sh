@@ -47,11 +47,30 @@ function openh264() {
     OPENH264_ENABLED=1
 }
 
+# libyuv
+LIBYUV_DIR="${BUILD_DIR}/libyuv"
+LIBYUV_ENABLED=
+function libyuv() {
+    if [ ! -f "${LIBYUV_DIR}/lib/libyuv.a" ]; then
+        `realpath "libyuv.sh"` "${LIBYUV_DIR}"
+    else
+        echo "Using libyuv..."
+    fi
+
+    LIBYUV_ENABLED=1
+}
+
+
 PJSIP_DIR="${BUILD_DIR}/pjproject"
 function pjsip() {
-    `realpath "pjsip.sh"` "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-openh264 "${OPENH264_DIR}"
+    if [[ ${LIBYUV_ENABLED} ]]; then
+        `realpath "pjsip.sh"` "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-openh264 "${OPENH264_DIR}" --with-libyuv "${LIBYUV_DIR}"
+    else
+        `realpath "pjsip.sh"` "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-openh264 "${OPENH264_DIR}"
+    fi
 }
 
 openssl
 openh264
+#libyuv
 pjsip

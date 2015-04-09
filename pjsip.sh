@@ -55,14 +55,9 @@ while [ "$#" -gt 0 ]; do
             fi
             ;;
         -DNDEBUG)
-            if [ "$#" -gt 1 ]; then
-                DNDEBUG_FLAG=$1
-                shift 2
-                continue
-            else
-                echo 'ERROR: Must specify a non-empty "--with-libyuv PREFIX" argument.' >&2
-                exit 1
-            fi
+            DNDEBUG_FLAG=$1
+            shift 1
+            continue
             ;;
     esac
 
