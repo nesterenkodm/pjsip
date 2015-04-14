@@ -27,6 +27,7 @@ function build() {
     MAKEFILE="${TARGET_PATH}/Makefile"
     MAKEFILE_BAK="${TARGET_PATH}/Makefile.bak"
     PREFIX="${BASEDIR_PATH}/build/${ARCH}"
+    LOG="${PREFIX}/build.log"
 
     pushd . > /dev/null
     cd "${TARGET_PATH}"
@@ -34,6 +35,7 @@ function build() {
     if [ -d "${PREFIX}" ]; then
         rm -rf ${PREFIX}
     fi
+    mkdir -p ${PREFIX}
 
     echo "Builing for ${ARCH}..."
 
@@ -45,9 +47,9 @@ function build() {
     sed -i.deleteme "s/${SED_SRC}/${SED_DST}/" "${MAKEFILE}"
     rm ${MAKEFILE}.deleteme
 
-    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No > /dev/null
-    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No install > /dev/null
-    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No clean > /dev/null
+    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No >> "${LOG}"
+    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No install >> "${LOG}"
+    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No clean >> "${LOG}"
 
     popd > /dev/null
 
