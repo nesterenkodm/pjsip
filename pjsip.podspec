@@ -53,7 +53,7 @@ LICENSE
   s.xcconfig            = {'HEADER_SEARCH_PATHS'          => header_search_paths.join(' '),
                            'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1'}
 
-  s.dependency            'OpenSSL-Universal', '1.0.1.k'
+  s.dependency            'OpenSSL-Universal', '1.0.1.l'
   s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'CoreMedia'
   s.libraries           = 'stdc++'
   s.header_mappings_dir = 'build/pjproject-2.3'
