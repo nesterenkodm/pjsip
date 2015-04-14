@@ -14,6 +14,13 @@ function download() {
     "${__DIR__}/download.sh" "$1" "$2" #--no-cache
 }
 
+# fix for https://github.com/chebur/pjsip/issues/19
+HEADERS_DIR="${BASEDIR_PATH}/include/wels"
+if [ -d "${HEADERS_DIR}" ]; then
+    rm -rf "${HEADERS_DIR}"
+fi
+mkdir -p "${HEADERS_DIR}"
+
 # build
 function build() {
     ARCH="$1"
