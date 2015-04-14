@@ -2,15 +2,17 @@
 
 # see http://stackoverflow.com/a/3915420/318790
 function realpath { echo $(cd $(dirname "$1"); pwd)/$(basename "$1"); }
+__FILE__=`realpath "$0"`
+__DIR__=`dirname "${__FILE__}"`
 
-BUILD_DIR=$(realpath "build")
+BUILD_DIR="${__DIR__}/build"
 if [ ! -d ${BUILD_DIR} ]; then
     mkdir ${BUILD_DIR}
 fi
 
 # download
 function download() {
-    `realpath "download.sh"` "$1" "$2" #--no-cache
+    "${__DIR__}/download.sh" "$1" "$2" #--no-cache
 }
 
 # openssl
@@ -39,7 +41,7 @@ OPENH264_DIR="${BUILD_DIR}/openh264"
 OPENH264_ENABLED=
 function openh264() {
     if [ ! -f "${OPENH264_DIR}/lib/libopenh264.a" ]; then
-        `realpath "openh264.sh"` "${OPENH264_DIR}"
+        "${__DIR__}/openh264.sh" "${OPENH264_DIR}"
     else
         echo "Using OpenH264..."
     fi
@@ -49,7 +51,7 @@ function openh264() {
 
 PJSIP_DIR="${BUILD_DIR}/pjproject"
 function pjsip() {
-    `realpath "pjsip.sh"` "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-openh264 "${OPENH264_DIR}"
+    "${__DIR__}/pjsip.sh" "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-openh264 "${OPENH264_DIR}"
 }
 
 openssl
