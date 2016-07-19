@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name         = "pjsip"
-  s.version      = "2.3.0.7"
+  s.version      = "2.5.1.0"
   s.summary      = "Open Source SIP, Media and NAT Traversal Library."
   s.homepage     = "http://www.pjsip.org"
   s.author       = 'www.pjsip.org'
-  s.source       = { :git => "https://github.com/chebur/pjsip.git", :tag => "#{s.version}" }
-  s.platform     = :ios, '7.0'
+  s.source       = { :git => "https://github.com/imaPheven/pjsip.git", :tag => "#{s.version}" }
+  s.platform     = :ios, '8.3'
   s.description  = <<-DESC
 PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE. It combines signaling protocol (SIP) with rich multimedia framework and NAT traversal functionality into high level API that is portable and suitable for almost any type of systems ranging from desktops, embedded systems, to mobile handsets.
 
@@ -56,6 +56,6 @@ LICENSE
   s.dependency            'OpenSSL-Universal', '1.0.1.l'
   s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'CoreMedia'
   s.libraries           = 'stdc++'
-  s.header_mappings_dir = 'build/pjproject-2.3'
+  s.header_mappings_dir = 'build/pjproject-2.5.1'
   s.requires_arc        = false
 end
