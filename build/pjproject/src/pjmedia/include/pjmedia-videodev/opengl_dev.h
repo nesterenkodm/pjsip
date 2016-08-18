@@ -1,4 +1,4 @@
-/* $Id: opengl_dev.h 4821 2014-04-22 05:04:43Z ming $ */
+/* $Id: opengl_dev.h 5117 2015-06-25 04:51:59Z ming $ */
 /*
  * Copyright (C) 2013-2014 Teluu Inc. (http://www.teluu.com)
  *
@@ -16,8 +16,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-#ifndef PJMEDIA_VIDEODEV_OPENGL_DEV_H__
-#define PJMEDIA_VIDEODEV_OPENGL_DEV_H__
+#ifndef __PJMEDIA_VIDEODEV_OPENGL_DEV_H__
+#define __PJMEDIA_VIDEODEV_OPENGL_DEV_H__
 
 #include <pjmedia-videodev/videodev_imp.h>
 
@@ -40,15 +40,14 @@ pjmedia_vid_dev_opengl_imp_create_stream(pj_pool_t *pool,
 typedef struct gl_buffers gl_buffers;
 
 /* Create OpenGL buffers. */
-void        pjmedia_vid_dev_opengl_create_buffers(pj_pool_t *pool,
+void        pjmedia_vid_dev_opengl_create_buffers(pj_pool_t *pool, pj_bool_t direct,
                                                   gl_buffers **glb);
 /* Initialize OpenGL buffers. */
 pj_status_t pjmedia_vid_dev_opengl_init_buffers(gl_buffers *glb);
 /* Render a texture. */
-pj_status_t pjmedia_vid_dev_opengl_draw(gl_buffers *glb,
-                                        unsigned int texture,
-                                        unsigned int name);
+pj_status_t pjmedia_vid_dev_opengl_draw(gl_buffers *glb,unsigned int width,
+                                        unsigned int height, void *pixels);
 /* Destroy OpenGL buffers. */
 void        pjmedia_vid_dev_opengl_destroy_buffers(gl_buffers *glb);
 
-#endif    /* PJMEDIA_VIDEODEV_OPENGL_DEV_H__ */
+#endif    /* __PJMEDIA_VIDEODEV_OPENGL_DEV_H__ */

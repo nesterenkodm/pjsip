@@ -1,4 +1,4 @@
-/* $Id: sip_util.h 4888 2014-08-18 08:54:43Z bennylp $ */
+/* $Id: sip_util.h 5059 2015-04-10 09:14:54Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -772,7 +772,9 @@ typedef void (*pjsip_endpt_send_callback)(void *token, pjsip_event *e);
  * @param tdata	    The transmit data to be sent.
  * @param timeout   Optional timeout for final response to be received, or -1 
  *		    if the transaction should not have a timeout restriction.
- *		    The value is in miliseconds.
+ *		    The value is in miliseconds. Note that this is not 
+ *		    implemented yet, so application needs to use its own timer 
+ *		    to handle timeout.
  * @param token	    Optional token to be associated with the transaction, and 
  *		    to be passed to the callback.
  * @param cb	    Optional callback to be called when the transaction has

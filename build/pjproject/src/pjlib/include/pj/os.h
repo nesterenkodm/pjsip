@@ -1,4 +1,4 @@
-/* $Id: os.h 4760 2014-02-24 08:49:40Z nanang $ */
+/* $Id: os.h 5012 2015-03-22 07:50:28Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -311,8 +311,10 @@ PJ_DECL(pj_thread_t*) pj_thread_this(void);
 
 /**
  * Join thread, and block the caller thread until the specified thread exits.
+ * If it is called from within the thread itself, it will return immediately
+ * with failure status.
  * If the specified thread has already been dead, or it does not exist,
- * the function will return immediately with successfull status.
+ * the function will return immediately with successful status.
  *
  * @param thread    The thread handle.
  *

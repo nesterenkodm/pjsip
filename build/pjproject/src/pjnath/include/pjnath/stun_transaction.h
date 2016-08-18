@@ -1,4 +1,4 @@
-/* $Id: stun_transaction.h 4360 2013-02-21 11:26:35Z bennylp $ */
+/* $Id: stun_transaction.h 4983 2015-02-13 11:34:26Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -159,6 +159,17 @@ PJ_DECL(pj_status_t) pj_stun_client_tsx_create(	pj_stun_config *cfg,
 PJ_DECL(pj_status_t) 
 pj_stun_client_tsx_schedule_destroy(pj_stun_client_tsx *tsx,
 				    const pj_time_val *delay);
+
+
+/**
+ * Destroy the STUN transaction immediately after the transaction is complete.
+ * Application normally calls this function in the on_complete() callback.
+ *
+ * @param tsx		The STUN transaction.
+ *
+ * @return		PJ_SUCCESS on success, or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pj_stun_client_tsx_destroy(pj_stun_client_tsx *tsx);
 
 
 /**

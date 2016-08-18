@@ -1,4 +1,4 @@
-/* $Id: pjsua.h 4889 2014-08-18 09:09:18Z bennylp $ */
+/* $Id: pjsua.h 5326 2016-05-31 04:28:00Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -283,6 +283,9 @@ typedef struct pjsua_srv_pres pjsua_srv_pres;
 /** Forward declaration for pjsua_msg_data */
 typedef struct pjsua_msg_data pjsua_msg_data;
 
+/** Forward declaration for pj_stun_resolve_result */
+typedef struct pj_stun_resolve_result pj_stun_resolve_result;
+
 
 /**
  * Maximum proxies in account.
@@ -477,6 +480,10 @@ typedef struct pjsua_reg_info
 {
     struct pjsip_regc_cbparam	*cbparam;   /**< Parameters returned by
 						 registration callback.	*/
+    pjsip_regc			*regc;	    /**< Client registration 
+						 structure. */	
+    pj_bool_t			 renew;     /**< Non-zero for registration and 
+						 zero for unregistration. */
 } pjsua_reg_info;
 
 
@@ -556,6 +563,13 @@ typedef pj_status_t
 
 
 /**
+ * Typedef of callback to be registered to #pjsua_resolve_stun_servers()
+ * and to be called when STUN resolution completes.
+ */
+typedef void (*pj_stun_resolve_cb)(const pj_stun_resolve_result *result);
+
+
+/**
  * This enumeration specifies the options for custom media transport creation.
  */
 typedef enum pjsua_create_media_transport_flag
@@ -612,13 +626,15 @@ typedef struct pjsua_call_setting
     /**
      * Bitmask of #pjsua_call_flag constants.
      *
-     * Default: 0
+     * Default: PJSUA_CALL_INCLUDE_DISABLED_MEDIA
      */
     unsigned	     flag;
 
     /**
      * This flag controls what methods to request keyframe are allowed on
      * the call. Value is bitmask of #pjsua_vid_req_keyframe_method.
+     *
+     * Default: PJSUA_VID_REQ_KEYFRAME_SIP_INFO
      */
     unsigned	     req_keyframe_method;
 
@@ -870,7 +886,9 @@ typedef struct pjsua_callback
 
     /**
      * Notify application when call has received new offer from remote
-     * (i.e. re-INVITE/UPDATE with SDP is received). Application can
+     * (i.e. re-INVITE/UPDATE with SDP is received, or from the
+     * INVITE response in the case that the initial outgoing INVITE
+     * has no SDP). Application can
      * decide to accept/reject the offer by setting the code (default
      * is 200). If the offer is accepted, application can update the 
      * call setting to be applied in the answer. When this callback is
@@ -892,6 +910,31 @@ typedef struct pjsua_callback
 			     pjsip_status_code *code,
 			     pjsua_call_setting *opt);
 
+
+    /**
+    * Notify application when call has received INVITE with no SDP offer.
+    * Application can update the call setting (e.g: add audio/video), or
+    * enable/disable codecs, or update other media session settings from
+    * within the callback, however, as mandated by the standard (RFC3261
+    * section 14.2), it must ensure that the update overlaps with the
+    * existing media session (in codecs, transports, or other parameters)
+    * that require support from the peer, this is to avoid the need for
+    * the peer to reject the offer.
+    *
+    * When this callback is not defined, the default behavior is to send
+    * SDP offer using current active media session (with all enabled codecs
+    * on each media type).
+    *
+    * @param call_id	The call index.
+    * @param reserved	Reserved param, currently not used.
+    * @param opt	The current call setting, application can update
+    *			this setting for generating the offer.
+    */
+    void (*on_call_tx_offer)(pjsua_call_id call_id,
+			     void *reserved,
+			     pjsua_call_setting *opt);
+
+
     /**
      * Notify application when registration or unregistration has been
      * initiated. Note that this only notifies the initial registration
@@ -903,6 +946,16 @@ typedef struct pjsua_callback
      * 			    unregistration.
      */
     void (*on_reg_started)(pjsua_acc_id acc_id, pj_bool_t renew);
+
+    /**
+     * This is the alternative version of the \a on_reg_started() callback with
+     * \a pjsua_reg_info argument.
+     *
+     * @param acc_id	    The account ID.
+     * @param info	    The registration info.
+     */
+    void (*on_reg_started2)(pjsua_acc_id acc_id, 
+			    pjsua_reg_info *info);
     
     /**
      * Notify application when registration status has changed.
@@ -1333,6 +1386,18 @@ typedef struct pjsua_callback
     void (*on_acc_find_for_incoming)(const pjsip_rx_data *rdata,
 				     pjsua_acc_id* acc_id);
 
+    /**
+     * Calling #pjsua_init() will initiate an async process to resolve and
+     * contact each of the STUN server entries to find which is usable.
+     * This callback is called when the process is complete, and can be
+     * used by the application to start creating and registering accounts.
+     * This way, the accounts can avoid call setup delay caused by pending
+     * STUN resolution.
+     *
+     * See also #pj_stun_resolve_cb.
+     */
+    pj_stun_resolve_cb on_stun_resolution_complete;
+
 } pjsua_callback;
 
 
@@ -1512,9 +1577,14 @@ typedef struct pjsua_config
     pj_str_t	    stun_srv[8];
 
     /**
-     * This specifies if the library startup should ignore failure with the
+     * This specifies if the library should ignore failure with the
      * STUN servers. If this is set to PJ_FALSE, the library will refuse to
      * start if it fails to resolve or contact any of the STUN servers.
+     *
+     * This setting will also determine what happens if STUN servers are
+     * unavailable during runtime (if set to PJ_FALSE, calls will
+     * directly fail, otherwise (if PJ_TRUE) call medias will
+     * fallback to proceed as though not using STUN servers.
      *
      * Default: PJ_TRUE
      */
@@ -1951,7 +2021,7 @@ PJ_DECL(pj_pool_factory*) pjsua_get_pool_factory(void);
  * resolution and testing, the #pjsua_resolve_stun_servers() function.
  * This structure will be passed in #pj_stun_resolve_cb callback.
  */
-typedef struct pj_stun_resolve_result
+struct pj_stun_resolve_result
 {
     /**
      * Arbitrary data that was passed to #pjsua_resolve_stun_servers()
@@ -1978,13 +2048,12 @@ typedef struct pj_stun_resolve_result
      */
     pj_sockaddr	     addr;
 
-} pj_stun_resolve_result;
+    /**
+     * The index of the usable STUN server.
+     */
+    unsigned	     index;
+};
 
-
-/**
- * Typedef of callback to be registered to #pjsua_resolve_stun_servers().
- */
-typedef void (*pj_stun_resolve_cb)(const pj_stun_resolve_result *result);
 
 /**
  * This is a utility function to detect NAT type in front of this
@@ -2022,6 +2091,30 @@ PJ_DECL(pj_status_t) pjsua_detect_nat_type(void);
  * @see pjsua_call_get_rem_nat_type()
  */
 PJ_DECL(pj_status_t) pjsua_get_nat_type(pj_stun_nat_type *type);
+
+
+/**
+ * Update the STUN servers list. The #pjsua_init() must have been called
+ * before calling this function.
+ *
+ * @param count		Number of STUN server entries.
+ * @param srv		Array of STUN server entries to try. Please see
+ *			the \a stun_srv field in the #pjsua_config 
+ *			documentation about the format of this entry.
+ * @param wait		Specify non-zero to make the function block until
+ *			it gets the result. In this case, the function
+ *			will block while the resolution is being done,
+ *			and the callback will be called before this function
+ *			returns.
+ *
+ * @return		If \a wait parameter is non-zero, this will return
+ *			PJ_SUCCESS if one usable STUN server is found.
+ *			Otherwise it will always return PJ_SUCCESS, and
+ *			application will be notified about the result in
+ *			the callback #on_stun_resolution_complete.
+ */
+PJ_DECL(pj_status_t) pjsua_update_stun_servers(unsigned count, pj_str_t srv[],
+					       pj_bool_t wait);
 
 
 /**
@@ -2662,7 +2755,16 @@ typedef enum pjsua_stun_use
      * Disable STUN. If STUN is not enabled in the global \a pjsua_config,
      * this setting has no effect.
      */
-    PJSUA_STUN_USE_DISABLED
+    PJSUA_STUN_USE_DISABLED,
+    
+    /**
+     * Retry other STUN servers if the STUN server selected during
+     * startup (#pjsua_init()) or after calling #pjsua_update_stun_servers()
+     * is unavailable during runtime. This setting is valid only for
+     * account's media STUN setting and if the call is using UDP media
+     * transport.
+     */
+    PJSUA_STUN_RETRY_ON_FAILURE
 
 } pjsua_stun_use;
 
@@ -3223,7 +3325,7 @@ typedef struct pjsua_acc_config
     /**
      * Control the use of STUN for the media transports.
      *
-     * Default: PJSUA_STUN_USE_DEFAULT
+     * Default: PJSUA_STUN_RETRY_ON_FAILURE
      */
     pjsua_stun_use 		media_stun_use;
 
@@ -3288,8 +3390,9 @@ typedef struct pjsua_acc_config
      * disable auto re-registration. Note that if the registration retry
      * occurs because of transport failure, the first retry will be done
      * after \a reg_first_retry_interval seconds instead. Also note that
-     * the interval will be randomized slightly by approximately +/- ten
-     * seconds to avoid all clients re-registering at the same time.
+     * the interval will be randomized slightly by some seconds (specified
+     * in \a reg_retry_random_interval) to avoid all clients re-registering
+     * at the same time.
      *
      * See also \a reg_first_retry_interval setting.
      *
@@ -3300,11 +3403,26 @@ typedef struct pjsua_acc_config
     /**
      * This specifies the interval for the first registration retry. The
      * registration retry is explained in \a reg_retry_interval. Note that
-     * the value here will also be randomized by +/- ten seconds.
+     * the value here will also be randomized by some seconds (specified
+     * in \a reg_retry_random_interval) to avoid all clients re-registering
+     * at the same time.
      *
      * Default: 0
      */
     unsigned	     reg_first_retry_interval;
+
+    /**
+     * This specifies maximum randomized value to be added/substracted
+     * to/from the registration retry interval specified in \a
+     * reg_retry_interval and \a reg_first_retry_interval, in second.
+     * This is useful to avoid all clients re-registering at the same time.
+     * For example, if the registration retry interval is set to 100 seconds
+     * and this is set to 10 seconds, the actual registration retry interval
+     * will be in the range of 90 to 110 seconds.
+     *
+     * Default: 10
+     */
+    unsigned	     reg_retry_random_interval;
 
     /**
      * Specify whether calls of the configured account should be dropped
@@ -3640,8 +3758,21 @@ PJ_DECL(pj_status_t) pjsua_acc_get_config(pjsua_acc_id acc_id,
 
 
 /**
- * Modify account information.
+ * Modify account configuration setting. This function may trigger
+ * unregistration (of old account setting) and re-registration (of the new
+ * account setting), e.g: changing account ID, credential, registar, or
+ * proxy setting.
  *
+ * Note:
+ * - when the new config triggers unregistration, the pjsua callback
+ *   on_reg_state()/on_reg_state2() for the unregistration will not be called
+ *   and any failure in the unregistration will be ignored, so if application
+ *   needs to be sure about the unregistration status, it should unregister
+ *   manually and wait for the callback before calling this function
+ * - when the new config triggers re-registration and the re-registration
+ *   fails, the account setting will not be reverted back to the old setting
+ *   and the account will be in unregistered state.
+ * 
  * @param acc_id	Id of the account to be modified.
  * @param acc_cfg	New account configuration.
  *
@@ -4083,9 +4214,10 @@ typedef enum pjsua_call_flag
 {
     /**
      * When the call is being put on hold, specify this flag to unhold it.
-     * This flag is only valid for #pjsua_call_reinvite(). Note: for
-     * compatibility reason, this flag must have value of 1 because
-     * previously the unhold option is specified as boolean value.
+     * This flag is only valid for #pjsua_call_reinvite() and
+     * #pjsua_call_update(). Note: for compatibility reason, this flag must
+     * have value of 1 because previously the unhold option is specified as
+     * boolean value.
      */
     PJSUA_CALL_UNHOLD = 1,
 
@@ -4103,9 +4235,21 @@ typedef enum pjsua_call_flag
     /**
      * Include SDP "m=" line with port set to zero for each disabled media
      * (i.e when aud_cnt or vid_cnt is set to zero). This flag is only valid
-     * for #pjsua_call_make_call().
+     * for #pjsua_call_make_call(), #pjsua_call_reinvite(), and
+     * #pjsua_call_update(). Note that even this flag is applicable in
+     * #pjsua_call_reinvite() and #pjsua_call_update(), it will only take
+     * effect when the re-INVITE/UPDATE operation regenerates SDP offer,
+     * such as changing audio or video count in the call setting.
      */
-    PJSUA_CALL_INCLUDE_DISABLED_MEDIA = 4
+    PJSUA_CALL_INCLUDE_DISABLED_MEDIA = 4,
+    
+    /**
+     * Do not send SDP when sending INVITE or UPDATE. This flag is only valid
+     * for #pjsua_call_make_call(), #pjsua_call_reinvite()/reinvite2(), or
+     * #pjsua_call_update()/update2(). For re-invite/update, specifying
+     * PJSUA_CALL_UNHOLD will take precedence over this flag.
+     */
+    PJSUA_CALL_NO_SDP_OFFER = 8
 
 } pjsua_call_flag;
 
@@ -4580,7 +4724,7 @@ PJ_DECL(pj_status_t) pjsua_call_set_hold2(pjsua_call_id call_id,
 					  const pjsua_msg_data *msg_data);
 
 /**
- * Send re-INVITE to release hold.
+ * Send re-INVITE request or release hold.
  * The final status of the request itself will be reported on the
  * \a on_call_media_state() callback, which inform the application that
  * the media state of the call has changed.
@@ -4600,14 +4744,18 @@ PJ_DECL(pj_status_t) pjsua_call_reinvite(pjsua_call_id call_id,
 
 
 /**
- * Send re-INVITE to release hold.
+ * Send re-INVITE request or release hold.
  * The final status of the request itself will be reported on the
  * \a on_call_media_state() callback, which inform the application that
  * the media state of the call has changed.
  *
  * @param call_id	Call identification.
  * @param opt		Optional call setting, if NULL, the current call
- *			setting will remain unchanged.
+ *			setting will be used. Note that to release hold
+ *			or update contact or omit SDP offer, this parameter
+ *			cannot be NULL and it must specify appropriate flags,
+ *			e.g: PJSUA_CALL_UNHOLD, PJSUA_CALL_UPDATE_CONTACT,
+ *			PJSUA_CALL_NO_SDP_OFFER.
  * @param msg_data	Optional message components to be sent with
  *			the request.
  *
@@ -4638,7 +4786,11 @@ PJ_DECL(pj_status_t) pjsua_call_update(pjsua_call_id call_id,
  *
  * @param call_id	Call identification.
  * @param opt		Optional call setting, if NULL, the current call
- *			setting will remain unchanged.
+ *			setting will be used. Note that to release hold
+ *			or update contact or omit SDP offer, this parameter
+ *			cannot be NULL and it must specify appropriate flags,
+ *			e.g: PJSUA_CALL_UNHOLD, PJSUA_CALL_UPDATE_CONTACT,
+ *			PJSUA_CALL_NO_SDP_OFFER.
  * @param msg_data	Optional message components to be sent with
  *			the request.
  *
@@ -4701,11 +4853,12 @@ PJ_DECL(pj_status_t) pjsua_call_xfer_replaces(pjsua_call_id call_id,
 					      const pjsua_msg_data *msg_data);
 
 /**
- * Send DTMF digits to remote using RFC 2833 payload formats. 
+ * Send DTMF digits to remote using RFC 2833 payload formats.
  *
  * @param call_id	Call identification.
  * @param digits	DTMF string digits to be sent as described on RFC 2833 
- *			section 3.10. Character 'R' is used to represent the 
+ *			section 3.10. If PJMEDIA_HAS_DTMF_FLASH is enabled, 
+ *			character 'R' is used to represent the 
  *			event type 16 (flash) as stated in RFC 4730.
  *
  * @return		PJ_SUCCESS on success, or the appropriate error code.
@@ -5757,6 +5910,31 @@ struct pjsua_media_config
      * Default: PJ_FALSE
      */
     pj_bool_t no_rtcp_sdes_bye;
+
+    /**
+     * Optional callback for audio frame preview right before queued to
+     * the speaker.
+     * Notes:
+     * - application MUST NOT block or perform long operation in the callback
+     *   as the callback may be executed in sound device thread
+     * - when using software echo cancellation, application MUST NOT modify
+     *   the audio data from within the callback, otherwise the echo canceller
+     *   will not work properly.
+     */
+    void (*on_aud_prev_play_frame)(pjmedia_frame *frame);
+
+    /**
+     * Optional callback for audio frame preview recorded from the microphone
+     * before being processed by any media component such as software echo
+     * canceller.
+     * Notes:
+     * - application MUST NOT block or perform long operation in the callback
+     *   as the callback may be executed in sound device thread
+     * - when using software echo cancellation, application MUST NOT modify
+     *   the audio data from within the callback, otherwise the echo canceller
+     *   will not work properly.
+     */
+    void (*on_aud_prev_rec_frame)(pjmedia_frame *frame);
 };
 
 
@@ -5860,6 +6038,62 @@ typedef struct pjsua_media_transport
     pjmedia_transport	*transport;
 
 } pjsua_media_transport;
+
+/**
+ * This enumeration specifies the sound device mode.
+ */
+typedef enum pjsua_snd_dev_mode
+{
+    /**
+     * Open sound device without mic (speaker only).
+     */
+    PJSUA_SND_DEV_SPEAKER_ONLY = 1,
+
+    /**
+     * Do not open sound device, after setting the sound device.
+     */
+    PJSUA_SND_DEV_NO_IMMEDIATE_OPEN  = 2
+
+} pjsua_snd_dev_mode;
+
+
+/**
+ * This structure specifies the parameters to set the sound device.
+ * Use pjsua_snd_dev_param_default() to initialize this structure with
+ * default values.
+ */
+typedef struct pjsua_snd_dev_param
+{
+    /*
+     * Capture dev id.
+     *
+     * Default: PJMEDIA_AUD_DEFAULT_CAPTURE_DEV
+     */
+    int			capture_dev;
+
+    /*
+     * Playback dev id.
+     *
+     * Default: PJMEDIA_AUD_DEFAULT_PLAYBACK_DEV
+     */
+    int			playback_dev;
+
+    /*
+     * Sound device mode, refer to #pjsua_snd_dev_mode.
+     *
+     * Default: 0
+     */
+    unsigned		mode;
+
+} pjsua_snd_dev_param;
+
+
+/**
+ * Initialize pjsua_snd_dev_param with default values.
+ *
+ * @param prm		The parameter.
+ */
+PJ_DECL(void) pjsua_snd_dev_param_default(pjsua_snd_dev_param *prm);
 
 
 /**
@@ -6248,6 +6482,15 @@ PJ_DECL(pj_status_t) pjsua_get_snd_dev(int *capture_dev,
 PJ_DECL(pj_status_t) pjsua_set_snd_dev(int capture_dev,
 				       int playback_dev);
 
+/**
+ * Select or change sound device according to the specified param.
+ *
+ * @param snd_param	Sound device param. 
+ *
+ * @return		PJ_SUCCESS on success, or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsua_set_snd_dev2(pjsua_snd_dev_param *snd_param);
+
 
 /**
  * Set pjsua to use null sound device. The null sound device only provides
@@ -6507,6 +6750,74 @@ PJ_DECL(pj_status_t) pjsua_vid_dev_get_info(pjmedia_vid_dev_index id,
                                             pjmedia_vid_dev_info *vdi);
 
 /**
+ * Check whether the video capture device is currently active, i.e. if
+ * a video preview has been started or there is a video call using
+ * the device. This function will return PJ_FALSE for video renderer device.
+ *
+ * @param id		The video device index.
+ *
+ * @return		PJ_TRUE if active, PJ_FALSE otherwise.
+ */
+PJ_DECL(pj_bool_t) pjsua_vid_dev_is_active(pjmedia_vid_dev_index id);
+
+/**
+ * Configure the capability of a video capture device. If the device is 
+ * currently active (i.e. if there is a video call using the device or
+ * a video preview has been started), the function will forward the setting
+ * to the video device instance to be applied immediately, if it supports it.
+ *
+ * The setting will be saved for future opening of the video device, if the 
+ * "keep" argument is set to non-zero. If the video device is currently
+ * inactive, and the "keep" argument is false, this function will return
+ * error.
+ *
+ * Note: This function will only works for video capture devices. To
+ * configure the setting of video renderer device instances, use
+ * pjsua_vid_win API instead.
+ *
+ * Warning: If application refreshes the video device list, it needs to
+ * manually update the settings to reflect the newly updated video device
+ * indexes. See #pjmedia_vid_dev_refresh() for more information.
+ *
+ * See also #pjmedia_vid_stream_set_cap() for more information about setting
+ * a video device capability.
+ *
+ * @param id		The video device index.
+ * @param cap		The video device capability to change.
+ * @param pval		Pointer to value. Please see #pjmedia_vid_dev_cap
+ *			documentation about the type of value to be 
+ *			supplied for each setting.
+ *
+ * @return		PJ_SUCCESS on success or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsua_vid_dev_set_setting(pjmedia_vid_dev_index id,
+					       pjmedia_vid_dev_cap cap,
+					       const void *pval,
+					       pj_bool_t keep);
+
+/**
+ * Retrieve the value of a video capture device setting. If the device is
+ * currently active (i.e. if there is a video call using the device or
+ * a video preview has been started), the function will forward the request
+ * to the video device. If video device is currently inactive, and if
+ * application had previously set the setting and mark the setting as kept,
+ * then that setting will be returned. Otherwise, this function will return
+ * error.
+ * The function only works for video capture device.
+ *
+ * @param id		The video device index.
+ * @param cap		The video device capability to retrieve.
+ * @param pval		Pointer to receive the value. 
+ *			Please see #pjmedia_vid_dev_cap documentation about
+ *			the type of value to be supplied for each setting.
+ *
+ * @return		PJ_SUCCESS on success or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsua_vid_dev_get_setting(pjmedia_vid_dev_index id,
+					       pjmedia_vid_dev_cap cap,
+					       void *pval);
+
+/**
  * Enum all video devices installed in the system.
  *
  * @param info		Array of info to be initialized.
@@ -6554,6 +6865,20 @@ typedef struct pjsua_vid_preview_param
      * Default: 0.
      */
     unsigned			wnd_flags;
+    
+    /**
+     * Media format. Initialize this with #pjmedia_format_init_video().
+     * If left unitialized, this parameter will not be used.
+     */
+    pjmedia_format              format;
+    
+    /**
+     * Optional output window to be used to display the video preview.
+     * This parameter will only be used if the video device supports
+     * PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW capability and the capability
+     * is not read-only.
+     */    
+    pjmedia_vid_dev_hwnd	wnd;
 
 } pjsua_vid_preview_param;
 
@@ -6720,6 +7045,20 @@ PJ_DECL(pj_status_t) pjsua_vid_win_set_pos(pjsua_vid_win_id wid,
  */
 PJ_DECL(pj_status_t) pjsua_vid_win_set_size(pjsua_vid_win_id wid,
                                             const pjmedia_rect_size *size);
+
+/**
+ * Set output window. This operation is valid only when the underlying
+ * video device supports PJMEDIA_VIDEO_DEV_CAP_OUTPUT_WINDOW capability AND
+ * allows the output window to be changed on-the-fly. Currently it is only
+ * supported on Android.
+ *
+ * @param wid		The video window ID.
+ * @param win		The new output window.
+ *
+ * @return		PJ_SUCCESS on success, or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsua_vid_win_set_win(pjsua_vid_win_id wid,
+                                           const pjmedia_vid_dev_hwnd *win);
 
 /**
  * Rotate the video window. This function will change the video orientation

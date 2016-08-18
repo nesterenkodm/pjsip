@@ -1,4 +1,4 @@
-/* $Id: evsub.h 4704 2014-01-16 05:30:46Z ming $ */
+/* $Id: evsub.h 5351 2016-06-21 08:56:42Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -488,6 +488,26 @@ PJ_DECL(void) pjsip_evsub_set_mod_data( pjsip_evsub *sub, unsigned mod_id,
  * @return		Data previously set at the specified id.
  */
 PJ_DECL(void*) pjsip_evsub_get_mod_data( pjsip_evsub *sub, unsigned mod_id );
+
+
+/**
+ * Increment the event subscription's group lock.
+ *
+ * @param sub		The server subscription instance.
+ *
+ * @return		PJ_SUCCESS on success.
+ */
+PJ_DEF(pj_status_t) pjsip_evsub_add_ref(pjsip_evsub *sub);
+
+
+/**
+ * Decrement the event subscription's group lock.
+ *
+ * @param sub		The server subscription instance.
+ *
+ * @return		PJ_SUCCESS on success.
+ */
+PJ_DEF(pj_status_t) pjsip_evsub_dec_ref(pjsip_evsub *sub);
 
 
 

@@ -1,4 +1,4 @@
-/* $Id: stream.h 4739 2014-02-11 04:46:49Z riza $ */
+/* $Id: stream.h 5242 2016-02-18 03:15:19Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -342,7 +342,8 @@ PJ_DECL(pj_status_t) pjmedia_stream_resume(pjmedia_stream *stream,
  *
  * @param stream	The media stream.
  * @param ascii_digit	String containing digits to be sent to remote as 
- *			described on RFC 2833 section 3.10. Character 'R' is 
+ *			described on RFC 2833 section 3.10. 
+ *			If PJMEDIA_HAS_DTMF_FLASH is enabled, character 'R' is
  *			used to represent the event type 16 (flash) as stated 
  *			in RFC 4730.
  *			Currently the maximum number of digits are 32.

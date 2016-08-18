@@ -1,4 +1,4 @@
-/* $Id: sip_config.h 4899 2014-08-21 05:58:36Z nanang $ */
+/* $Id: sip_config.h 5336 2016-06-07 10:07:57Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -217,6 +217,30 @@ typedef struct pjsip_cfg_t
 
     } regc;
 
+    /** TCP transport settings */
+    struct {
+        /**
+         * Set the interval to send keep-alive packet for TCP transports.
+         * If the value is zero, keep-alive will be disabled for TCP.
+         *
+         * Default is PJSIP_TCP_KEEP_ALIVE_INTERVAL.
+         */
+        long keep_alive_interval;
+
+    } tcp;
+
+    /** TLS transport settings */
+    struct {
+        /**
+         * Set the interval to send keep-alive packet for TLS transports.
+         * If the value is zero, keep-alive will be disabled for TLS.
+         *
+         * Default is PJSIP_TLS_KEEP_ALIVE_INTERVAL.
+         */
+        long keep_alive_interval;
+
+    } tls;
+
 } pjsip_cfg_t;
 
 
@@ -291,8 +315,6 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
 
 /**
  * Specify maximum URL size.
- * This constant is used mainly when printing the URL for logging purpose 
- * only.
  */
 #ifndef PJSIP_MAX_URL_SIZE
 #   define PJSIP_MAX_URL_SIZE		256
@@ -646,8 +668,51 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
 
 
 /**
+ * Specify whether TCP transport should skip creating the listener.
+ * Not having a listener means that application will not be able to
+ * function in server mode and accept incoming connections.
+ *
+ * When enabling this setting, if you use PJSUA, it is recommended to set 
+ * pjsua_acc_config.contact_use_src_port to PJ_TRUE.
+ * Warning: If contact_use_src_port is disabled or failed (because it's
+ * unsupported in some platforms or automatically turned off due to
+ * DNS server resolution), Contact header will be generated from
+ * pj_getipinterface()/pj_gethostip(), but the address will not be
+ * able to accept connections. 
+ *
+ * Default is FALSE (listener will be created).
+ */
+#ifndef PJSIP_TCP_TRANSPORT_DONT_CREATE_LISTENER
+#   define PJSIP_TCP_TRANSPORT_DONT_CREATE_LISTENER 0
+#endif
+
+
+/**
+ * Specify whether TLS transport should skip creating the listener.
+ * Not having a listener means that application will not be able to
+ * function in server mode and accept incoming connections.
+ *
+ * When enabling this setting, if you use PJSUA, it is recommended to set 
+ * pjsua_acc_config.contact_use_src_port to PJ_TRUE.
+ * Warning: If contact_use_src_port is disabled or failed (because it's
+ * unsupported in some platforms or automatically turned off due to
+ * DNS server resolution), Contact header will be generated from
+ * pj_getipinterface()/pj_gethostip(), but the address will not be
+ * able to accept connections.
+ *
+ * Default is FALSE (listener will be created).
+ */
+#ifndef PJSIP_TLS_TRANSPORT_DONT_CREATE_LISTENER
+#   define PJSIP_TLS_TRANSPORT_DONT_CREATE_LISTENER 0
+#endif
+
+
+/**
  * Set the interval to send keep-alive packet for TCP transports.
  * If the value is zero, keep-alive will be disabled for TCP.
+ *
+ * This option can be changed in run-time by settting
+ * \a tcp.keep_alive_interval field of pjsip_cfg().
  *
  * Default: 90 (seconds)
  *
@@ -671,6 +736,9 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
 /**
  * Set the interval to send keep-alive packet for TLS transports.
  * If the value is zero, keep-alive will be disabled for TLS.
+ *
+ * This option can be changed in run-time by settting
+ * \a tls.keep_alive_interval field of pjsip_cfg().
  *
  * Default: 90 (seconds)
  *
@@ -1054,6 +1122,16 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
 #   define PJSIP_REGISTER_CLIENT_ADD_XUID_PARAM	0
 #endif
 
+/**
+ * Maximum size of pool allowed for auth client session in pjsip_regc.
+ * After the size exceeds because of Digest authentication processing,
+ * the pool is reset.
+ *
+ * Default is 20 kB
+ */
+#ifndef PJSIP_AUTH_CACHED_POOL_MAX_SIZE
+#   define PJSIP_AUTH_CACHED_POOL_MAX_SIZE	(20 * 1024)
+#endif
 
 /*****************************************************************************
  *  SIP Event framework and presence settings.
@@ -1208,6 +1286,18 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
 #   define PJSIP_HAS_TX_DATA_LIST		0
 #endif
 
+/** 
+ * Specify whether to accept INVITE/re-INVITE with unknown content type,
+ * by default the stack will reject this type of message as specified in 
+ * RFC3261 section 8.2.3.
+ * Application that wishes to process the body could set this to PJ_TRUE,
+ * be informed that SDP offer/answer will still be present.
+ *
+ * Default: PJ_FALSE
+ */
+#ifndef PJSIP_INV_ACCEPT_UNKNOWN_BODY
+#   define PJSIP_INV_ACCEPT_UNKNOWN_BODY    PJ_FALSE
+#endif
 
 PJ_END_DECL
 

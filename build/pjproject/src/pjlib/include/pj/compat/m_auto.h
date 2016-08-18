@@ -27,7 +27,7 @@
  */
 
 /* Machine name, filled in by autoconf script */
-#define PJ_M_NAME "arm"
+#define PJ_M_NAME "x86_64"
 
 /* Endianness. It's reported on pjsip list on 09/02/13 that autoconf
  * endianness detection failed for universal build, so special case

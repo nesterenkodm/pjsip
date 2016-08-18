@@ -1,4 +1,4 @@
-/* $Id: g7221.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: g7221.h 5058 2015-04-09 08:15:48Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -75,6 +75,9 @@
  *   multiplication of 400
  * - for 14kHz audio bandwidth (32kHz sampling rate): 24000 to 48000 bps,
  *   multiplication of 400
+ *
+ * The bitrate is set via <tt>param.setting.dec_fmtp</tt>, if it does not
+ * contain bitrate info, the codec will check <tt>param.info.avg_bps</tt>.
  *
  * \note
  * Currently only up to two non-standard modes can be enabled.

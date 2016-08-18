@@ -1,4 +1,4 @@
-/* $Id: endpoint.hpp 4887 2014-08-13 09:14:53Z nanang $ */
+/* $Id: endpoint.hpp 5297 2016-05-13 10:56:48Z ming $ */
 /* 
  * Copyright (C) 2013 Teluu Inc. (http://www.teluu.com)
  *
@@ -692,7 +692,7 @@ public:
      * Instantiate pjsua application. Application must call this function before
      * calling any other functions, to make sure that the underlying libraries
      * are properly initialized. Once this function has returned success,
-     * application must call destroy() before quitting.
+     * application must call libDestroy() before quitting.
      */
     void libCreate() throw(Error);
 
@@ -904,6 +904,32 @@ public:
     pj_stun_nat_type natGetType() throw(Error);
 
     /**
+     * Update the STUN servers list. The libInit() must have been called
+     * before calling this function.
+     *
+     * @param prmServers	Array of STUN servers to try. The endpoint
+     * 				will try to resolve and contact each of the
+     * 				STUN server entry until it finds one that is
+     * 				usable. Each entry may be a domain name, host
+     * 				name, IP address, and it may contain an
+     * 				optional port number. For example:
+     *				- "pjsip.org" (domain name)
+     *				- "sip.pjsip.org" (host name)
+     *				- "pjsip.org:33478" (domain name and a non-
+     *				   standard port number)
+     *				- "10.0.0.1:3478" (IP address and port number)
+     * @param prmWait		Specify if the function should block until
+     *				it gets the result. In this case, the
+     *				function will block while the resolution
+     * 				is being done, and the callback
+     * 				onNatCheckStunServersComplete() will be called
+     * 				before this function returns.
+     *
+     */
+    void natUpdateStunServers(const StringVector &prmServers,
+                              bool prmWait) throw(Error);
+
+    /**
      * Auxiliary function to resolve and contact each of the STUN server
      * entries (sequentially) to find which is usable. The libInit() must
      * have been called before calling this function.
@@ -1069,6 +1095,13 @@ public:
      */
     AudDevManager &audDevManager();
 
+    /**
+     * Get the instance of Video Device Manager.
+     *
+     * @return		The Video Device Manager.
+     */
+    VidDevManager &vidDevManager();
+
     /*************************************************************************
      * Codec management operations
      */
@@ -1095,10 +1128,10 @@ public:
     /**
      * Get codec parameters.
      *
-     * @param codec_id		Codec ID.
+     * @param codec_id	Codec ID.
      *
-     * @return			Codec parameters. If codec is not found, Error
-     * 				will be thrown.
+     * @return		Codec parameters. If codec is not found, Error
+     * 			will be thrown.
      *
      */
     CodecParam codecGetParam(const string &codec_id) const throw(Error);
@@ -1114,6 +1147,54 @@ public:
     void codecSetParam(const string &codec_id,
 		       const CodecParam param) throw(Error);
 
+    /**
+     * Enum all supported video codecs in the system.
+     *  
+     * @return		Array of video codec info.
+     */
+    const CodecInfoVector &videoCodecEnum() throw(Error);
+
+    /**
+     * Change video codec priority.
+     *
+     * @param codec_id	Codec ID, which is a string that uniquely identify
+     *			the codec (such as "H263/90000"). Please see pjsua
+     *			manual or pjmedia codec reference for details.
+     * @param priority	Codec priority, 0-255, where zero means to disable
+     *			the codec.
+     *
+     */
+    void videoCodecSetPriority(const string &codec_id,
+			       pj_uint8_t priority) throw(Error);
+
+    /**
+     * Get video codec parameters.
+     *
+     * @param codec_id	Codec ID.
+     *
+     * @return		Codec parameters. If codec is not found, Error 
+     *			will be thrown.
+     *
+     */
+    VidCodecParam getVideoCodecParam(const string &codec_id) const throw(Error);
+
+    /**
+     * Set video codec parameters.
+     *
+     * @param codec_id	Codec ID.
+     * @param param	Codec parameter to set.
+     *
+     */
+    void setVideoCodecParam(const string &codec_id,
+			    const VidCodecParam &param) throw(Error);
+			    
+    /**
+     * Reset video codec parameters to library default settings.
+     *
+     * @param codec_id	Codec ID.
+     *
+     */
+    void resetVideoCodecParam(const string &codec_id) throw(Error);
 
 public:
     /*
@@ -1133,7 +1214,8 @@ public:
 
     /**
      * Callback when the Endpoint has finished performing STUN server
-     * checking that is initiated with natCheckStunServers().
+     * checking that is initiated when calling libInit(), or by
+     * calling natCheckStunServers() or natUpdateStunServers().
      *
      * @param prm	Callback parameters.
      */
@@ -1182,7 +1264,9 @@ private:
     LogWriter			*writer;	// Custom writer, if any
     AudioMediaVector 	 	 mediaList;
     AudDevManager		 audioDevMgr;
+    VidDevManager		 videoDevMgr;
     CodecInfoVector		 codecInfoList;
+    CodecInfoVector		 videoCodecInfoList;
     std::map<pj_thread_t*, pj_thread_desc*> threadDescMap;
 
     /* Pending logging */
@@ -1252,7 +1336,8 @@ private:
                            pjsua_acc_id acc_id);
     static void on_mwi_info(pjsua_acc_id acc_id,
                             pjsua_mwi_info *mwi_info);
-
+    static void on_acc_find_for_incoming(const pjsip_rx_data *rdata,
+				     	 pjsua_acc_id* acc_id);
     static void on_buddy_state(pjsua_buddy_id buddy_id);
     // Call callbacks
     static void on_call_state(pjsua_call_id call_id, pjsip_event *e);
@@ -1300,6 +1385,9 @@ private:
                                  void *reserved,
                                  pjsip_status_code *code,
                                  pjsua_call_setting *opt);
+    static void on_call_tx_offer(pjsua_call_id call_id,
+				 void *reserved,
+				 pjsua_call_setting *opt);
     static pjsip_redirect_op on_call_redirected(pjsua_call_id call_id,
                                                 const pjsip_uri *target,
                                                 const pjsip_event *e);
@@ -1316,7 +1404,9 @@ private:
                               unsigned flags);
 
 private:
-    void clearCodecInfoList();
+    void clearCodecInfoList(CodecInfoVector &codec_list);
+    void updateCodecInfoList(pjsua_codec_info pj_codec[], unsigned count,
+			     CodecInfoVector &codec_list);
 
 };
 

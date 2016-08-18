@@ -1,4 +1,4 @@
-/* $Id: sdp_neg.h 4577 2013-08-01 04:18:15Z ming $ */
+/* $Id: sdp_neg.h 5114 2015-06-22 07:33:46Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -788,10 +788,11 @@ PJ_DECL(pj_status_t) pjmedia_sdp_neg_register_fmt_match_cb(
 
 /**
  * Match format in the SDP media offer and answer. The matching mechanism
- * will be done by comparing the encoding name and clock rate, and if the
- * custom format matching callback for the specified format is registered,
- * see #pjmedia_sdp_neg_register_fmt_match_cb(), it will be called for more
- * detail verification, e.g: format parameters specified in SDP fmtp.
+ * will be done by comparing the encoding name, clock rate, and encoding
+ * parameters (if any), and if the custom format matching callback
+ * for the specified format is registered, see
+ * #pjmedia_sdp_neg_register_fmt_match_cb(), it will be called for
+ * more detail verification, e.g: format parameters specified in SDP fmtp.
  *
  * @param pool		The memory pool.
  * @param offer		The SDP media offer.

@@ -1,4 +1,4 @@
-/* $Id: config.h 4907 2014-08-26 10:53:52Z nanang $ */
+/* $Id: config.h 5315 2016-05-25 04:31:29Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  *
@@ -45,10 +45,29 @@ PJ_BEGIN_DECL
  * This setting controls the maximum number of formats that can be
  * supported by a video device.
  *
- * Default: 16
+ * Default: 64
  */
 #ifndef PJMEDIA_VID_DEV_INFO_FMT_CNT
-#   define PJMEDIA_VID_DEV_INFO_FMT_CNT 16
+#   define PJMEDIA_VID_DEV_INFO_FMT_CNT 64
+#endif
+
+
+/**
+ * This setting controls the maximum number of supported video device drivers.
+ *
+ * Default: 8
+ */
+#ifndef PJMEDIA_VID_DEV_MAX_DRIVERS
+#   define PJMEDIA_VID_DEV_MAX_DRIVERS 8
+#endif
+
+/**
+ * This setting controls the maximum number of supported video devices.
+ *
+ * Default: 16
+ */
+#ifndef PJMEDIA_VID_DEV_MAX_DEVS
+#   define PJMEDIA_VID_DEV_MAX_DEVS 16
 #endif
 
 
@@ -64,6 +83,22 @@ PJ_BEGIN_DECL
 #else
 #  if defined(PJMEDIA_VIDEO_DEV_HAS_IOS_OPENGL) && \
 	      PJMEDIA_VIDEO_DEV_HAS_IOS_OPENGL != 0
+#    undef  PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES
+#    define PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES	1
+#  endif
+#endif
+
+
+/**
+ * This setting controls whether OpenGL for Android should be included.
+ *
+ * Default: 0 (or detected by configure)
+ */
+#ifndef PJMEDIA_VIDEO_DEV_HAS_ANDROID_OPENGL
+#  define PJMEDIA_VIDEO_DEV_HAS_ANDROID_OPENGL	0
+#else
+#  if defined(PJMEDIA_VIDEO_DEV_HAS_ANDROID_OPENGL) && \
+	      PJMEDIA_VIDEO_DEV_HAS_ANDROID_OPENGL != 0
 #    undef  PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES
 #    define PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES	1
 #  endif
@@ -87,12 +122,20 @@ PJ_BEGIN_DECL
 
 
 /**
- * This setting controls whether OpenGL support should be included.
+ * This setting controls whether OpenGL support should be included. Note that as
+ * currently only OpenGLES is supported, when PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES is
+ * unset, PJMEDIA_VIDEO_DEV_HAS_OPENGL will automatically also be unset.
  *
  * Default: 0 (or detected by configure)
  */
 #ifndef PJMEDIA_VIDEO_DEV_HAS_OPENGL
 #   define PJMEDIA_VIDEO_DEV_HAS_OPENGL		0
+#else
+#  if defined(PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES) && \
+	      PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES == 0
+#    undef  PJMEDIA_VIDEO_DEV_HAS_OPENGL
+#    define PJMEDIA_VIDEO_DEV_HAS_OPENGL	0
+#  endif
 #endif
 
 
@@ -103,6 +146,15 @@ PJ_BEGIN_DECL
  */
 #ifndef PJMEDIA_VIDEO_DEV_HAS_SDL
 #   define PJMEDIA_VIDEO_DEV_HAS_SDL		0
+#endif
+
+
+/**
+ * This setting controls whether SDL with OPENGL support should be included.
+ *
+ * Default: 0
+ */
+#ifndef PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL
 #   define PJMEDIA_VIDEO_DEV_SDL_HAS_OPENGL	0
 #endif
 
@@ -175,6 +227,17 @@ PJ_BEGIN_DECL
 #ifndef PJMEDIA_VIDEO_DEV_HAS_AVI
 #   define PJMEDIA_VIDEO_DEV_HAS_AVI		1
 #endif
+
+
+/**
+ * This setting controls whether Android support should be included.
+ *
+ * Default: 0 (or detected by configure)
+ */
+#ifndef PJMEDIA_VIDEO_DEV_HAS_ANDROID
+#   define PJMEDIA_VIDEO_DEV_HAS_ANDROID	0
+#endif
+
 
 /**
  * Specify the SDL library name to be linked with Visual Studio project. 

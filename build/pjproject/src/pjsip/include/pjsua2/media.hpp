@@ -1,4 +1,4 @@
-/* $Id: media.hpp 4845 2014-05-19 05:51:10Z bennylp $ */
+/* $Id: media.hpp 5273 2016-04-04 01:44:10Z riza $ */
 /*
  * Copyright (C) 2013 Teluu Inc. (http://www.teluu.com)
  *
@@ -89,12 +89,22 @@ struct MediaFormatAudio : public MediaFormat
  */
 struct MediaFormatVideo : public MediaFormat
 {
-    unsigned		width;	    /**< Video width. 	*/
-    unsigned		height;	    /**< Video height. 	*/
+    unsigned		width;	    /**< Video width. 			*/
+    unsigned		height;	    /**< Video height.			*/
     int			fpsNum;	    /**< Frames per second numerator.	*/
     int			fpsDenum;   /**< Frames per second denumerator.	*/
     pj_uint32_t		avgBps;	    /**< Average bitrate.		*/
     pj_uint32_t		maxBps;	    /**< Maximum bitrate.		*/
+
+    /**
+     * Construct from pjmedia_format.
+     */
+    void fromPj(const pjmedia_format &format);
+
+    /**
+     * Export to pjmedia_format.
+     */
+    pjmedia_format toPj() const;
 };
 
 /** Array of MediaFormat */
@@ -757,7 +767,9 @@ public:
 
     /**
      * Select or change capture sound device. Application may call this
-     * function at any time to replace current sound device.
+     * function at any time to replace current sound device. Calling this 
+     * method will not change the state of the sound device (opened/closed).
+     * Note that this method will override the mode set by setSndDevMode().
      *
      * @param capture_dev   	Device ID of the capture device.
      */
@@ -765,7 +777,9 @@ public:
 
     /**
      * Select or change playback sound device. Application may call this
-     * function at any time to replace current sound device.
+     * function at any time to replace current sound device. Calling this 
+     * method will not change the state of the sound device (opened/closed).
+     * Note that this method will override the mode set by setSndDevMode().
      *
      * @param playback_dev   	Device ID of the playback device.
      */
@@ -795,6 +809,15 @@ public:
      *				own sound device or master port.
      */
     MediaPort *setNoDev();
+
+    /**
+     * Set sound device mode.
+     * 
+     * @param mode		The sound device mode, as bitmask combination 
+     *				of #pjsua_snd_dev_mode
+     *
+     */
+    void setSndDevMode(unsigned mode) const throw(Error);
 
     /**
      * Change the echo cancellation settings.
@@ -1325,6 +1348,578 @@ private:
     friend class Endpoint;
 };
 
+
+/*************************************************************************
+* Video media
+*/
+
+/**
+ * Representation of media coordinate.
+ */
+struct MediaCoordinate
+{
+    int		x;	    /**< X position of the coordinate */
+    int		y;	    /**< Y position of the coordinate */
+};
+
+/**
+ * Representation of media size.
+ */
+struct MediaSize
+{
+    unsigned	w;	    /**< The width.	*/
+    unsigned 	h;	    /**< The height.	*/
+};
+
+/**
+ * Window handle.
+ */
+typedef struct WindowHandle {
+    void    	*window;    /**< Window		*/
+    void    	*display;   /**< Display	*/
+} WindowHandle;
+
+/**
+ * Video window handle.
+ */
+struct VideoWindowHandle
+{
+    /**
+     * The window handle type.
+     */
+    pjmedia_vid_dev_hwnd_type 	type;
+
+    /**
+     * The window handle.
+     */
+    WindowHandle 		handle;
+};
+
+/**
+ * This structure describes video window info.
+ */
+typedef struct VideoWindowInfo
+{
+    /**
+     * Flag to indicate whether this window is a native window,
+     * such as created by built-in preview device. If this field is
+     * true, only the video window handle field of this
+     * structure is valid.
+     */
+    bool 		isNative;
+
+    /**
+     * Video window handle.
+     */
+    VideoWindowHandle 	winHandle;
+
+    /**
+     * Renderer device ID.
+     */
+    int 		renderDeviceId;
+
+    /**
+     * Window show status. The window is hidden if false.
+     */
+    bool		show;
+
+    /**
+     * Window position.
+     */
+    MediaCoordinate 	pos;
+
+    /**
+     * Window size.
+     */
+    MediaSize 		size;
+
+} VideoWindowInfo;
+
+/**
+ * Video window.
+ */
+class VideoWindow
+{
+public:
+    /**
+     * Constructor
+     */
+    VideoWindow(int win_id);
+
+    /**
+     * Get window info.
+     *
+     * @return			video window info.
+     */
+    VideoWindowInfo getInfo() const throw(Error);
+    
+    /**
+     * Show or hide window. This operation is not valid for native windows
+     * (VideoWindowInfo.isNative=true), on which native windowing API
+     * must be used instead.
+     *
+     * @param show		Set to true to show the window, false to
+     * 				hide the window.
+     *
+     */
+    void Show(bool show) throw(Error);
+    
+    /**
+     * Set video window position. This operation is not valid for native windows
+     * (VideoWindowInfo.isNative=true), on which native windowing API
+     * must be used instead.
+     *
+     * @param pos		The window position.
+     *
+     */
+    void setPos(const MediaCoordinate &pos) throw(Error);
+    
+    /**
+     * Resize window. This operation is not valid for native windows
+     * (VideoWindowInfo.isNative=true), on which native windowing API
+     * must be used instead.
+     *
+     * @param size		The new window size.
+     *
+     */
+    void setSize(const MediaSize &size) throw(Error);
+    
+    /**
+     * Rotate the video window. This function will change the video orientation
+     * and also possibly the video window size (width and height get swapped).
+     * This operation is not valid for native windows (VideoWindowInfo.isNative
+     * =true), on which native windowing API must be used instead.
+     *
+     * @param angle		The rotation angle in degrees, must be
+     *				multiple of 90.
+     *				Specify positive value for clockwise rotation or
+     *				negative value for counter-clockwise rotation.
+     */
+    void rotate(int angle) throw(Error);
+
+    /**
+     * Set output window. This operation is valid only when the underlying
+     * video device supports PJMEDIA_VIDEO_DEV_CAP_OUTPUT_WINDOW capability AND
+     * allows the output window to be changed on-the-fly, otherwise Error will
+     * be thrown. Currently it is only supported on Android.
+     *
+     * @param win		The new output window.
+     */
+    void setWindow(const VideoWindowHandle &win) throw(Error);
+    
+private:
+    pjsua_vid_win_id		winId;
+};
+
+/**
+ * This structure contains parameters for VideoPreview::start()
+ */
+struct VideoPreviewOpParam {
+    /**
+     * Device ID for the video renderer to be used for rendering the
+     * capture stream for preview. This parameter is ignored if native
+     * preview is being used.
+     *
+     * Default: PJMEDIA_VID_DEFAULT_RENDER_DEV
+     */
+    pjmedia_vid_dev_index   rendId;
+
+    /**
+     * Show window initially.
+     *
+     * Default: PJ_TRUE.
+     */
+    bool		    show;
+
+    /**
+     * Window flags.  The value is a bitmask combination of
+     * \a pjmedia_vid_dev_wnd_flag.
+     *
+     * Default: 0.
+     */
+    unsigned		    windowFlags;
+
+    /**
+     * Media format. If left unitialized, this parameter will not be used.
+     */
+    MediaFormat		    format;
+
+    /**
+     * Optional output window to be used to display the video preview.
+     * This parameter will only be used if the video device supports
+     * PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW capability and the capability
+     * is not read-only.
+     */
+    VideoWindowHandle	    window;
+
+public:
+    /**
+     * Default constructor initializes with default values.
+     */
+    VideoPreviewOpParam();
+
+    /** 
+     * Convert from pjsip
+     */
+    void fromPj(const pjsua_vid_preview_param &prm);
+
+    /**
+     * Convert to pjsip
+     */
+    pjsua_vid_preview_param toPj() const;
+};
+
+/**
+ * Video Preview
+ */
+class VideoPreview {
+public:
+    /**
+     * Constructor
+     */
+    VideoPreview(int dev_id);
+
+    /**
+     * Determine if the specified video input device has built-in native
+     * preview capability. This is a convenience function that is equal to
+     * querying device's capability for PJMEDIA_VID_DEV_CAP_INPUT_PREVIEW
+     * capability.
+     *
+     * @return		true if it has.
+     */
+    bool hasNative();
+
+    /**
+     * Start video preview window for the specified capture device.
+     *
+     * @param p		Video preview parameters. 
+     */
+    void start(const VideoPreviewOpParam &param) throw(Error);
+
+    /**
+     * Stop video preview.
+     */
+    void stop() throw(Error);
+
+    /*
+     * Get the preview window handle associated with the capture device,if any.
+     */
+    VideoWindow getVideoWindow();
+
+private:
+    pjmedia_vid_dev_index devId;
+};
+
+/**
+ * Video device information structure.
+ */
+struct VideoDevInfo
+{
+    /**
+     * The device ID
+     */
+    pjmedia_vid_dev_index id;
+
+    /**
+     * The device name
+     */
+    string name;
+
+    /**
+     * The underlying driver name
+     */
+    string driver;
+
+    /**
+     * The supported direction of the video device, i.e. whether it supports
+     * capture only, render only, or both.
+     */
+    pjmedia_dir dir;
+
+    /** 
+     * Device capabilities, as bitmask combination of #pjmedia_vid_dev_cap 
+     */
+    unsigned caps;
+
+    /**
+     * Array of supported video formats. Some fields in each supported video
+     * format may be set to zero or of "unknown" value, to indicate that the
+     * value is unknown or should be ignored. When these value are not set
+     * to zero, it indicates that the exact format combination is being used.
+     */
+    MediaFormatVector fmt;
+
+    /**
+     * Construct from pjmedia_vid_dev_info.
+     */
+    void fromPj(const pjmedia_vid_dev_info &dev_info);
+
+    /**
+     * Destructor.
+     */
+    ~VideoDevInfo();
+};
+
+/** Array of video device info */
+typedef std::vector<VideoDevInfo*> VideoDevInfoVector;
+
+/**
+ * Parameter for switching device with PJMEDIA_VID_DEV_CAP_SWITCH capability.
+ */
+struct VideoSwitchParam
+{
+    /**
+     * Target device ID to switch to. Once the switching is successful, the
+     * video stream will use this device and the old device will be closed.
+     */
+    pjmedia_vid_dev_index target_id;
+};
+ 
+/**
+ * Video device manager.
+ */
+class VidDevManager {
+public:
+    /**
+     * Refresh the list of video devices installed in the system. This function
+     * will only refresh the list of video device so all active video streams
+     * will be unaffected. After refreshing the device list, application MUST
+     * make sure to update all index references to video devices (i.e. all
+     * variables of type pjmedia_vid_dev_index) before calling any function
+     * that accepts video device index as its parameter.
+     */
+    void refreshDevs() throw(Error);
+
+    /**
+     * Get the number of video devices installed in the system.
+     *
+     * @return		The number of devices.
+     */
+    unsigned getDevCount();
+
+    /**
+     * Retrieve the video device info for the specified device index.     
+     *
+     * @param dev_id	The video device id
+     * 
+     * @return		The list of video device info
+     */
+    VideoDevInfo getDevInfo(int dev_id) const throw(Error);
+
+    /**
+     * Enum all video devices installed in the system.
+     *
+     * @return		The list of video device info
+     */
+    const VideoDevInfoVector &enumDev() throw(Error);
+
+    /**
+     * Lookup device index based on the driver and device name.
+     *
+     * @param drv_name	The driver name.
+     * @param dev_name	The device name.
+     *
+     * @return		The device ID. If the device is not found, 
+     *			Error will be thrown.
+     */
+    int lookupDev(const string &drv_name,
+		  const string &dev_name) const throw(Error);
+
+    /**
+     * Get string info for the specified capability.
+     *
+     * @param cap	The capability ID.
+     *
+     * @return		Capability name.
+     */
+    string capName(pjmedia_vid_dev_cap cap) const;
+
+    /**
+     * This will configure video format capability to the video device. 
+     * If video device is currently active, the method will forward the setting 
+     * to the video device instance to be applied immediately, if it 
+     * supports it.
+     *
+     * This method is only valid if the device has
+     * PJMEDIA_VID_DEV_CAP_FORMAT capability in VideoDevInfo.caps flags,
+     * otherwise Error will be thrown.
+     *
+     * Note that in case the setting is kept for future use, it will be applied
+     * to any devices, even when application has changed the video device to be
+     * used.
+     *
+     * @param dev_id	The video device id.	
+     * @param format	The video format.
+     * @param keep	Specify whether the setting is to be kept for
+     * 			future use.
+     */
+    void setFormat(int dev_id, 
+		   const MediaFormatVideo &format, 
+		   bool keep) throw(Error);
+
+    /**
+     * Get the video format capability to the video device.
+     * If video device is currently active, the method will forward the request
+     * to the video device. If video device is currently inactive, and if 
+     * application had previously set the setting and mark the setting as kept, 
+     * then that setting will be returned. Otherwise, this method will 
+     * raise error.
+     *
+     * This method is only valid if the device has
+     * PJMEDIA_VID_DEV_CAP_FORMAT capability in VideoDevInfo.caps flags,
+     * otherwise Error will be thrown.
+     *
+     * @param dev_id	The video device id.
+     * @return keep	The video format.
+     */
+    MediaFormatVideo getFormat(int dev_id) const throw(Error);
+
+    /**
+     * This will configure video format capability to the video device.
+     * If video device is currently active, the method will forward the setting
+     * to the video device instance to be applied immediately, if it
+     * supports it.
+     *
+     * This method is only valid if the device has
+     * PJMEDIA_VID_DEV_CAP_INPUT_SCALE capability in VideoDevInfo.caps flags,
+     * otherwise Error will be thrown.
+     *
+     * Note that in case the setting is kept for future use, it will be applied
+     * to any devices, even when application has changed the video device to be
+     * used.
+     *
+     * @param dev_id	The video device id.
+     * @param scale	The video scale.
+     * @param keep	Specify whether the setting is to be kept for
+     * 			future use.
+     */
+    void setInputScale(int dev_id, 
+		       const MediaSize &scale, 
+		       bool keep) throw(Error);
+
+    /**
+     * Get the video input scale capability to the video device.
+     * If video device is currently active, the method will forward the request
+     * to the video device. If video device is currently inactive, and if
+     * application had previously set the setting and mark the setting as kept,
+     * then that setting will be returned. Otherwise, this method will
+     * raise error.
+     *
+     * This method is only valid if the device has
+     * PJMEDIA_VID_DEV_CAP_FORMAT capability in VideoDevInfo.caps flags,
+     * otherwise Error will be thrown.
+     *
+     * @param dev_id	The video device id.
+     * @return keep	The video format.
+     */
+    MediaSize getInputScale(int dev_id) const throw(Error);
+
+    /**
+     * This will configure fast switching to another video device.
+     * If video device is currently active, the method will forward the setting
+     * to the video device instance to be applied immediately, if it
+     * supports it.
+     *
+     * This method is only valid if the device has 
+     * PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW_FLAGS capability in VideoDevInfo.caps 
+     * flags, otherwise Error will be thrown.
+     * 
+     * Note that in case the setting is kept for future use, it will be applied
+     * to any devices, even when application has changed the video device to be
+     * used.
+     *
+     * @param dev_id	The video device id.
+     * @param flags	The video window flag.
+     * @param keep	Specify whether the setting is to be kept for
+     * 			future use.
+     */
+    void setOutputWindowFlags(int dev_id, int flags, bool keep) throw(Error);
+    
+    /**
+     * Get the window output flags capability to the video device.
+     * If video device is currently active, the method will forward the request
+     * to the video device. If video device is currently inactive, and if
+     * application had previously set the setting and mark the setting as kept,
+     * then that setting will be returned. Otherwise, this method will
+     * raise error.
+     *
+     * This method is only valid if the device has
+     * PJMEDIA_VID_DEV_CAP_OUTPUT_WINDOW_FLAGS capability in VideoDevInfo.caps 
+     * flags, otherwise Error will be thrown.
+     *
+     * @param dev_id	The video device id.
+     * @return keep	The video format.
+     */
+    int getOutputWindowFlags(int dev_id) throw(Error);
+
+    /**
+     * This will configure fast switching to another video device.
+     * If video device is currently active, the method will forward the setting
+     * to the video device instance to be applied immediately, if it
+     * supports it.
+     *
+     * This method is only valid if the device has
+     * PJMEDIA_VID_DEV_CAP_SWITCH capability in VideoDevInfo.caps flags,
+     * otherwise Error will be thrown.
+     *
+     * @param dev_id	The video device id.
+     * @param param	The video switch param.
+     */
+    void switchDev(int dev_id,
+		   const VideoSwitchParam &param) throw(Error);
+
+    /**
+     * Check whether the video capture device is currently active, i.e. if
+     * a video preview has been started or there is a video call using
+     * the device.    
+     *
+     * @param dev_id	The video device id
+     * 
+     * @return		True if it's active.
+     */
+    bool isCaptureActive(int dev_id) const;
+
+    /**
+     * This will configure video orientation of the video capture device.
+     * If the device is currently active (i.e. if there is a video call
+     * using the device or a video preview has been started), the method
+     * will forward the setting to the video device instance to be applied
+     * immediately, if it supports it.
+     *
+     * The setting will be saved for future opening of the video device,
+     * if the "keep" argument is set to true. If the video device is
+     * currently inactive, and the "keep" argument is false, this method
+     * will throw Error.
+     *
+     * @param dev_id	The video device id
+     * @param orient	The video orientation.
+     * @param keep	Specify whether the setting is to be kept for
+     * 			future use.
+     *
+     */
+    void setCaptureOrient(pjmedia_vid_dev_index dev_id,
+    			  pjmedia_orient orient,
+    			  bool keep=true) throw(Error);
+
+private:
+    VideoDevInfoVector videoDevList;
+
+    void clearVideoDevList();
+
+    /**
+     * Constructor.
+     */
+    VidDevManager();
+
+    /**
+     * Destructor.
+     */
+    ~VidDevManager();
+
+    friend class Endpoint;
+};
+
+
 /*************************************************************************
 * Codec management
 */
@@ -1359,10 +1954,63 @@ struct CodecInfo
 typedef std::vector<CodecInfo*> CodecInfoVector;
 
 /**
- * Codec parameters, corresponds to pjmedia_codec_param or
- * pjmedia_vid_codec_param.
+ * Codec parameters, corresponds to pjmedia_codec_param.
  */
 typedef void *CodecParam;
+
+/**
+ * Structure of codec specific parameters which contains name=value pairs.
+ * The codec specific parameters are to be used with SDP according to
+ * the standards (e.g: RFC 3555) in SDP 'a=fmtp' attribute.
+ */
+typedef struct CodecFmtp
+{
+    string name;
+    string val;
+} CodecFmtp;
+
+/** Array of codec fmtp */
+typedef std::vector<CodecFmtp> CodecFmtpVector;
+
+/**
+ * Detailed codec attributes used in configuring a codec and in querying
+ * the capability of codec factories. 
+ *
+ * Please note that codec parameter also contains SDP specific setting,
+ * #decFmtp and #encFmtp, which may need to be set appropriately based on
+ * the effective setting. See each codec documentation for more detail.
+ */
+struct VidCodecParam
+{
+    pjmedia_dir         dir;            /**< Direction                      */
+    pjmedia_vid_packing packing; 	/**< Packetization strategy.	    */
+
+    struct
+    MediaFormatVideo    encFmt;         /**< Encoded format	            */
+    CodecFmtpVector	encFmtp;        /**< Encoder fmtp params	    */
+    unsigned            encMtu;         /**< MTU or max payload size setting*/
+
+    struct
+    MediaFormatVideo    decFmt;         /**< Decoded format	            */
+    CodecFmtpVector	decFmtp;        /**< Decoder fmtp params	    */
+
+    bool		ignoreFmtp;	/**< Ignore fmtp params. If set to
+					     true, the codec will apply
+					     format settings specified in
+					     encFmt and decFmt only.	    */
+
+    void fromPj(const pjmedia_vid_codec_param &param);
+
+    pjmedia_vid_codec_param toPj() const;
+
+private:
+    void setCodecFmtp(const pjmedia_codec_fmtp &in_fmtp, 
+		      CodecFmtpVector &out_fmtp);
+
+    void getCodecFmtp(const CodecFmtpVector &in_fmtp,
+		      pjmedia_codec_fmtp &out_fmtp) const;
+
+};
 
 
 /**

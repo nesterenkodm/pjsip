@@ -1,4 +1,4 @@
-/* $Id: sound_port.h 4082 2012-04-24 13:09:14Z bennylp $ */
+/* $Id: sound_port.h 4982 2015-02-11 05:15:29Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -95,6 +95,38 @@ typedef struct pjmedia_snd_port_param
      * Echo cancellation options/flags.
      */
     unsigned ec_options;
+
+    /**
+     * Arbitrary user data for playback and record preview callbacks below.
+     */
+    void *user_data;
+
+    /**
+     * Optional callback for audio frame preview right before queued to
+     * the speaker.
+     * Notes:
+     * - application MUST NOT block or perform long operation in the callback
+     *   as the callback may be executed in sound device thread
+     * - when using software echo cancellation, application MUST NOT modify
+     *   the audio data from within the callback, otherwise the echo canceller
+     *   will not work properly.
+     * - the return value of the callback will be ignored
+     */
+    pjmedia_aud_play_cb on_play_frame;
+
+    /**
+     * Optional callback for audio frame preview recorded from the microphone
+     * before being processed by any media component such as software echo
+     * canceller.
+     * Notes:
+     * - application MUST NOT block or perform long operation in the callback
+     *   as the callback may be executed in sound device thread
+     * - when using software echo cancellation, application MUST NOT modify
+     *   the audio data from within the callback, otherwise the echo canceller
+     *   will not work properly.
+     * - the return value of the callback will be ignored
+     */
+    pjmedia_aud_rec_cb on_rec_frame;
 
 } pjmedia_snd_port_param;
 

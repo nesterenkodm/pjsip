@@ -1,4 +1,4 @@
-/* $Id: format.h 4785 2014-03-10 09:01:18Z nanang $ */
+/* $Id: format.h 4994 2015-03-17 04:02:44Z nanang $ */
 /*
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -176,6 +176,14 @@ typedef enum pjmedia_format_id
      */
     PJMEDIA_FORMAT_YV12	    = PJMEDIA_FORMAT_PACK('Y', 'V', '1', '2'),
 
+    /**
+     * This is planar 4:2:0/12bpp YUV format, the data can be treated as
+     * two planes of color components, where the first plane contains
+     * only the Y samples, the second plane contains interleaved
+     * V (Cr) - U (Cb) samples.
+     */
+    PJMEDIA_FORMAT_NV21	    = PJMEDIA_FORMAT_PACK('N', 'V', '2', '1'),
+    
     /**
      * This is planar 4:2:2/16bpp YUV format, the data can be treated as
      * three planes of color components, where the first plane contains

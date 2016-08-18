@@ -1,4 +1,4 @@
-/* $Id: sip_endpoint.h 4275 2012-10-04 06:11:58Z bennylp $ */
+/* $Id: sip_endpoint.h 5055 2015-04-08 10:10:44Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -389,6 +389,24 @@ PJ_DECL(pj_status_t) pjsip_endpt_create_resolver(pjsip_endpoint *endpt,
  */
 PJ_DECL(pj_status_t) pjsip_endpt_set_resolver(pjsip_endpoint *endpt,
 					      pj_dns_resolver *resv);
+
+/**
+ * Set the DNS external resolver implementation to use in the SIP resolver. 
+ *
+ * Note that naturally when implementing its own resolver, application would not
+ * need the internal resolver, hence this function will also destroy the 
+ * PJLIB-UTIL DNS resolver if any (e.g: set using #pjsip_endpt_set_resolver()). 
+ * Application that needs it, still be able create its own instance. 
+ *
+ * @param res       The SIP resolver engine.
+ * @param ext_res   The external resolver implementation callback. This argument
+ *		    can be NULL to reset the whole external implementation. 
+ *		    However, it is prohibited to reset individual callback.
+ * 
+ * @return	    PJ_SUCCESS on success, or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsip_endpt_set_ext_resolver(pjsip_endpoint *endpt,
+						  pjsip_ext_resolver *ext_res);
 
 /**
  * Get the DNS resolver being used by the SIP resolver.

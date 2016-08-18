@@ -1,4 +1,4 @@
-/* $Id: config.h 4199 2012-07-05 10:52:55Z nanang $ */
+/* $Id: config.h 5339 2016-06-08 03:17:45Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -242,6 +242,28 @@
  */
 #ifndef PJ_ICE_ST_MAX_CAND
 #   define PJ_ICE_ST_MAX_CAND			    8
+#endif
+
+
+/**
+ * Maximum number of STUN transports for each ICE stream transport component.
+ * Valid values are 1 - 64.
+ *
+ * Default: 2
+ */
+#ifndef PJ_ICE_MAX_STUN
+#   define PJ_ICE_MAX_STUN			    2
+#endif
+
+
+/**
+ * Maximum number of TURN transports for each ICE stream transport component.
+ * Valid values are 1 - 64.
+ *
+ * Default: 2
+ */
+#ifndef PJ_ICE_MAX_TURN
+#   define PJ_ICE_MAX_TURN			    2
 #endif
 
 

@@ -1,4 +1,4 @@
-/* $Id: config.h 4331 2013-01-23 06:18:18Z ming $ */
+/* $Id: config.h 5304 2016-05-17 16:14:36Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -420,12 +420,62 @@
 
 
 /**
+ * Enable OPUS codec.
+ *
+ * Default: 0
+ */
+#ifndef PJMEDIA_HAS_OPUS_CODEC
+#   define PJMEDIA_HAS_OPUS_CODEC			0
+#endif
+
+/**
+ * OPUS codec sample rate.
+ *
+ * Default: 48000
+ */
+#ifndef PJMEDIA_CODEC_OPUS_DEFAULT_SAMPLE_RATE
+#   define PJMEDIA_CODEC_OPUS_DEFAULT_SAMPLE_RATE  	48000
+#endif
+
+/**
+ * OPUS codec default maximum average bit rate.
+ *
+ * Default: 0 (leave it to default value specified by Opus, which will
+ * take into account factors such as media content (speech/music), sample
+ * rate, channel count, etc).
+ */
+#ifndef PJMEDIA_CODEC_OPUS_DEFAULT_BIT_RATE
+#   define PJMEDIA_CODEC_OPUS_DEFAULT_BIT_RATE  	0
+#endif
+
+
+/**
+ * OPUS default encoding complexity, which is an integer from
+ * 0 to 10, where 0 is the lowest complexity and 10 is the highest.
+ *
+ * Default: 5
+ */
+#ifndef PJMEDIA_CODEC_OPUS_DEFAULT_COMPLEXITY
+#   define PJMEDIA_CODEC_OPUS_DEFAULT_COMPLEXITY 	5
+#endif
+
+
+/**
+ * OPUS default CBR (constant bit rate) setting
+ *
+ * Default: PJ_FALSE (which means Opus will use VBR (variable bit rate))
+ */
+#ifndef PJMEDIA_CODEC_OPUS_DEFAULT_CBR
+#   define PJMEDIA_CODEC_OPUS_DEFAULT_CBR 		PJ_FALSE
+#endif
+
+/**
  * Specify if FFMPEG codecs are available.
  *
- * Default: PJMEDIA_HAS_LIBAVCODEC
+ * Default: PJMEDIA_HAS_LIBAVFORMAT
  */
 #ifndef PJMEDIA_HAS_FFMPEG_CODEC
-#   define PJMEDIA_HAS_FFMPEG_CODEC		PJMEDIA_HAS_LIBAVCODEC
+#   define PJMEDIA_HAS_FFMPEG_CODEC		PJMEDIA_HAS_LIBAVFORMAT
 #endif
 
 

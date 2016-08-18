@@ -1,4 +1,4 @@
-/* $Id: socket.h 4537 2013-06-19 06:47:43Z riza $ */
+/* $Id: socket.h 5312 2016-05-20 07:19:26Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -64,7 +64,7 @@
 #	define s_addr  S_un.S_addr
 #   endif
 
-#   if !defined(IPPROTO_IPV6)
+#   if !defined(IPPROTO_IPV6) && (_WIN32_WINNT == 0x0500)
 	/* Need to download and install IPv6Kit for this platform.
 	 * Please see the comments above about Visual Studio 6.
 	 */

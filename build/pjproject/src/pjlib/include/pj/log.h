@@ -1,4 +1,4 @@
-/* $Id: log.h 4584 2013-08-30 04:03:22Z bennylp $ */
+/* $Id: log.h 5317 2016-05-25 06:33:26Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -105,8 +105,9 @@ enum pj_log_decoration
  * @hideinitializer
  */
 #define PJ_LOG(level,arg)	do { \
-				    if (level <= pj_log_get_level()) \
+				    if (level <= pj_log_get_level()) { \
 					pj_log_wrapper_##level(arg); \
+				    } \
 				} while (0)
 
 /**

@@ -1,4 +1,4 @@
-/* $Id: pjnath.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: pjnath.h 5203 2015-12-01 07:04:45Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -18,6 +18,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
  */
 
+#ifndef __PJNATH_H__
+#define __PJNATH_H__
+
+/**
+ * @file pjnath.h
+ * @brief PJNATH main header file.
+ */
 #include <pjnath/config.h>
 #include <pjnath/errno.h>
 #include <pjnath/ice_session.h>
@@ -32,4 +39,6 @@
 #include <pjnath/turn_session.h>
 #include <pjnath/turn_sock.h>
 #include <pjnath/types.h>
+
+#endif
 

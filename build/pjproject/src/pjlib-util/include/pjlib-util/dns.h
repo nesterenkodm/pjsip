@@ -1,4 +1,4 @@
-/* $Id: dns.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: dns.h 5350 2016-06-21 06:55:10Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -425,6 +425,22 @@ PJ_DECL(void) pj_dns_init_a_rr(pj_dns_parsed_rr *rec,
 			       unsigned dnsclass,
 			       unsigned ttl,
 			       const pj_in_addr *ip_addr);
+
+/**
+ * Initialize DNS record as DNS AAAA record.
+ *
+ * @param rec		The DNS resource record to be initialized as DNS
+ *			AAAA record.
+ * @param res_name	Resource name.
+ * @param dnsclass	DNS class.
+ * @param ttl		Resource TTL value.
+ * @param ip_addr	Host address.
+ */
+PJ_DECL(void) pj_dns_init_aaaa_rr(pj_dns_parsed_rr *rec,
+				  const pj_str_t *res_name,
+				  unsigned dnsclass,
+				  unsigned ttl,
+				  const pj_in6_addr *ip_addr);
 
 /**
  * Dump DNS packet to standard log.

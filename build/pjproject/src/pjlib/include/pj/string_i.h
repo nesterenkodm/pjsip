@@ -1,4 +1,4 @@
-/* $Id: string_i.h 4537 2013-06-19 06:47:43Z riza $ */
+/* $Id: string_i.h 5229 2015-12-31 05:06:03Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -18,6 +18,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA 
  */
 
+#include <pj/assert.h>
 #include <pj/pool.h>
 
 PJ_IDEF(pj_str_t) pj_str(char *str)
@@ -117,6 +118,7 @@ PJ_IDEF(pj_str_t*) pj_strcpy2(pj_str_t *dst, const char *src)
 PJ_IDEF(pj_str_t*) pj_strncpy( pj_str_t *dst, const pj_str_t *src, 
 			       pj_ssize_t max)
 {
+    pj_assert(max >= 0);
     if (max > src->slen) max = src->slen;
     pj_memcpy(dst->ptr, src->ptr, max);
     dst->slen = max;
@@ -126,6 +128,8 @@ PJ_IDEF(pj_str_t*) pj_strncpy( pj_str_t *dst, const pj_str_t *src,
 PJ_IDEF(pj_str_t*) pj_strncpy_with_null( pj_str_t *dst, const pj_str_t *src,
 					 pj_ssize_t max)
 {
+    pj_assert(max > 0);
+
     if (max <= src->slen)
 	max = max-1;
     else

@@ -1,4 +1,4 @@
-/* $Id: stun_sock.h 4606 2013-10-01 05:00:57Z ming $ */
+/* $Id: stun_sock.h 5339 2016-06-08 03:17:45Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -371,7 +371,7 @@ PJ_DECL(pj_status_t) pj_stun_sock_create(pj_stun_config *stun_cfg,
  * timer will be started.
  *
  * @param stun_sock	The STUN transport instance.
- * @param domain	The domain, hostname, or IP address of the TURN
+ * @param domain	The domain, hostname, or IP address of the STUN
  *			server. When this parameter contains domain name,
  *			the \a resolver parameter must be set to activate
  *			DNS SRV resolution.

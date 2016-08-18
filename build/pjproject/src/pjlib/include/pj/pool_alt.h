@@ -1,4 +1,4 @@
-/* $Id: pool_alt.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: pool_alt.h 5061 2015-04-10 13:19:47Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -22,6 +22,7 @@
 
 #define __PJ_POOL_H__
 
+PJ_BEGIN_DECL
 
 /**
  * The type for function to receive callback from the pool when it is unable
@@ -193,6 +194,8 @@ typedef struct pj_pool_block
 #define pj_caching_pool_init( cp, pol, mac)
 #define pj_caching_pool_destroy(cp)
 #define pj_pool_factory_dump(pf, detail)
+
+PJ_END_DECL
 
 #endif	/* __PJ_POOL_ALT_H__ */
 

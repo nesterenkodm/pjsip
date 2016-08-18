@@ -1,4 +1,4 @@
-/* $Id: sip_inv.h 4653 2013-11-19 10:18:17Z bennylp $ */
+/* $Id: sip_inv.h 5109 2015-06-17 06:18:07Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -410,6 +410,8 @@ struct pjsip_inv_session
     pj_int32_t		 last_ack_cseq;		    /**< CSeq of last ACK   */
     void		*mod_data[PJSIP_MAX_MODULE];/**< Modules data.	    */
     struct pjsip_timer	*timer;			    /**< Session Timers.    */
+    pj_bool_t		 following_fork;	    /**< Internal, following
+							 forked media?	    */
 };
 
 
@@ -476,7 +478,7 @@ PJ_DECL(void) pjsip_inv_usage_dump(void);
  *			it can specify the SDP here. Otherwise it can leave 
  *			this to NULL, to let remote UAS specifies an offer.
  * @param options	The options argument is bitmask combination of SIP 
- *			features in pjsip_inv_options enumeration.
+ *			features in pjsip_inv_option enumeration.
  * @param p_inv		On successful return, the invite session will be put 
  *			in this argument.
  *
@@ -613,7 +615,7 @@ PJ_DECL(pj_status_t) pjsip_inv_verify_request3( pjsip_rx_data *rdata,
  *			to rearrange the media lines in the answer so that it
  *			matches the offer. 
  * @param options	The options argument is bitmask combination of SIP 
- *			features in pjsip_inv_options enumeration.
+ *			features in pjsip_inv_option enumeration.
  * @param p_inv		Pointer to receive the newly created invite session.
  *
  * @return		On successful, the invite session will be put in 

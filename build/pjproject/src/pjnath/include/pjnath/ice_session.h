@@ -1,4 +1,4 @@
-/* $Id: ice_session.h 4602 2013-09-25 04:57:26Z nanang $ */
+/* $Id: ice_session.h 5339 2016-06-08 03:17:45Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -653,7 +653,7 @@ struct pj_ice_sess
     pj_ice_sess_cand	 rcand[PJ_ICE_MAX_CAND];    /**< Array of cand.	    */
 
     /** Array of transport datas */
-    pj_ice_msg_data	 tp_data[4];
+    pj_ice_msg_data	 tp_data[PJ_ICE_MAX_STUN + PJ_ICE_MAX_TURN];
 
     /* List of eearly checks */
     pj_ice_rx_check	 early_check;		    /**< Early checks.	    */

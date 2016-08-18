@@ -1,4 +1,4 @@
-/* $Id: call.hpp 4780 2014-03-06 01:02:26Z ming $ */
+/* $Id: call.hpp 5185 2015-10-02 02:08:17Z nanang $ */
 /*
  * Copyright (C) 2012-2013 Teluu Inc. (http://www.teluu.com)
  *
@@ -47,12 +47,6 @@ using std::vector;
 //////////////////////////////////////////////////////////////////////////////
 
 /**
- * Codec parameters, corresponds to pjmedia_codec_param or
- * pjmedia_vid_codec_param.
- */
-typedef void *CodecParam;
-
-/**
  * Media stream, corresponds to pjmedia_stream
  */
 typedef void *MediaStream;
@@ -86,6 +80,15 @@ public:
 };
 
 /**
+ * Types of loss detected.
+ */
+struct LossType
+{
+    unsigned        burst;	/**< Burst/sequential packet lost detected  */
+    unsigned        random;	/**< Random packet lost detected.	    */
+};
+
+/**
  * Unidirectional RTP stream statistics.
  */
 struct RtcpStreamStat
@@ -101,10 +104,7 @@ struct RtcpStreamStat
     
     MathStat        lossPeriodUsec; /**< Loss period statistics 	    */
 
-    struct {
-        unsigned    burst;	/**< Burst/sequential packet lost detected  */
-        unsigned    random;	/**< Random packet lost detected.	    */
-    } lossType;                 /**< Types of loss detected.                */
+    LossType        lossType;   /**< Types of loss detected.                */
     
     MathStat        jitterUsec;	/**< Jitter statistics                      */
     
@@ -237,6 +237,23 @@ struct MediaFmtChangedEvent
 };
 
 /**
+ * Media event data.
+ */
+typedef union MediaEventData {
+    /**
+     * Media format changed event data.
+     */
+    MediaFmtChangedEvent    fmtChanged;
+    
+    /**
+     * Pointer to storage to user event data, if it's outside
+     * this struct
+     */
+    GenericData		ptr;
+
+} MediaEventData;
+
+/**
  * This structure describes a media event. It corresponds to the
  * pjmedia_event structure.
  */
@@ -251,18 +268,7 @@ struct MediaEvent
      * Additional data/parameters about the event. The type of data
      * will be specific to the event type being reported.
      */
-    union {
-	/**
-         * Media format changed event data.
-         */
-	MediaFmtChangedEvent    fmtChanged;
-        
-	/**
-         * Pointer to storage to user event data, if it's outside
-	 * this struct
-	 */
-	GenericData		ptr;
-    } data;
+    MediaEventData              data;
     
     /**
      * Pointer to original pjmedia_event. Only valid when the struct
@@ -399,6 +405,13 @@ struct CallMediaInfo
      * PJSUA_INVALID_ID. Only valid if the media type is video.
      */
     pjsua_vid_win_id	    videoIncomingWindowId;
+    
+    /**
+     * The video window instance for incoming video. Only valid if
+     * videoIncomingWindowId is not PJSUA_INVALID_ID and
+     * the media type is video.
+     */
+    VideoWindow	    	    videoWindow;
     
     /**
      * The video capture device for outgoing transmission, if any,
@@ -833,6 +846,19 @@ struct OnCallRxOfferParam
     /**
      * The current call setting, application can update this setting for
      * answering the offer.
+     */
+    CallSetting         opt;
+};
+
+/**
+ * This structure contains parameters for Call::onCallTxOffer() callback.
+ */
+struct OnCallTxOfferParam
+{
+    /**
+     * The current call setting, application can update this setting for
+     * generating the offer. Note that application should maintain any
+     * active media to avoid the need for the peer to reject the offer.
      */
     CallSetting         opt;
 };
@@ -1587,6 +1613,25 @@ public:
      * @param prm	Callback parameter.
      */
     virtual void onCallRxOffer(OnCallRxOfferParam &prm)
+    { PJ_UNUSED_ARG(prm); }
+    
+    /**
+     * Notify application when call has received INVITE with no SDP offer.
+     * Application can update the call setting (e.g: add audio/video), or
+     * enable/disable codecs, or update other media session settings from
+     * within the callback, however, as mandated by the standard (RFC3261
+     * section 14.2), it must ensure that the update overlaps with the
+     * existing media session (in codecs, transports, or other parameters)
+     * that require support from the peer, this is to avoid the need for
+     * the peer to reject the offer.
+     *
+     * When this callback is not implemented, the default behavior is to send
+     * SDP offer using current active media session (with all enabled codecs
+     * on each media type).
+     *
+     * @param prm	Callback parameter.
+     */
+    virtual void onCallTxOffer(OnCallTxOfferParam &prm)
     { PJ_UNUSED_ARG(prm); }
     
     /**

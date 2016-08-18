@@ -1,4 +1,4 @@
-/* $Id: amr_helper.h 3841 2011-10-24 09:28:13Z ming $ */
+/* $Id: amr_helper.h 5075 2015-04-22 09:03:23Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -759,6 +759,8 @@ PJ_INLINE(pj_status_t) pjmedia_codec_amr_predecode(
 	bitrate_tbl	= pjmedia_codec_amrwb_bitrates;
 	order_maps	= pjmedia_codec_amrwb_ordermaps;
     }
+    
+    PJ_UNUSED_ARG(bitrate_tbl);
 
     /* unpack AMR bitstream if there is any data */
     if (in_info->frame_type <= SID_FT) {
@@ -900,6 +902,8 @@ PJ_INLINE (pj_status_t) pjmedia_codec_amr_pack(
 	bitrate_tbl	= pjmedia_codec_amrwb_bitrates;
 	order_maps	= pjmedia_codec_amrwb_ordermaps;
     }
+    
+    PJ_UNUSED_ARG(bitrate_tbl);
 
     /* Code Mode Request, 4 bits */
     *w = (pj_uint8_t)(setting->cmr << 4);
@@ -1112,6 +1116,7 @@ PJ_INLINE(pj_status_t) pjmedia_codec_amr_parse(
     }
 
     PJ_UNUSED_ARG(pkt_size);
+    PJ_UNUSED_ARG(order_maps);
 
     /* Code Mode Request, 4 bits */
     *cmr = (pj_uint8_t)((*r >> 4) & 0x0F);
@@ -1147,7 +1152,11 @@ PJ_INLINE(pj_status_t) pjmedia_codec_amr_parse(
 	Q = (pj_uint8_t)(TOC & 1);
 
 	if (FT > SID_FT && FT < 14) {
-	    pj_assert(!"Invalid AMR frametype, stream may be corrupted!");
+	    /* Discard the whole packet (RFC4867 4.3.2) */
+	    //pj_assert(!"Invalid AMR frametype, stream may be corrupted!");
+	    cnt = 0;
+	    PJ_LOG(4, ("AMR parser", "Invalid AMR frametype, stream may be "
+		       "corrupted!"));
 	    break;
 	}
 

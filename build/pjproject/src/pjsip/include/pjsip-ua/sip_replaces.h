@@ -1,4 +1,4 @@
-/* $Id: sip_replaces.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: sip_replaces.h 5241 2016-02-05 04:29:17Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -138,7 +138,7 @@
 
     // Create UAS Invite session as usual.
     //
-    status = pjsip_dlg_create_uas(.., rdata, .., &dlg);
+    status = pjsip_dlg_create_uas_and_inc_lock(.., rdata, .., &dlg);
     ..
     status = pjsip_inv_create_uas(dlg, .., &inv);
 
