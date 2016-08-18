@@ -11,7 +11,7 @@ function download() {
 }
 
 BASE_DIR="$1"
-PJSIP_URL="http://www.pjsip.org/release/2.5.1/pjproject-2.5.1.tar.bz2"
+PJSIP_URL="http://www.pjsip.org/release/2.5.5/pjproject-2.5.5.tar.bz2"
 PJSIP_DIR="$1/src"
 LIB_PATHS=("pjlib/lib" \
            "pjlib-util/lib" \
@@ -61,6 +61,7 @@ function config_site() {
     fi
 
     echo "#define PJ_CONFIG_IPHONE 1" >> "${PJSIP_CONFIG_PATH}"
+    echo "#define PJ_HAS_IPV6 1" >> "${PJSIP_CONFIG_PATH}" # Enable IPV6
     if [[ ${OPENH264_PREFIX} ]]; then
         echo "#define PJMEDIA_HAS_OPENH264_CODEC 1" >> "${PJSIP_CONFIG_PATH}"
         HAS_VIDEO=1
