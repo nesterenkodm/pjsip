@@ -56,6 +56,6 @@ LICENSE
   s.dependency            'OpenSSL-Universal', '1.0.1.19'
   s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'CoreMedia'
   s.libraries           = 'stdc++'
-  s.header_mappings_dir = 'build/pjproject-2.5.5'
+  s.header_mappings_dir = 'build/pjproject'
   s.requires_arc        = false
 end
