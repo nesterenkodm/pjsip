@@ -24,31 +24,30 @@ PJSIP may include third party software in its source code distribution. Third Pa
 LICENSE
    }
 
-  s.public_header_files = 'build/pjproject/src/pjsip/include/**',
-                          'build/pjproject/src/pjlib/include/**',
+  s.public_header_files = 'build/pjproject/src/pjlib/include/**',
                           'build/pjproject/src/pjlib-util/include/**',
+                          'build/pjproject/src/pjmedia/include/**',
                           'build/pjproject/src/pjnath/include/**',
-                          'build/pjproject/src/pjmedia/include/**'
+                          'build/pjproject/src/pjsip/include/**'
 
-  s.preserve_paths      = 'build/pjproject/src/pjsip/include/**/*',
-                          'build/pjproject/src/pjlib/include/**/*',
+  s.preserve_paths      = 'build/pjproject/src/pjlib/include/**/*',
                           'build/pjproject/src/pjlib-util/include/**/*',
+                          'build/pjproject/src/pjmedia/include/**/*',
                           'build/pjproject/src/pjnath/include/**/*',
-                          'build/pjproject/src/pjmedia/include/**/*'
+                          'build/pjproject/src/pjsip/include/**/*'
 
   s.vendored_libraries  = 'build/openh264/lib/*.a',
-                          'build/pjproject/src/pjsip/lib/*.a',
                           'build/pjproject/src/pjlib/lib/*.a',
                           'build/pjproject/src/pjlib-util/lib/*.a',
-                          'build/pjproject/src/pjnath/lib/*.a',
                           'build/pjproject/src/pjmedia/lib/*.a',
+                          'build/pjproject/src/pjnath/lib/*.a',
                           'build/pjproject/src/third_party/lib/*.a'
 
-  header_search_paths   = '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjsip/include"',
-                          '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjlib/include"',
+  header_search_paths   = '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjlib/include"',
                           '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjlib-util/include"',
+                          '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjmedia/include"',
                           '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjnath/include"',
-                          '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjmedia/include"'
+                          '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjsip/include"'
 
   s.xcconfig            = {'HEADER_SEARCH_PATHS'          => header_search_paths.join(' '),
                            'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1'}
