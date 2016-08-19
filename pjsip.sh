@@ -17,7 +17,6 @@ LIB_PATHS=("pjlib/lib" \
            "pjlib-util/lib" \
            "pjmedia/lib" \
            "pjnath/lib" \
-           "pjsip/lib" \
            "third_party/lib")
 
 OPENSSL_PREFIX=
