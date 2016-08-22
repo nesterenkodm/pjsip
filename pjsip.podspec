@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "pjsip"
-  s.version      = "2.5.5.0"
+  s.version      = "2.5.5.1"
   s.summary      = "Open Source SIP, Media and NAT Traversal Library."
   s.homepage     = "http://www.pjsip.org"
   s.author       = 'www.pjsip.org'
@@ -24,6 +24,7 @@ PJSIP may include third party software in its source code distribution. Third Pa
 LICENSE
    }
 
+  s.source_files        =
   s.public_header_files = 'build/pjproject/src/pjlib/include/**',
                           'build/pjproject/src/pjlib-util/include/**',
                           'build/pjproject/src/pjmedia/include/**',
