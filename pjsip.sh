@@ -17,7 +17,6 @@ LIB_PATHS=("pjlib/lib" \
            "pjlib-util/lib" \
            "pjmedia/lib" \
            "pjnath/lib" \
-           "pjsip/lib" \
            "third_party/lib")
 
 OPENSSL_PREFIX=
@@ -54,7 +53,7 @@ function config_site() {
     PJSIP_CONFIG_PATH="${SOURCE_DIR}/pjlib/include/pj/config_site.h"
     HAS_VIDEO=
 
-    echo "Creating config.h..."
+    echo "Creating config_site.h ..."
 
     if [ -f "${PJSIP_CONFIG_PATH}" ]; then
         rm "${PJSIP_CONFIG_PATH}"
@@ -76,6 +75,21 @@ function config_site() {
     echo "#include <pj/config_site_sample.h>" >> "${PJSIP_CONFIG_PATH}"
 }
 
+function clean_libs () {
+    ARCH=${1}
+    for SRC_DIR in ${LIB_PATHS[*]}; do
+        DIR="${PJSIP_DIR}/${SRC_DIR}"
+        if [ -d "${DIR}" ]; then
+            rm -rf "${DIR}"/*
+        fi
+
+        DIR="${PJSIP_DIR}/${SRC_DIR}-${ARCH}"
+        if [ -d "${DIR}" ]; then
+            rm -rf "${DIR}"
+        fi
+    done
+}
+
 function copy_libs () {
     ARCH=${1}
 
@@ -86,6 +100,7 @@ function copy_libs () {
             rm -rf "${DST_DIR}"
         fi
         cp -R "${SRC_DIR}" "${DST_DIR}"
+        rm -rf "${SRC_DIR}"/* # delete files because this directory will be used for the final lipo output
     done
 }
 
@@ -123,6 +138,8 @@ function _build() {
     export LDFLAGS="${LDFLAGS} -lstdc++"
 
     echo "Building for ${ARCH}..."
+
+    clean_libs ${ARCH}
 
     make distclean > ${LOG} 2>&1
     ARCH="-arch ${ARCH}" ${CONFIGURE} >> ${LOG} 2>&1
@@ -162,41 +179,37 @@ function x86_64() {
 }
 
 function lipo() {
-    echo "Lipo libs..."
-
     TMP=`mktemp -t lipo`
-    while [ $# -gt 0 ]; do
-        ARCH=$1
-        for LIB_DIR in ${LIB_PATHS[*]}; do
-            ARGS=""
-            DST_DIR="${PJSIP_DIR}/${LIB_DIR}"
-            SRC_DIR="${DST_DIR}-${ARCH}"
+    echo "Lipo libs... (${TMP})"
 
-            for FILE in `ls -l1 "${SRC_DIR}"`; do
-                OPTIONS="-arch ${ARCH} ${SRC_DIR}/${FILE}"
-                EXISTS=`cat "${TMP}" | grep "${FILE}"`
-                if [[ ${EXISTS} ]]; then
-                    SED_SRC="${FILE}$"
-                    SED_SRC="${SED_SRC//\//\\/}"
-                    SED_DST="${FILE} ${OPTIONS}"
-                    SED_DST="${SED_DST//\//\\/}"
-                    sed -i.bak "s/${SED_SRC}/${SED_DST}/" "${TMP}"
-                    rm "${TMP}.bak"
+    for LIB_DIR in ${LIB_PATHS[*]}; do # loop over libs
+        DST_DIR="${PJSIP_DIR}/${LIB_DIR}"
 
-                else
-                    echo "${OPTIONS}" >> "${TMP}"
+        # use the first architecture to find all libraries
+        PATTERN_DIR="${DST_DIR}-$1"
+        for PATTERN_FILE in `ls -l1 "${PATTERN_DIR}"`; do
+            OPTIONS=""
+
+            # loop over all architectures and collect the current library
+            for ARCH in "$@"; do
+                FILE="${DST_DIR}-${ARCH}/${PATTERN_FILE/-$1-/-${ARCH}-}"
+                if [ -e "${FILE}" ]; then
+                    OPTIONS="$OPTIONS -arch ${ARCH} ${FILE}"
                 fi
             done
+
+            if [ "$OPTIONS" != "" ]; then
+                OUTPUT_PREFIX=$(dirname "${DST_DIR}")
+                OUTPUT="${OUTPUT_PREFIX}/lib/${PATTERN_FILE/-$1-/-}"
+
+                OPTIONS="${OPTIONS} -create -output ${OUTPUT}"
+                echo "$OPTIONS" >> "${TMP}"
+            fi
         done
-        shift
     done
 
     while read LINE; do
-        COMPONENTS=($LINE)
-        LAST=${COMPONENTS[@]:(-1)}
-        PREFIX=$(dirname $(dirname "${LAST}"))
-        OUTPUT="${PREFIX}/lib/`basename ${LAST}`"
-        xcrun -sdk iphoneos lipo ${LINE} -create -output ${OUTPUT}
+        xcrun -sdk iphoneos lipo ${LINE}
     done < "${TMP}"
 }
 
