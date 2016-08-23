@@ -40,7 +40,7 @@ function openssl() {
 OPENH264_DIR="${BUILD_DIR}/openh264"
 OPENH264_ENABLED=
 function openh264() {
-    if [ ! -f "${OPENH264_DIR}/lib/libopenh264.a" ]; then
+    if [ ! -f "${OPENH264_DIR}/lib/libopenh264.a" ] || [ ! -d "${OPENH264_DIR}/include/wels/" ]; then
         "${__DIR__}/openh264.sh" "${OPENH264_DIR}"
     else
         echo "Using OpenH264..."
