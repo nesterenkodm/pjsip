@@ -41,6 +41,7 @@ LICENSE
                           'build/pjproject/src/pjlib-util/lib/*.a',
                           'build/pjproject/src/pjmedia/lib/*.a',
                           'build/pjproject/src/pjnath/lib/*.a',
+                          'build/pjproject/src/pjsip/lib/*.a',
                           'build/pjproject/src/third_party/lib/*.a'
 
   header_search_paths   = '"$(PODS_ROOT)/pjsip/build/pjproject/src/pjlib/include"',

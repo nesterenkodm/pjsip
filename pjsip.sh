@@ -17,6 +17,7 @@ LIB_PATHS=("pjlib/lib" \
            "pjlib-util/lib" \
            "pjmedia/lib" \
            "pjnath/lib" \
+           "pjsip/lib" \
            "third_party/lib")
 
 OPENSSL_PREFIX=
@@ -151,30 +152,30 @@ function _build() {
 }
 
 function armv7() {
-    export CFLAGS=
+    export CFLAGS="-miphoneos-version-min=8.0"
     export LDFLAGS=
     _build "armv7"
 }
 function armv7s() {
-    export CFLAGS=
+    export CFLAGS="-miphoneos-version-min=8.0"
     export LDFLAGS=
     _build "armv7s"
 }
 function arm64() {
-    export CFLAGS=
+    export CFLAGS="-miphoneos-version-min=8.0"
     export LDFLAGS=
     _build "arm64"
 }
 function i386() {
     export DEVPATH="`xcrun -sdk iphonesimulator --show-sdk-platform-path`/Developer"
-    export CFLAGS="-O2 -m32 -mios-simulator-version-min=7.0"
-    export LDFLAGS="-O2 -m32 -mios-simulator-version-min=7.0"
+    export CFLAGS="-O2 -m32 -mios-simulator-version-min=8.0"
+    export LDFLAGS="-O2 -m32 -mios-simulator-version-min=8.0"
     _build "i386"
 }
 function x86_64() {
     export DEVPATH="`xcrun -sdk iphonesimulator --show-sdk-platform-path`/Developer"
-    export CFLAGS="-O2 -m32 -mios-simulator-version-min=7.0"
-    export LDFLAGS="-O2 -m32 -mios-simulator-version-min=7.0"
+    export CFLAGS="-O2 -m32 -mios-simulator-version-min=8.0"
+    export LDFLAGS="-O2 -m32 -mios-simulator-version-min=8.0"
     _build "x86_64"
 }
 
