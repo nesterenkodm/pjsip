@@ -47,9 +47,9 @@ function build() {
     sed -i.deleteme "s/${SED_SRC}/${SED_DST}/" "${MAKEFILE}"
     rm ${MAKEFILE}.deleteme
 
-    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No >> "${LOG}"
-    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No install >> "${LOG}"
-    make OS=ios ARCH=${ARCH} SDK_MIN=7.0 V=No clean >> "${LOG}"
+    make OS=ios ARCH=${ARCH} SDK_MIN=8.0 V=No >> "${LOG}"
+    make OS=ios ARCH=${ARCH} SDK_MIN=8.0 V=No install >> "${LOG}"
+    make OS=ios ARCH=${ARCH} SDK_MIN=8.0 V=No clean >> "${LOG}"
 
     popd > /dev/null
 
