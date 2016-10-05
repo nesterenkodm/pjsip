@@ -87,7 +87,7 @@
 
 /* OPUS codec */
 #ifndef PJMEDIA_HAS_OPUS_CODEC
-#define PJMEDIA_HAS_OPUS_CODEC 0
+#define PJMEDIA_HAS_OPUS_CODEC 1
 #endif
 
 #endif	/* __PJMEDIA_CODEC_CONFIG_AUTO_H_ */
