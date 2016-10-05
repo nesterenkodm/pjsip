@@ -22,11 +22,12 @@ LIB_PATHS=("pjlib/lib" \
 
 OPENSSL_PREFIX=
 OPENH264_PREFIX=
+OPUS_PREFIX=
 while [ "$#" -gt 0 ]; do
     case $1 in
         --with-openssl)
             if [ "$#" -gt 1 ]; then
-                OPENSSL_PREFIX=$2
+                OPENSSL_PREFIX=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$2")
                 shift 2
                 continue
             else
@@ -36,11 +37,21 @@ while [ "$#" -gt 0 ]; do
             ;;
         --with-openh264)
             if [ "$#" -gt 1 ]; then
-                OPENH264_PREFIX=$2
+                OPENH264_PREFIX=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$2")
                 shift 2
                 continue
             else
                 echo 'ERROR: Must specify a non-empty "--with-openh264 PREFIX" argument.' >&2
+                exit 1
+            fi
+            ;;
+        --with-opus)
+            if [ "$#" -gt 1 ]; then
+                OPUS_PREFIX=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$2")
+                shift 2
+                continue
+            else
+                echo 'ERROR: Must specify a non-empty "--with-opus PREFIX" argument.' >&2
                 exit 1
             fi
             ;;
@@ -120,6 +131,9 @@ function _build() {
     if [[ ${OPENH264_PREFIX} ]]; then
         CONFIGURE="${CONFIGURE} --with-openh264=${OPENH264_PREFIX}"
     fi
+    if [[ ${OPUS_PREFIX} ]]; then
+        CONFIGURE="${CONFIGURE} --with-opus=${OPUS_PREFIX}"
+    fi
 
     # flags
     if [[ ! ${CFLAGS} ]]; then
@@ -146,7 +160,7 @@ function _build() {
     ARCH="-arch ${ARCH}" ${CONFIGURE} >> ${LOG} 2>&1
     make dep >> ${LOG} 2>&1
     make clean >> ${LOG}
-    make >> ${LOG} 2>&1
+    make lib >> ${LOG} 2>&1
 
     copy_libs ${ARCH}
 }
