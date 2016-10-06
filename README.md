@@ -10,6 +10,7 @@ PJSIP is a free and open source multimedia communication library written in C la
 - IPv6 support
 - OpenSSL support provided by the [OpenSSL-for-iPhone](https://github.com/x2on/OpenSSL-for-iPhone) build script and the [OpenSSL-Universal](https://github.com/krzyzanowskim/OpenSSL) pod
 - Video support provided by the [OpenH264](https://github.com/cisco/openh264)
+- OPUS now supported - this pod provides libopus
 
 ## Installation
 
