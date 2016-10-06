@@ -28,6 +28,9 @@ function openssl() {
         pushd . > /dev/null
         cd ${OPENSSL_DIR}
         /bin/sh ${OPENSSL_SH}
+        mv include include2
+        mkdir -p include
+        mv include2 include/openssl
         popd > /dev/null
     else
         echo "Using OpenSSL..."
@@ -49,11 +52,25 @@ function openh264() {
     OPENH264_ENABLED=1
 }
 
+# opus
+OPUS_DIR="${BUILD_DIR}/opus"
+OPUS_ENABLED=
+function opus() {
+    if [ ! -f "${OPUS_DIR}/dependencies/lib/libopus.a" ] || [ ! -d "${OPUS_DIR}/dependencies/include/opus/" ]; then
+        "${__DIR__}/opus.sh" "${OPUS_DIR}"
+    else
+        echo "Using OPUS..."
+    fi
+
+    OPUS_ENABLED=1
+}
+
 PJSIP_DIR="${BUILD_DIR}/pjproject"
 function pjsip() {
-    "${__DIR__}/pjsip.sh" "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-openh264 "${OPENH264_DIR}"
+    "${__DIR__}/pjsip.sh" "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-openh264 "${OPENH264_DIR}" --with-opus "${OPUS_DIR}/dependencies"
 }
 
 openssl
 openh264
+opus
 pjsip
