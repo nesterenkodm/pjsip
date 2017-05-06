@@ -1,4 +1,4 @@
-/* $Id: print_util.h 5237 2016-01-27 05:42:20Z riza $ */
+/* $Id: print_util.h 5468 2016-10-24 03:22:46Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -29,8 +29,10 @@
 #define copy_advance_check(buf,str)   \
 	do { \
 	    if ((str).slen >= (endbuf-buf)) return -1;	\
-	    pj_memcpy(buf, (str).ptr, (str).slen); \
-	    buf += (str).slen; \
+	    if ((str).slen) { \
+		pj_memcpy(buf, (str).ptr, (str).slen); \
+		buf += (str).slen; \
+	    } \
 	} while (0)
 
 #define copy_advance_pair_check(buf,str1,len1,str2)   \

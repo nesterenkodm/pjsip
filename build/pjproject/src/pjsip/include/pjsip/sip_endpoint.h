@@ -1,4 +1,4 @@
-/* $Id: sip_endpoint.h 5055 2015-04-08 10:10:44Z riza $ */
+/* $Id: sip_endpoint.h 5397 2016-07-26 02:58:44Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -583,7 +583,8 @@ PJ_DECL(pj_bool_t) pjsip_endpt_has_capability( pjsip_endpoint *endpt,
  * @param hname	    If htype specifies PJSIP_H_OTHER, then the header name
  *		    must be supplied in this argument. Otherwise the value
  *		    must be set to NULL.
- * @param count	    The number of tags in the array.
+ * @param count	    The number of tags in the array. The value must not
+ *		    be greater than PJSIP_GENERIC_ARRAY_MAX_COUNT.
  * @param tags	    Array of tags describing the capabilities or extensions
  *		    to be added to the appropriate header.
  *

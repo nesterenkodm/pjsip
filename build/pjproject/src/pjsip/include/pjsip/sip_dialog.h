@@ -1,4 +1,4 @@
-/* $Id: sip_dialog.h 5241 2016-02-05 04:29:17Z nanang $ */
+/* $Id: sip_dialog.h 5456 2016-10-07 08:41:55Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -555,6 +555,16 @@ PJ_DECL(void) pjsip_dlg_dec_lock( pjsip_dialog *dlg );
  * @return		    The dialog instance that "owns" the message.
  */
 PJ_DECL(pjsip_dialog*) pjsip_rdata_get_dlg( pjsip_rx_data *rdata );
+
+/**
+ * Get the dialog instance for the outgoing tdata. Returns NULL if the message
+ * wasn't sent from a dialog.
+ *
+ * @param tdata		    Outgoing message buffer.
+ *
+ * @return		    The dialog instance that "owns" the message.
+ */
+PJ_DECL(pjsip_dialog*) pjsip_tdata_get_dlg( pjsip_tx_data *tdata );
 
 /**
  * Get the associated dialog for the specified transaction, if any.

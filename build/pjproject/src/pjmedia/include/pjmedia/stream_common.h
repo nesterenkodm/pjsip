@@ -1,4 +1,4 @@
-/* $Id: stream_common.h 3664 2011-07-19 03:42:28Z nanang $ */
+/* $Id: stream_common.h 5479 2016-11-04 14:57:20Z riza $ */
 /* 
  * Copyright (C) 2011 Teluu Inc. (http://www.teluu.com)
  *
@@ -27,9 +27,35 @@
 
 #include <pjmedia/codec.h>
 #include <pjmedia/sdp.h>
+#include <pjmedia/rtp.h>
+#include <pjmedia/rtcp.h>
 
 
 PJ_BEGIN_DECL
+
+/**
+ * This structure describes rtp/rtcp session information of the media stream.
+ */
+typedef struct pjmedia_stream_rtp_sess_info
+{
+    /**
+     * The decode RTP session.
+     */
+    const pjmedia_rtp_session *rx_rtp;
+
+    /**
+     * The encode RTP session.
+     */
+    const pjmedia_rtp_session *tx_rtp;
+
+    /**
+     * The decode RTCP session.
+     */
+    const pjmedia_rtcp_session *rtcp;
+
+} pjmedia_stream_rtp_sess_info;
+
+
 
 /**
  * This is internal function for parsing SDP format parameter of specific

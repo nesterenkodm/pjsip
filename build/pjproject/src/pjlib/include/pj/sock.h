@@ -1,4 +1,4 @@
-/* $Id: sock.h 4860 2014-06-19 05:07:12Z riza $ */
+/* $Id: sock.h 5444 2016-10-05 09:07:17Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -273,6 +273,19 @@ extern const pj_uint16_t PJ_IPTOS_MINCOST;
 
     /** Get #PJ_IPTOS_MINCOST constant */
 #   define pj_IPTOS_MINCOST()	PJ_IP_TOS_MINCOST
+#endif
+
+
+/** IPV6_TCLASS optname in setsockopt(). @see pj_IPV6_TCLASS() */
+extern const pj_uint16_t PJ_IPV6_TCLASS;
+
+
+#if defined(PJ_DLL)
+    /** Get #PJ_IPV6_TCLASS constant */
+    PJ_DECL(int) pj_IPV6_TCLASS(void);
+#else
+    /** Get #PJ_IPV6_TCLASS constant */
+#   define pj_IPV6_TCLASS()	PJ_IPV6_TCLASS
 #endif
 
 

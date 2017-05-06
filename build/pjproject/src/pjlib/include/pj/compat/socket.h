@@ -1,4 +1,4 @@
-/* $Id: socket.h 5312 2016-05-20 07:19:26Z riza $ */
+/* $Id: socket.h 5445 2016-10-05 09:52:39Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -158,16 +158,22 @@
 #  define OSERR_EINPROGRESS    WSAEINPROGRESS
 #  define OSERR_ECONNRESET     WSAECONNRESET
 #  define OSERR_ENOTCONN       WSAENOTCONN
+#  define OSERR_EAFNOSUPPORT   WSAEAFNOSUPPORT
+#  define OSERR_ENOPROTOOPT    WSAENOPROTOOPT
 #elif defined(PJ_SYMBIAN) && PJ_SYMBIAN!=0
 #  define OSERR_EWOULDBLOCK    -1
 #  define OSERR_EINPROGRESS    -1
 #  define OSERR_ECONNRESET     -1
 #  define OSERR_ENOTCONN       -1
+#  define OSERR_EAFNOSUPPORT   -1
+#  define OSERR_ENOPROTOOPT    -1
 #else
 #  define OSERR_EWOULDBLOCK    EWOULDBLOCK
 #  define OSERR_EINPROGRESS    EINPROGRESS
 #  define OSERR_ECONNRESET     ECONNRESET
 #  define OSERR_ENOTCONN       ENOTCONN
+#  define OSERR_EAFNOSUPPORT   EAFNOSUPPORT
+#  define OSERR_ENOPROTOOPT    ENOPROTOOPT
 #endif
 
 

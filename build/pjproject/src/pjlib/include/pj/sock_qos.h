@@ -1,4 +1,4 @@
-/* $Id: sock_qos.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: sock_qos.h 5445 2016-10-05 09:52:39Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -121,10 +121,11 @@ PJ_BEGIN_DECL
      typedef enum pj_qos_type
      {
 	PJ_QOS_TYPE_BEST_EFFORT,
-	PJ_QOS_TYPE_BACKGROUND,
+	PJ_QOS_TYPE_BACKGROUND,	
 	PJ_QOS_TYPE_VIDEO,
 	PJ_QOS_TYPE_VOICE,
-	PJ_QOS_TYPE_CONTROL
+	PJ_QOS_TYPE_CONTROL,
+	PJ_QOS_TYPE_SIGNALLING
      } pj_qos_type;
     \endcode
 
@@ -141,6 +142,7 @@ PJ_BEGIN_DECL
     VIDEO 		0x28 		VI (Video) 		5
     VOICE 		0x30 		VO (Voice) 		6
     CONTROL 		0x38 		VO (Voice) 		7
+    SIGNALLING 		0x28 		VI (Video) 		5
     =================================================================
     \endcode
 
@@ -235,10 +237,11 @@ typedef enum pj_qos_type
     PJ_QOS_TYPE_BEST_EFFORT,	/**< Best effort traffic (default value).
 				     Any QoS function calls with specifying
 				     this value are effectively no-op	*/
-    PJ_QOS_TYPE_BACKGROUND,	/**< Background traffic.		*/
+    PJ_QOS_TYPE_BACKGROUND,	/**< Background traffic.		*/    
     PJ_QOS_TYPE_VIDEO,		/**< Video traffic.			*/
     PJ_QOS_TYPE_VOICE,		/**< Voice traffic.			*/
-    PJ_QOS_TYPE_CONTROL		/**< Control traffic.			*/
+    PJ_QOS_TYPE_CONTROL,	/**< Control traffic.			*/
+    PJ_QOS_TYPE_SIGNALLING	/**< Signalling traffic.		*/
 } pj_qos_type;
 
 /**

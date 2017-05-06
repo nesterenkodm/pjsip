@@ -1,4 +1,4 @@
-/* $Id: string_i.h 5229 2015-12-31 05:06:03Z ming $ */
+/* $Id: string_i.h 5468 2016-10-24 03:22:46Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -120,7 +120,8 @@ PJ_IDEF(pj_str_t*) pj_strncpy( pj_str_t *dst, const pj_str_t *src,
 {
     pj_assert(max >= 0);
     if (max > src->slen) max = src->slen;
-    pj_memcpy(dst->ptr, src->ptr, max);
+    if (max > 0)
+	pj_memcpy(dst->ptr, src->ptr, max);
     dst->slen = max;
     return dst;
 }

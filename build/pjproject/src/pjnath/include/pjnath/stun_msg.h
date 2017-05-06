@@ -1,4 +1,4 @@
-/* $Id: stun_msg.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: stun_msg.h 5527 2017-01-18 03:50:32Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -323,6 +323,7 @@ typedef enum pj_stun_attr_type
     PJ_STUN_ATTR_NONCE		    = 0x0015,/**< NONCE attribute.	    */
     PJ_STUN_ATTR_XOR_RELAYED_ADDR   = 0x0016,/**< TURN XOR-RELAYED-ADDRESS  */
     PJ_STUN_ATTR_REQ_ADDR_TYPE	    = 0x0017,/**< REQUESTED-ADDRESS-TYPE    */
+    PJ_STUN_ATTR_REQ_ADDR_FAMILY    = 0x0017,/**< REQUESTED-ADDRESS-FAMILY  */
     PJ_STUN_ATTR_EVEN_PORT	    = 0x0018,/**< TURN EVEN-PORT	    */
     PJ_STUN_ATTR_REQ_TRANSPORT	    = 0x0019,/**< TURN REQUESTED-TRANSPORT  */
     PJ_STUN_ATTR_DONT_FRAGMENT	    = 0x001A,/**< TURN DONT-FRAGMENT	    */
@@ -963,10 +964,11 @@ typedef struct pj_stun_sockaddr_attr pj_stun_xor_relayed_addr_attr;
 
 
 /**
- * This describes the REQUESTED-ADDRESS-TYPE attribute.
- * The REQUESTED-ADDRESS-TYPE attribute is used by clients to request
+ * According to RFC 6156, this describes the REQUESTED-ADDRESS-FAMILY
+ * attribute (formerly known as REQUESTED-ADDRESS-TYPE in the draft).
+ * The REQUESTED-ADDRESS-FAMILY attribute is used by clients to request
  * the allocation of a specific address type from a server.  The
- * following is the format of the REQUESTED-ADDRESS-TYPE attribute.
+ * following is the format of the REQUESTED-ADDRESS-FAMILY attribute.
 
  \verbatim
 

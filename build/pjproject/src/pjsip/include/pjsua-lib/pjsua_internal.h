@@ -1,4 +1,4 @@
-/* $Id: pjsua_internal.h 5337 2016-06-08 02:49:56Z nanang $ */
+/* $Id: pjsua_internal.h 5442 2016-10-04 09:10:11Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -374,6 +374,8 @@ typedef struct pjsua_stun_resolve
     pj_status_t		 status;    /**< Session status	    */
     pj_sockaddr		 addr;	    /**< Result		    */
     pj_stun_sock	*stun_sock; /**< Testing STUN sock  */
+    pj_bool_t 		 async_wait;/**< Async resolution 
+    					 of STUN entry      */
 } pjsua_stun_resolve;
 
 /* See also pjsua_vid_win_type_name() */

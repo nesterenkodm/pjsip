@@ -1,4 +1,4 @@
-/* $Id: string.h 4704 2014-01-16 05:30:46Z ming $ */
+/* $Id: string.h 5520 2017-01-11 04:38:29Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -469,8 +469,97 @@ PJ_IDECL(void) pj_strcat2(pj_str_t *dst, const char *src);
  */
 PJ_INLINE(char*) pj_strchr( const pj_str_t *str, int chr)
 {
+    if (str->slen == 0)
+	return NULL;
     return (char*) memchr((char*)str->ptr, chr, str->slen);
 }
+
+
+/**
+ * Find the first index of character, in a string, that does not belong to a 
+ * set of characters.
+ *
+ * @param str	    The string.
+ * @param set_char  The string containing the set of characters. 
+ *
+ * @return the index of the first character in the str that doesn't belong to 
+ * set_char. If str starts with a character not in set_char, return 0.
+ */
+PJ_DECL(pj_ssize_t) pj_strspn(const pj_str_t *str, const pj_str_t *set_char);
+
+
+/**
+ * Find the first index of character, in a string, that does not belong to a
+ * set of characters.
+ *
+ * @param str	    The string.
+ * @param set_char  The string containing the set of characters.
+ *
+ * @return the index of the first character in the str that doesn't belong to
+ * set_char. If str starts with a character not in set_char, return 0.
+ */
+PJ_DECL(pj_ssize_t) pj_strspn2(const pj_str_t *str, const char *set_char);
+
+
+/**
+ * Find the first index of character, in a string, that belong to a set of 
+ * characters.
+ *
+ * @param str	    The string.
+ * @param set_char  The string containing the set of characters.
+ *
+ * @return the index of the first character in the str that belong to
+ * set_char. If no match is found, return the length of str.
+ */
+PJ_DECL(pj_ssize_t) pj_strcspn(const pj_str_t *str, const pj_str_t *set_char);
+
+
+/**
+ * Find the first index of character, in a string, that belong to a set of
+ * characters.
+ *
+ * @param str	    The string.
+ * @param set_char  The string containing the set of characters.
+ *
+ * @return the index of the first character in the str that belong to
+ * set_char. If no match is found, return the length of str.
+ */
+PJ_DECL(pj_ssize_t) pj_strcspn2(const pj_str_t *str, const char *set_char);
+
+
+/**
+ * Find tokens from a string using the delimiter.
+ *
+ * @param str	    The string.
+ * @param delim	    The string containing the delimiter. It might contain 
+ *		    multiple character treated as unique set. If same character
+ *		    was found on the set, it will be skipped.
+ * @param tok	    The string containing the token.
+ * @param start_idx The search will start from this index.
+ *
+ * @return the index of token from the str, or the length of the str
+ * if the token is not found.
+ */
+PJ_DECL(pj_ssize_t) pj_strtok(const pj_str_t *str, const pj_str_t *delim,
+			      pj_str_t *tok, pj_size_t start_idx);
+
+
+/**
+ * Find tokens from a string using the delimiter.
+ *
+ * @param str	    The string.
+ * @param delim	    The string containing the delimiter. It might contain
+ *		    multiple character treated as unique set. If same character
+ *		    was found on the set, it will be skipped.
+ * @param tok	    The string containing the token.
+ * @param start_idx The search will start from this index.
+ *
+ * @return the index of token from the str, or the length of the str
+ * if the token is not found.
+ */
+PJ_DECL(pj_ssize_t) pj_strtok2(const pj_str_t *str, const char *delim,
+			       pj_str_t *tok, pj_size_t start_idx);
+
 
 /**
  * Find the occurence of a substring substr in string str.
