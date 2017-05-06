@@ -19,12 +19,13 @@ function download() {
 OPENSSL_DIR="${BUILD_DIR}/openssl"
 OPENSSL_ENABLED=
 function openssl() {
-    OPENSSL_URL="https://raw.githubusercontent.com/x2on/OpenSSL-for-iPhone/master/build-libssl.sh"
-    OPENSSL_SH="${OPENSSL_DIR}/build-libssl.sh"
+    OPENSSL_URL="https://github.com/x2on/OpenSSL-for-iPhone/archive/1.0.2i.tar.gz"
+    #OPENSSL_URL="https://raw.githubusercontent.com/x2on/OpenSSL-for-iPhone/master/build-libssl.sh"
+    OPENSSL_SH="build-libssl.sh"
 
-    download ${OPENSSL_URL} ${OPENSSL_SH}
 
     if [ ! -f "${OPENSSL_DIR}/lib/libssl.a" ]; then
+        download ${OPENSSL_URL} ${OPENSSL_DIR}
         pushd . > /dev/null
         cd ${OPENSSL_DIR}
         /bin/sh ${OPENSSL_SH}
