@@ -1,4 +1,4 @@
-/* $Id: pjsua.h 5326 2016-05-31 04:28:00Z nanang $ */
+/* $Id: pjsua.h 5493 2016-12-06 11:23:39Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -1364,6 +1364,23 @@ typedef struct pjsua_callback
                                                     unsigned media_idx,
                                                     pjmedia_transport *base_tp,
                                                     unsigned flags);
+
+    /**
+     * This callback is called when SRTP media transport is created.
+     * Application can modify the SRTP setting \a srtp_opt to specify
+     * the cryptos and keys which are going to be used. Note that
+     * application should not modify the field
+     * \a pjmedia_srtp_setting.close_member_tp and can only modify
+     * the field \a pjmedia_srtp_setting.use for initial INVITE.
+     *
+     * @param call_id       Call ID
+     * @param media_idx     The media index in the SDP for which this SRTP
+     * 			    media transport will be used.
+     * @param srtp_opt      The SRTP setting. Application can modify this.
+     */
+    void (*on_create_media_transport_srtp)(pjsua_call_id call_id,
+                                           unsigned media_idx,
+                                           pjmedia_srtp_setting *srtp_opt);
 
     /**
      * This callback can be used by application to override the account
@@ -2936,6 +2953,17 @@ typedef struct pjsua_acc_config
      */
     pjsip_hdr	    reg_hdr_list;
 
+    /**
+     * Additional parameters that will be appended in the Contact header
+     * for this account. This will only affect REGISTER requests and
+     * will be appended after \a contact_params;
+     *
+     * The parameters should be preceeded by semicolon, and all strings must
+     * be properly escaped. Example:
+     *	 ";my-param=X;another-param=Hi%20there"
+     */
+    pj_str_t	    reg_contact_params;
+
     /** 
      * The optional custom SIP headers to be put in the presence
      * subscription request.
@@ -3304,6 +3332,13 @@ typedef struct pjsua_acc_config
      * Default: see #pjmedia_vid_stream_rc_config
      */
     pjmedia_vid_stream_rc_config vid_stream_rc_cfg;
+
+    /**
+     * Specify the send keyframe config for video stream.
+     *
+     * Default: see #pjmedia_vid_stream_sk_config
+     */
+    pjmedia_vid_stream_sk_config vid_stream_sk_cfg;
 
     /**
      * Media transport config.
@@ -4249,7 +4284,30 @@ typedef enum pjsua_call_flag
      * #pjsua_call_update()/update2(). For re-invite/update, specifying
      * PJSUA_CALL_UNHOLD will take precedence over this flag.
      */
-    PJSUA_CALL_NO_SDP_OFFER = 8
+    PJSUA_CALL_NO_SDP_OFFER = 8,
+
+    /**
+     * Deinitialize and recreate media, including media transport. This flag
+     * is useful in IP address change situation, if the media transport
+     * address (or address family) changes, for example during IPv4/IPv6
+     * network handover.
+     * This flag is only valid for #pjsua_call_reinvite()/reinvite2(), or
+     * #pjsua_call_update()/update2().
+     *
+     * Warning: If the re-INVITE/UPDATE fails, the old media will not be
+     * reverted.
+     */
+    PJSUA_CALL_REINIT_MEDIA = 16,
+    
+    /**
+     * Update the local invite session's Via with the via address from
+     * the account. This flag is only valid for #pjsua_call_set_hold2(),
+     * #pjsua_call_reinvite() and #pjsua_call_update(). Similar to
+     * the flag PJSUA_CALL_UPDATE_CONTACT above, this flag is useful
+     * in IP address change situation, after the local account's Via has
+     * been updated (typically with re-registration).
+     */
+    PJSUA_CALL_UPDATE_VIA = 32
 
 } pjsua_call_flag;
 

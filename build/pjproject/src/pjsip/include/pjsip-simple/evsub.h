@@ -1,4 +1,4 @@
-/* $Id: evsub.h 5351 2016-06-21 08:56:42Z nanang $ */
+/* $Id: evsub.h 5397 2016-07-26 02:58:44Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -246,7 +246,8 @@ PJ_DECL(pjsip_module*) pjsip_evsub_instance(void);
  *			registered.
  * @param event_name	Event package identification.
  * @param expires	Default subscription expiration time, in seconds.
- * @param accept_cnt	Number of strings in Accept array.
+ * @param accept_cnt	Number of strings in Accept array. The value must
+ *			not be greater than PJSIP_GENERIC_ARRAY_MAX_COUNT.
  * @param accept	Array of Accept value.
  *
  * @return		PJ_SUCCESS on success.

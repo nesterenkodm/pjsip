@@ -1,4 +1,4 @@
-/* $Id: config.h 5301 2016-05-17 15:25:51Z riza $ */
+/* $Id: config.h 5418 2016-08-15 07:32:29Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -953,6 +953,75 @@
 
 
 /**
+ * Maximum number of SRTP cryptos.
+ *
+ * Default: 16
+ */
+#ifndef PJMEDIA_SRTP_MAX_CRYPTOS
+#   define PJMEDIA_SRTP_MAX_CRYPTOS		    16
+#endif
+
+
+/**
+ * Enable AES_CM_256 cryptos in SRTP.
+ * Default: enabled.
+ */
+#ifndef PJMEDIA_SRTP_HAS_AES_CM_256
+#   define PJMEDIA_SRTP_HAS_AES_CM_256	    	    1
+#endif
+
+
+/**
+ * Enable AES_CM_192 cryptos in SRTP.
+ * It was reported that this crypto only works among libsrtp backends,
+ * so we recommend to disable this.
+ *
+ * To enable this, you would require OpenSSL which supports it.
+ * See https://trac.pjsip.org/repos/ticket/1943 for more info.
+ *
+ * Default: disabled.
+ */
+#ifndef PJMEDIA_SRTP_HAS_AES_CM_192
+#   define PJMEDIA_SRTP_HAS_AES_CM_192	    	    0
+#endif
+
+
+/**
+ * Enable AES_CM_128 cryptos in SRTP.
+ * Default: enabled.
+ */
+#ifndef PJMEDIA_SRTP_HAS_AES_CM_128
+#   define PJMEDIA_SRTP_HAS_AES_CM_128    	    1
+#endif
+
+
+/**
+ * Enable AES_GCM_256 cryptos in SRTP.
+ *
+ * To enable this, you would require OpenSSL which supports it.
+ * See https://trac.pjsip.org/repos/ticket/1943 for more info. 
+ *
+ * Default: disabled.
+ */
+#ifndef PJMEDIA_SRTP_HAS_AES_GCM_256
+#   define PJMEDIA_SRTP_HAS_AES_GCM_256	    	    0
+#endif
+
+
+/**
+ * Enable AES_GCM_128 cryptos in SRTP.
+ *
+ * To enable this, you would require OpenSSL which supports it.
+ * See https://trac.pjsip.org/repos/ticket/1943 for more info.
+ *
+ * Default: disabled.
+ */
+#ifndef PJMEDIA_SRTP_HAS_AES_GCM_128
+#   define PJMEDIA_SRTP_HAS_AES_GCM_128    	    0
+#endif
+
+
+/**
  * Let the library handle libsrtp initialization and deinitialization.
  * Application may want to disable this and manually perform libsrtp
  * initialization and deinitialization when it needs to use libsrtp
@@ -1328,6 +1397,25 @@
  */
 #ifndef PJMEDIA_HAS_DTMF_FLASH
 #   define PJMEDIA_HAS_DTMF_FLASH			1
+#endif
+
+/**
+ * Specify the number of keyframe needed to be sent after the stream is 
+ * created. Setting this to 0 will disable it.
+ *
+ * Default : 5
+ */
+#ifndef PJMEDIA_VID_STREAM_START_KEYFRAME_CNT
+#   define PJMEDIA_VID_STREAM_START_KEYFRAME_CNT	5
+#endif
+
+/**
+ * Specify the interval to send keyframe after the stream is created, in msec.
+ *
+ * Default : 1000
+ */
+#ifndef PJMEDIA_VID_STREAM_START_KEYFRAME_INTERVAL_MSEC
+#   define PJMEDIA_VID_STREAM_START_KEYFRAME_INTERVAL_MSEC  1000
 #endif
 
 

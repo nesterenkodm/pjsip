@@ -1,4 +1,4 @@
-/* $Id: os_darwinos.h 4626 2013-10-21 07:04:38Z ming $ */
+/* $Id: os_darwinos.h 5458 2016-10-13 04:32:29Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -54,6 +54,8 @@
 #define PJ_HAS_MSWSOCK_H	    0
 #define PJ_HAS_WINSOCK_H	    0
 #define PJ_HAS_WINSOCK2_H	    0
+
+#define PJ_HAS_LOCALTIME_R	    1
 
 /* Is errno a good way to retrieve OS errors?
  */

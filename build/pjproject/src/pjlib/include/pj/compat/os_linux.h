@@ -1,4 +1,4 @@
-/* $Id: os_linux.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: os_linux.h 5458 2016-10-13 04:32:29Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -54,6 +54,8 @@
 #define PJ_HAS_MSWSOCK_H	    0
 #define PJ_HAS_WINSOCK_H	    0
 #define PJ_HAS_WINSOCK2_H	    0
+
+#define PJ_HAS_LOCALTIME_R	    1
 
 #define PJ_SOCK_HAS_INET_ATON	    1
 

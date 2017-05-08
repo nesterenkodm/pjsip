@@ -1,4 +1,4 @@
-/* $Id: config.h 5339 2016-06-08 03:17:45Z nanang $ */
+/* $Id: config.h 5481 2016-11-14 06:13:01Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -263,7 +263,7 @@
  * Default: 2
  */
 #ifndef PJ_ICE_MAX_TURN
-#   define PJ_ICE_MAX_TURN			    2
+#   define PJ_ICE_MAX_TURN			    3
 #endif
 
 

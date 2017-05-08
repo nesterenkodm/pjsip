@@ -1,4 +1,4 @@
-/* $Id: errno.h 4432 2013-03-08 08:02:48Z riza $ */
+/* $Id: errno.h 5539 2017-01-23 04:32:34Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  *
@@ -192,9 +192,12 @@ PJ_BEGIN_DECL
  */
 #define PJMEDIA_EAUD_BADLATENCY	(PJMEDIA_AUDIODEV_ERRNO_START+12) /* 4200012 */
 
-
-
-
+ /**
+  * @hideinitializer
+  * General WASAPI error
+  */
+#define PJMEDIA_EAUD_WASAPI_ERROR \
+				(PJMEDIA_AUDIODEV_ERRNO_START+13) /* 4200013 */
 
 /**
  * Get error message for the specified error code. Note that this

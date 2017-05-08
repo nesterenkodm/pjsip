@@ -11,7 +11,7 @@ function download() {
 }
 
 BASE_DIR="$1"
-PJSIP_URL="http://www.pjsip.org/release/2.5.5/pjproject-2.5.5.tar.bz2"
+PJSIP_URL="http://www.pjsip.org/release/2.6/pjproject-2.6.tar.bz2"
 PJSIP_DIR="$1/src"
 LIB_PATHS=("pjlib/lib" \
            "pjlib-util/lib" \

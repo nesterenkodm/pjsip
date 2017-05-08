@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "pjsip"
-  s.version      = "2.5.5.3"
+  s.version      = "2.6"
   s.summary      = "Open Source SIP, Media and NAT Traversal Library."
   s.homepage     = "http://www.pjsip.org"
   s.author       = 'www.pjsip.org'
@@ -25,49 +25,39 @@ LICENSE
    }
 
   s.source_files        =
-  s.public_header_files =['build/pjproject/src/pjlib/include/*.h',
+  s.public_header_files =[
                           'build/pjproject/src/pjlib/include/**/*.h',
                           'build/pjproject/src/pjlib-util/include/**/*.h',
-                          'build/pjproject/src/pjlib-util/include/*.h',
                           'build/pjproject/src/pjmedia/include/**/*.h',
-                          'build/pjproject/src/pjmedia/include/*.h',
                           'build/pjproject/src/pjnath/include/**/*.h',
-                          'build/pjproject/src/pjnath/include/*.h',
-                          'build/pjproject/src/pjsip/include/**/*.h',
-                          'build/pjproject/src/pjsip/include/*.h']
-
+                          'build/pjproject/src/pjsip/include/**/*.h']
   s.preserve_paths      =['build/pjproject/src/pjlib/include/**/*',
-                          'build/pjproject/src/pjlib/include/*',
                           'build/pjproject/src/pjlib-util/include/**/*',
-                          'build/pjproject/src/pjlib-util/include/*',
                           'build/pjproject/src/pjmedia/include/**/*',
-                          'build/pjproject/src/pjmedia/include/*',
                           'build/pjproject/src/pjnath/include/**/*',
-                          'build/pjproject/src/pjnath/include/*',
-                          'build/pjproject/src/pjsip/include/**/*',
-                          'build/pjproject/src/pjsip/include/*']
-
-  s.vendored_libraries  =['build/openh264/lib/*.a',
-                          'build/opus/dependencies/lib/*.a',
-                          'build/pjproject/src/pjlib/lib/*.a',
-                          'build/pjproject/src/pjlib-util/lib/*.a',
-                          'build/pjproject/src/pjmedia/lib/*.a',
-                          'build/pjproject/src/pjnath/lib/*.a',
-                          'build/pjproject/src/pjsip/lib/*.a',
-                          'build/pjproject/src/third_party/lib/*.a']
-
-  header_search_paths   =['"$(PODS_ROOT)/pjsip/pjlib/include"',
-                          '"$(PODS_ROOT)/pjsip/pjlib-util/include"',
-                          '"$(PODS_ROOT)/pjsip/pjmedia/include"',
-                          '"$(PODS_ROOT)/pjsip/pjnath/include"',
-                          '"$(PODS_ROOT)/pjsip/pjsip/include"']
+                          'build/pjproject/src/pjsip/include/**/*']
+ 
+   s.vendored_libraries  =['build/openh264/lib/*.a',
+                           'build/opus/dependencies/lib/*.a',
+                           'build/pjproject/src/pjlib/lib/*.a',
+                           'build/pjproject/src/pjlib-util/lib/*.a',
+                           'build/pjproject/src/pjmedia/lib/*.a',
+                           'build/pjproject/src/pjnath/lib/*.a',
+                           'build/pjproject/src/pjsip/lib/*.a',
+                           'build/pjproject/src/third_party/lib/*.a']
+  
+  header_search_paths   =['"$(PODS_ROOT)/Headers/Public/pjsip/pjlib/include"',
+                          '"$(PODS_ROOT)/Headers/Public/pjsip/pjlib-util/include"',
+                          '"$(PODS_ROOT)/Headers/Public/pjsip/pjmedia/include"',
+                          '"$(PODS_ROOT)/Headers/Public/pjsip/pjnath/include"',
+                          '"$(PODS_ROOT)/Headers/Public/pjsip/pjsip/include"']
 
   s.xcconfig            = {
       'HEADER_SEARCH_PATHS'          => header_search_paths.join(' '),
       'GCC_PREPROCESSOR_DEFINITIONS' => 'PJ_AUTOCONF=1'
   }
 
-  s.dependency            'OpenSSL-Universal', '1.0.1.19'
+  s.dependency          'OpenSSL-Universal'
   s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'CoreMedia'
   s.libraries           = 'stdc++'
   s.header_mappings_dir = 'build/pjproject/src'

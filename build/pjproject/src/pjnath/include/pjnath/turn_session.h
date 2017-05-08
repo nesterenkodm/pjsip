@@ -1,4 +1,4 @@
-/* $Id: turn_session.h 4606 2013-10-01 05:00:57Z ming $ */
+/* $Id: turn_session.h 5481 2016-11-14 06:13:01Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -329,6 +329,16 @@ typedef struct pj_turn_alloc_param
      * NAT bindings. Default is zero.
      */
     int	    ka_interval;
+
+    /**
+     * The requested ADDRESS-FAMILY. Default is zero to request relay with
+     * address family matched to the one specified in TURN session creation.
+     * Valid values are zero, pj_AF_INET(), and pj_AF_INET6().
+     *
+     * Default value is zero.
+     */
+    int	    af;
+
 
 } pj_turn_alloc_param;
 

@@ -1,4 +1,4 @@
-/* $Id: errno.h 3945 2012-01-27 09:12:59Z nanang $ */
+/* $Id: errno.h 5489 2016-11-23 08:15:49Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -406,7 +406,11 @@ PJ_BEGIN_DECL
  * Invalid or bad format
  */
 #define PJMEDIA_EBADFMT             (PJMEDIA_ERRNO_START+108)    /* 220108 */
-
+/**
+ * @hideinitializer
+ * Unsupported media type.
+ */
+#define PJMEDIA_EUNSUPMEDIATYPE     (PJMEDIA_ERRNO_START+109)    /* 220109 */
 
 /************************************************************
  * RTP SESSION ERRORS

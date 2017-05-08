@@ -1,4 +1,4 @@
-/* $Id: transport_srtp.h 3999 2012-03-30 07:10:13Z bennylp $ */
+/* $Id: transport_srtp.h 5412 2016-08-08 09:09:29Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -155,7 +155,7 @@ typedef struct pjmedia_srtp_setting
     /**
      * Specify individual crypto suite setting.
      */
-    pjmedia_srtp_crypto		crypto[8];
+    pjmedia_srtp_crypto		crypto[PJMEDIA_SRTP_MAX_CRYPTOS];
 
 } pjmedia_srtp_setting;
 
