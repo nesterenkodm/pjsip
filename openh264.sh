@@ -6,7 +6,7 @@ __FILE__=`realpath "$0"`
 __DIR__=`dirname "${__FILE__}"`
 
 BASEDIR_PATH="$1"
-TARGET_URL="https://github.com/cisco/openh264/archive/v1.6.0.zip"
+TARGET_URL="https://github.com/cisco/openh264/archive/v1.7.0.zip"
 TARGET_PATH="${BASEDIR_PATH}/src"
 
 # download

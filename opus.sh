@@ -23,7 +23,7 @@
 #  Choose your libopus version and your currently-installed iOS SDK version:
 #
 VERSION="1.1.3"
-SDKVERSION="10.3"
+SDKVERSION="11.0"
 MINIOSVERSION="8.0"
 
 ###########################################################################
@@ -127,7 +127,7 @@ do
     # Build the application and install it to the fake SDK intermediary dir
     # we have set up. Make sure to clean up afterward because we will re-use
     # this source tree to cross-compile other targets.
-	make -j4
+	make -j8
 	make install
 	make clean
 done

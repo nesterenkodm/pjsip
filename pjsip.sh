@@ -11,7 +11,7 @@ function download() {
 }
 
 BASE_DIR="$1"
-PJSIP_URL="http://www.pjsip.org/release/2.6/pjproject-2.6.tar.bz2"
+PJSIP_URL="http://www.pjsip.org/release/2.7/pjproject-2.7.tar.bz2"
 PJSIP_DIR="$1/src"
 LIB_PATHS=("pjlib/lib" \
            "pjlib-util/lib" \
@@ -166,16 +166,19 @@ function _build() {
 }
 
 function armv7() {
+    export DEVPATH="`xcrun -sdk iphoneos --show-sdk-platform-path`/Developer"
     export CFLAGS="-miphoneos-version-min=8.0"
     export LDFLAGS=
     _build "armv7"
 }
 function armv7s() {
+    export DEVPATH="`xcrun -sdk iphoneos --show-sdk-platform-path`/Developer"
     export CFLAGS="-miphoneos-version-min=8.0"
     export LDFLAGS=
     _build "armv7s"
 }
 function arm64() {
+    export DEVPATH="`xcrun -sdk iphoneos --show-sdk-platform-path`/Developer"
     export CFLAGS="-miphoneos-version-min=8.0"
     export LDFLAGS=
     _build "arm64"
