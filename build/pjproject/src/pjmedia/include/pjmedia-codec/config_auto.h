@@ -1,5 +1,5 @@
 /* pjmedia/include/pjmedia-codec/config_auto.h.  Generated from config_auto.h.in by configure.  */
-/* $Id: config_auto.h.in 5239 2016-02-04 06:11:58Z ming $ */
+/* $Id: config_auto.h.in 5630 2017-07-19 10:29:10Z riza $ */
 /*
  * Copyright (C) 2008-2009 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -88,6 +88,11 @@
 /* OPUS codec */
 #ifndef PJMEDIA_HAS_OPUS_CODEC
 #define PJMEDIA_HAS_OPUS_CODEC 1
+#endif
+
+/* G.729 codec with BCG729 backend */
+#ifndef PJMEDIA_HAS_BCG729
+#define PJMEDIA_HAS_BCG729 0
 #endif
 
 #endif	/* __PJMEDIA_CODEC_CONFIG_AUTO_H_ */

@@ -1,4 +1,4 @@
-/* $Id: sip_uri.h 4537 2013-06-19 06:47:43Z riza $ */
+/* $Id: sip_uri.h 5601 2017-06-08 04:57:59Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -294,7 +294,7 @@ PJ_INLINE(pj_status_t) pjsip_uri_cmp(pjsip_uri_context_e context,
  * @param uri	    The URI to print.
  * @param buf	    The buffer.
  * @param size	    Size of the buffer.
- * @return	    Length printed.
+ * @return	    Length printed if successful, negative value if failed.
  */
 PJ_INLINE(int) pjsip_uri_print(pjsip_uri_context_e context,
 			       const void *uri,

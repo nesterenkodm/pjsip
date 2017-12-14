@@ -1,4 +1,4 @@
-/* $Id: audiodev.h 5430 2016-08-25 03:28:54Z ming $ */
+/* $Id: audiodev.h 5677 2017-10-27 06:30:50Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -49,7 +49,7 @@ typedef pj_int32_t pjmedia_aud_dev_index;
 /**
  * Device index constants.
  */
-enum
+typedef enum pjmedia_aud_dev_id
 {
     /** 
      * Constant to denote default capture device 
@@ -65,7 +65,7 @@ enum
      * Constant to denote invalid device index.
      */
     PJMEDIA_AUD_INVALID_DEV = -3
-};
+} pjmedia_aud_dev_id;
 
 
 #define PJMEDIA_AUD_MAX_DRIVERS	16

@@ -1,4 +1,4 @@
-/* $Id: ice_strans.h 5339 2016-06-08 03:17:45Z nanang $ */
+/* $Id: ice_strans.h 5562 2017-03-03 02:11:02Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -338,9 +338,12 @@ typedef struct pj_ice_strans_turn_cfg
 typedef struct pj_ice_strans_cfg
 {
     /**
-     * Warning: this field is deprecated and will be ignored. Please specify
-     * transport address family in STUN and TURN transport setting, i.e:
-     * \a stun_tp and \a turn_tp.
+     * The address family which will be used as the default address
+     * in the SDP offer. Setting this to pj_AF_UNSPEC() means that
+     * the address family will not be considered during the process
+     * of default candidate selection.
+     *
+     * The default value is pj_AF_INET() (IPv4).
      */
     int			 af;
 

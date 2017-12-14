@@ -1,4 +1,4 @@
-/* $Id: call.hpp 5417 2016-08-12 03:47:26Z ming $ */
+/* $Id: call.hpp 5676 2017-10-24 07:31:39Z ming $ */
 /*
  * Copyright (C) 2012-2013 Teluu Inc. (http://www.teluu.com)
  *
@@ -601,9 +601,14 @@ struct StreamInfo
     unsigned            codecClockRate;
     
     /**
-     * Optional codec param.
+     * Optional audio codec param.
      */
-    CodecParam          codecParam;
+    CodecParam          audCodecParam;
+
+    /**
+     * Optional video codec param.
+     */
+    VidCodecParam       vidCodecParam;
 
 public:
     /**
@@ -686,15 +691,25 @@ struct OnCallSdpCreatedParam
 struct OnStreamCreatedParam
 {
     /**
-     * Media stream.
+     * Media stream, read-only.
      */
     MediaStream stream;
     
     /**
-     * Stream index in the media session.
+     * Stream index in the media session, read-only.
      */
     unsigned    streamIdx;
     
+    /**
+     * Specify if PJSUA2 should take ownership of the port returned in
+     * the pPort parameter below. If set to PJ_TRUE,
+     * pjmedia_port_destroy() will be called on the port when it is
+     * no longer needed.
+     *
+     * Default: PJ_FALSE
+     */
+    bool 	destroyPort;
+
     /**
      * On input, it specifies the media port of the stream. Application
      * may modify this pointer to point to different media port to be

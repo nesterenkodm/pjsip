@@ -1,4 +1,4 @@
-/* $Id: config.h 5550 2017-01-26 02:29:59Z nanang $ */
+/* $Id: config.h 5683 2017-11-08 03:03:22Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -472,6 +472,33 @@
 #endif
 
 /**
+ * Log sender width.
+ *
+ * Default: 22 (for 64-bit machines), 14 otherwise
+ */
+#ifndef PJ_LOG_SENDER_WIDTH
+#   if PJ_HAS_STDINT_H
+#       include <stdint.h>
+#       if (UINTPTR_MAX == 0xffffffffffffffff)
+#           define PJ_LOG_SENDER_WIDTH  22
+#       else
+#           define PJ_LOG_SENDER_WIDTH  14
+#       endif
+#   else
+#       define PJ_LOG_SENDER_WIDTH  14
+#   endif
+#endif
+
+/**
+ * Log thread name width.
+ *
+ * Default: 12
+ */
+#ifndef PJ_LOG_THREAD_WIDTH
+#   define PJ_LOG_THREAD_WIDTH	    12
+#endif
+
+/**
  * Colorfull terminal (for logging etc).
  *
  * Default: 1
@@ -882,6 +909,9 @@
 #   if defined(PJ_WIN32_WINCE) && PJ_WIN32_WINCE && _WIN32_WCE >= 0x502
 	/* Windows Mobile 6 or later */
 #	define PJ_QOS_IMPLEMENTATION    PJ_QOS_WM
+#   elif defined(PJ_DARWINOS)
+	/* Darwin OS (e.g: iOS, MacOS, tvOS) */
+#	define PJ_QOS_IMPLEMENTATION    PJ_QOS_DARWIN
 #   endif
 #endif
 
@@ -1260,10 +1290,10 @@ PJ_BEGIN_DECL
 #define PJ_VERSION_NUM_MAJOR	2
 
 /** PJLIB version minor number. */
-#define PJ_VERSION_NUM_MINOR	6
+#define PJ_VERSION_NUM_MINOR	7
 
 /** PJLIB version revision number. */
-#define PJ_VERSION_NUM_REV	0
+#define PJ_VERSION_NUM_REV	1
 
 /**
  * Extra suffix for the version (e.g. "-trunk"), or empty for

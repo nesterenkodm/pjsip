@@ -1,4 +1,4 @@
-/* $Id: ctype.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: ctype.h 5599 2017-06-05 03:31:18Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -109,7 +109,7 @@ PJ_INLINE(int) pj_isupper(unsigned char c) { return isupper(c); }
  * @return      Non-zero value if c is a either a space (' ') or horizontal
  *              tab ('\\t') character.
  */
-PJ_INLINE(int) pj_isblank(unsigned char c) { return isblank(c); }
+PJ_INLINE(int) pj_isblank(unsigned char c) { return (c==' ' || c=='\t'); }
 
 /**
  * Converts character to lowercase.

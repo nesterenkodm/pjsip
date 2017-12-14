@@ -1,4 +1,4 @@
-/* $Id: config.h 5304 2016-05-17 16:14:36Z riza $ */
+/* $Id: config.h 5632 2017-07-27 06:45:48Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -47,6 +47,38 @@
  */
 #ifndef PJMEDIA_HAS_L16_CODEC
 #   define PJMEDIA_HAS_L16_CODEC    1
+#endif
+
+
+/**
+ * Settings to enable L16 codec 8KHz, mono. By default it is disabled.
+ */
+#ifndef PJMEDIA_CODEC_L16_HAS_8KHZ_MONO
+#   define PJMEDIA_CODEC_L16_HAS_8KHZ_MONO	0
+#endif
+
+
+/**
+ * Settings to enable L16 codec 8KHz, stereo. By default it is disabled.
+ */
+#ifndef PJMEDIA_CODEC_L16_HAS_8KHZ_STEREO
+#   define PJMEDIA_CODEC_L16_HAS_8KHZ_STEREO	0
+#endif
+
+
+/**
+ * Settings to enable L16 codec 16KHz, mono. By default it is disabled.
+ */
+#ifndef PJMEDIA_CODEC_L16_HAS_16KHZ_MONO
+#   define PJMEDIA_CODEC_L16_HAS_16KHZ_MONO	0
+#endif
+
+
+/**
+ * Settings to enable L16 codec 16KHz, stereo. By default it is disabled.
+ */
+#ifndef PJMEDIA_CODEC_L16_HAS_16KHZ_STEREO
+#   define PJMEDIA_CODEC_L16_HAS_16KHZ_STEREO	0
 #endif
 
 
@@ -469,6 +501,17 @@
 #   define PJMEDIA_CODEC_OPUS_DEFAULT_CBR 		PJ_FALSE
 #endif
 
+
+/**
+ * Enable G.729 codec using BCG729 backend.
+ *
+ * Default: 0 
+ */
+#ifndef PJMEDIA_HAS_BCG729
+#   define PJMEDIA_HAS_BCG729				0
+#endif
+
+
 /**
  * Specify if FFMPEG codecs are available.
  *
@@ -500,10 +543,15 @@
 /**
  * Enable FFMPEG H264 codec (requires libx264).
  *
- * Default: 0
+ * Default: disabled when OpenH264 is used, otherwise it is set to
+ * PJMEDIA_HAS_FFMPEG_VID_CODEC
  */
 #ifndef PJMEDIA_HAS_FFMPEG_CODEC_H264
-#   define PJMEDIA_HAS_FFMPEG_CODEC_H264	PJMEDIA_HAS_FFMPEG_VID_CODEC
+#   if defined(PJMEDIA_HAS_OPENH264_CODEC) && PJMEDIA_HAS_OPENH264_CODEC != 0
+#	define PJMEDIA_HAS_FFMPEG_CODEC_H264	0
+#   else
+#	define PJMEDIA_HAS_FFMPEG_CODEC_H264	PJMEDIA_HAS_FFMPEG_VID_CODEC
+#   endif
 #endif
 
 /**

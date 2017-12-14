@@ -1,4 +1,4 @@
-/* $Id: errno.h 5489 2016-11-23 08:15:49Z riza $ */
+/* $Id: errno.h 5597 2017-06-03 09:22:34Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -621,6 +621,24 @@ PJ_BEGIN_DECL
  * Secure transport required in SDP media descriptor.
  */
 #define PJMEDIA_SRTP_ESDPREQSECTP   (PJMEDIA_ERRNO_START+229)    /* 220229 */
+
+/**
+ * @hideinitializer
+ * No matching SRTP crypto-suite after DTLS nego.
+ */
+#define PJMEDIA_SRTP_DTLS_ENOCRYPTO (PJMEDIA_ERRNO_START+240)    /* 220240 */
+
+/**
+ * @hideinitializer
+ * No certificate supplied by peer in DTLS nego.
+ */
+#define PJMEDIA_SRTP_DTLS_EPEERNOCERT (PJMEDIA_ERRNO_START+241)  /* 220241 */
+
+/**
+ * @hideinitializer
+ * Fingerprint from signalling not match to actual fingerprint.
+ */
+#define PJMEDIA_SRTP_DTLS_EFPNOTMATCH (PJMEDIA_ERRNO_START+242)  /* 220242 */
 
 #endif /* PJMEDIA_HAS_SRTP */
 
