@@ -1,4 +1,4 @@
-/* $Id: sip_inv.h 5435 2016-08-30 08:40:18Z riza $ */
+/* $Id: sip_inv.h 5641 2017-08-16 04:53:44Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -97,6 +97,17 @@ typedef enum pjsip_inv_state
 } pjsip_inv_state;
 
 /**
+ * Structure to hold parameters when calling the callback
+ * #on_rx_offer2().
+ */
+struct pjsip_inv_on_rx_offer_cb_param
+{
+    const pjmedia_sdp_session 	*offer;	    /** Remote offer.		    */
+    const pjsip_rx_data 	*rdata;	    /** The received request.       */
+};
+
+
+/**
  * This structure contains callbacks to be registered by application to 
  * receieve notifications from the framework about various events in
  * the invite session.
@@ -154,11 +165,24 @@ typedef struct pjsip_inv_callback
      * this SDP answer will be negotiated with the offer, and the result
      * will be sent with the SIP message.
      *
+     * Note: if callback #on_rx_offer2() is implemented, this callback will
+     * not be called.
+     *
      * @param inv	The invite session.
      * @param offer	Remote offer.
      */
     void (*on_rx_offer)(pjsip_inv_session *inv,
-			const pjmedia_sdp_session *offer);
+                        const pjmedia_sdp_session *offer);
+
+    /**
+     * This callback is called when the invite session has received 
+     * new offer from peer. Variant of #on_rx_offer() callback.
+     *
+     * @param inv	The invite session.
+     * @param param	The callback parameters.
+     */
+    void (*on_rx_offer2)(pjsip_inv_session *inv,
+                         struct pjsip_inv_on_rx_offer_cb_param *param);
 
     /**
      * This callback is optional, and is called when the invite session has

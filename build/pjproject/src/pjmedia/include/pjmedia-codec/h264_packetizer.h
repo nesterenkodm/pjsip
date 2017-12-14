@@ -1,4 +1,4 @@
-/* $Id: h264_packetizer.h 3664 2011-07-19 03:42:28Z nanang $ */
+/* $Id: h264_packetizer.h 5603 2017-06-08 06:23:56Z ming $ */
 /* 
  * Copyright (C) 2011 Teluu Inc. (http://www.teluu.com)
  *
@@ -84,6 +84,13 @@ typedef struct pjmedia_h264_packetizer_cfg
      * Default: PJMEDIA_H264_PACKETIZER_MODE_NON_INTERLEAVED
      */
     pjmedia_h264_packetizer_mode mode;
+
+    /**
+     * NAL start code size used for unpacketizing.
+     * Valid options are 3 (0, 0, 1) or 4 (0, 0, 0, 1).
+     * Default: 3 (0, 0, 1)
+     */
+    unsigned unpack_nal_start;
 }
 pjmedia_h264_packetizer_cfg;
 

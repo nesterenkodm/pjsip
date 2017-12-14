@@ -1,4 +1,4 @@
-/* $Id: pjsua_internal.h 5442 2016-10-04 09:10:11Z ming $ */
+/* $Id: pjsua_internal.h 5676 2017-10-24 07:31:39Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -51,6 +51,8 @@ struct pjsua_call_media
 	/** Audio stream */
 	struct {
 	    pjmedia_stream *stream;    /**< The audio stream.		    */
+	    pjmedia_port   *media_port;/**< The media port.                 */
+	    pj_bool_t	    destroy_port;/**< Destroy the media port?	    */
 	    int		    conf_slot; /**< Slot # in conference bridge.    */
 	} a;
 
@@ -285,6 +287,7 @@ typedef struct pjsua_acc
     pj_uint16_t      next_rtp_port; /**< Next RTP port to be used.      */
     pjsip_transport_type_e tp_type; /**< Transport type (for local acc or
 				         transport binding)		*/
+    pjsua_ip_change_op ip_change_op;/**< IP change process progress.	*/
 } pjsua_acc;
 
 
@@ -303,6 +306,7 @@ typedef struct pjsua_transport_data
 	void		    *ptr;
     } data;
 
+    pj_bool_t		     is_restarting;
 } pjsua_transport_data;
 
 
@@ -374,6 +378,7 @@ typedef struct pjsua_stun_resolve
     pj_status_t		 status;    /**< Session status	    */
     pj_sockaddr		 addr;	    /**< Result		    */
     pj_stun_sock	*stun_sock; /**< Testing STUN sock  */
+    int			 af;	    /**< Address family	    */
     pj_bool_t 		 async_wait;/**< Async resolution 
     					 of STUN entry      */
 } pjsua_stun_resolve;
@@ -865,6 +870,16 @@ PJ_DECL(void) pjsua_vid_win_reset(pjsua_vid_win_id wid);
  * Schedule check for the need of re-INVITE/UPDATE after media update
  */
 void pjsua_call_schedule_reinvite_check(pjsua_call *call, unsigned delay_ms);
+
+/*
+ * Update contact per account on IP change process.
+ */
+pj_status_t pjsua_acc_update_contact_on_ip_change(pjsua_acc *acc);
+
+/*
+ * Call handling per account on IP change process.
+ */
+pj_status_t pjsua_acc_handle_call_on_ip_change(pjsua_acc *acc);
 
 PJ_END_DECL
 

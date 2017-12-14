@@ -1,4 +1,4 @@
-/* $Id: sip_parser.h 4445 2013-03-20 11:29:08Z nanang $ */
+/* $Id: sip_parser.h 5682 2017-11-08 02:58:18Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -39,6 +39,26 @@ PJ_BEGIN_DECL
  */
 
 /**
+ * Contants for limit checks
+ */
+#define PJSIP_MIN_CONTENT_LENGTH    0
+#define PJSIP_MAX_CONTENT_LENGTH    PJ_MAXINT32
+#define PJSIP_MIN_PORT		    0
+#define PJSIP_MAX_PORT		    PJ_MAXUINT16
+#define PJSIP_MIN_TTL		    0
+#define PJSIP_MAX_TTL		    PJ_MAXUINT8
+#define PJSIP_MIN_STATUS_CODE	    100
+#define PJSIP_MAX_STATUS_CODE	    999
+#define PJSIP_MIN_Q1000		    0
+#define PJSIP_MAX_Q1000		    PJ_MAXINT32 / 1000
+#define PJSIP_MIN_EXPIRES	    0
+#define PJSIP_MAX_EXPIRES	    PJ_MAXINT32
+#define PJSIP_MIN_CSEQ		    0
+#define PJSIP_MAX_CSEQ		    PJ_MAXINT32
+#define PJSIP_MIN_RETRY_AFTER	    0
+#define PJSIP_MAX_RETRY_AFTER	    PJ_MAXINT32
+
+/**
  * URI Parsing options.
  */
 enum
@@ -62,6 +82,11 @@ enum
  * Parser syntax error exception value.
  */
 extern int PJSIP_SYN_ERR_EXCEPTION;
+
+/**
+ * Invalid value error exception value.
+ */
+extern int PJSIP_EINVAL_ERR_EXCEPTION;
 
 /**
  * This structure is used to get error reporting from parser.

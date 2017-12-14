@@ -1,4 +1,4 @@
-/* $Id: ctype.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: ctype.h 5599 2017-06-05 03:31:18Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -39,10 +39,6 @@
 #  define isxdigit(c)	    (isdigit(c) || (tolower(c)>='a'&&tolower(c)<='f'))
 #  define tolower(c)	    (((c) >= 'A' && (c) <= 'Z') ? (c)+('a'-'A') : (c))
 #  define toupper(c)	    (((c) >= 'a' && (c) <= 'z') ? (c)-('a'-'A') : (c))
-#endif
-
-#ifndef isblank
-#   define isblank(c)	    (c==' ' || c=='\t')
 #endif
 
 

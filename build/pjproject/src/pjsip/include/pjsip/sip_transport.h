@@ -1,4 +1,4 @@
-/* $Id: sip_transport.h 5308 2016-05-19 06:55:16Z ming $ */
+/* $Id: sip_transport.h 5556 2017-02-20 01:16:58Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -901,6 +901,23 @@ PJ_DECL(pj_status_t) pjsip_transport_register( pjsip_tpmgr *mgr,
  * @return		    PJ_SUCCESS on success.
  */
 PJ_DECL(pj_status_t) pjsip_transport_shutdown(pjsip_transport *tp);
+
+/**
+ * Start shutdown procedure for this transport. If \a force is false,
+ * the API is the same as #pjsip_transport_shutdown(), while
+ * if \a force is true, existing transport users will immediately
+ * receive PJSIP_TP_STATE_DISCONNECTED notification and should not
+ * use the transport anymore. In either case, transport will
+ * only be destroyed after all objects release their references.
+ *
+ * @param tp		    The transport.
+ * @param force		    Force transport to immediately send
+ *			    disconnection state notification.
+ *
+ * @return		    PJ_SUCCESS on success.
+ */
+PJ_DECL(pj_status_t) pjsip_transport_shutdown2(pjsip_transport *tp,
+					       pj_bool_t force);
 
 /**
  * Destroy a transport when there is no object currently uses the transport.

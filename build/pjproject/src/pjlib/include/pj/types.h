@@ -1,4 +1,4 @@
-/* $Id: types.h 4704 2014-01-16 05:30:46Z ming $ */
+/* $Id: types.h 5682 2017-11-08 02:58:18Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -279,9 +279,6 @@ typedef int pj_exception_id_t;
 
 /** Utility macro to compute the number of elements in static array. */
 #define PJ_ARRAY_SIZE(a)    (sizeof(a)/sizeof(a[0]))
-
-/** Maximum value for signed 32-bit integer. */
-#define PJ_MAXINT32  0x7FFFFFFFL
 
 /**
  * Length of object names.

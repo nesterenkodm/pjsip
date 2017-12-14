@@ -1,4 +1,4 @@
-/* $Id: evsub.h 5397 2016-07-26 02:58:44Z nanang $ */
+/* $Id: evsub.h 5558 2017-02-20 01:29:21Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -510,6 +510,18 @@ PJ_DEF(pj_status_t) pjsip_evsub_add_ref(pjsip_evsub *sub);
  */
 PJ_DEF(pj_status_t) pjsip_evsub_dec_ref(pjsip_evsub *sub);
 
+
+/**
+ * Sets, resets, or cancels the UAS subscription timeout.
+ * If there is an existing timer, it is cancelled before any
+ * other action. A timeout of 0 is ignored except that any
+ * existing timer is cancelled.
+ *
+ * @param sub           The server subscription instance.
+ * @param seconds       The new timeout.
+ */
+PJ_DEF(void) pjsip_evsub_uas_set_timeout(pjsip_evsub *sub,
+					 pj_uint32_t seconds);
 
 
 PJ_END_DECL

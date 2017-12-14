@@ -1,4 +1,4 @@
-/* $Id: sip_transaction.h 4420 2013-03-05 11:59:54Z bennylp $ */
+/* $Id: sip_transaction.h 5573 2017-03-29 02:40:48Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -179,6 +179,10 @@ PJ_DECL(unsigned) pjsip_tsx_layer_get_tsx_count(void);
  * Find a transaction with the specified key. The transaction key normally
  * is created by calling #pjsip_tsx_create_key() from an incoming message.
  *
+ * IMPORTANT: To prevent deadlock, application should use
+ * #pjsip_tsx_layer_find_tsx2() instead which only adds a reference to
+ * the transaction instead of locking it.
+ *
  * @param key	    The key string to find the transaction.
  * @param lock	    If non-zero, transaction will be locked before the
  *		    function returns, to make sure that it's not deleted
@@ -189,6 +193,21 @@ PJ_DECL(unsigned) pjsip_tsx_layer_get_tsx_count(void);
  */
 PJ_DECL(pjsip_transaction*) pjsip_tsx_layer_find_tsx( const pj_str_t *key,
 						      pj_bool_t lock );
+
+/**
+ * Find a transaction with the specified key. The transaction key normally
+ * is created by calling #pjsip_tsx_create_key() from an incoming message.
+ *
+ * @param key	    The key string to find the transaction.
+ * @param add_ref   If non-zero, transaction's reference will be added
+ *		    by one before the function returns, to make sure that
+ * 		    it's not deleted by other threads.
+ *
+ * @return	    The matching transaction instance, or NULL if transaction
+ *		    can not be found.
+ */
+PJ_DECL(pjsip_transaction*) pjsip_tsx_layer_find_tsx2( const pj_str_t *key,
+						       pj_bool_t add_ref );
 
 /**
  * Create, initialize, and register a new transaction as UAC from the 
