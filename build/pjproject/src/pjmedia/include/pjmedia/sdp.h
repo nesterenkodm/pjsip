@@ -371,7 +371,7 @@ PJ_DECL(pjmedia_sdp_conn*) pjmedia_sdp_conn_clone(pj_pool_t *pool,
  * Compare connection info. 
  * 
  * @param conn1	    The first connection info to compare.
- * @param conn1	    The second connection info to compare.
+ * @param conn2	    The second connection info to compare.
  * @param option    Comparison option, which should be zero for now.
  *
  * @return	    PJ_SUCCESS when both connection info are equal, otherwise

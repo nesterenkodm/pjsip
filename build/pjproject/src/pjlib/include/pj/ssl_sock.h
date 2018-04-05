@@ -443,7 +443,7 @@ typedef enum pj_ssl_curve
  * Get curve list supported by SSL/TLS backend.
  *
  * @param curves	The curves buffer to receive curve list.
- * @param curves_num	Maximum number of curves to be received.
+ * @param curve_num	Maximum number of curves to be received.
  *
  * @return		PJ_SUCCESS when successful.
  */
@@ -1252,11 +1252,11 @@ PJ_DECL(pj_status_t) pj_ssl_sock_sendto(pj_ssl_sock_t *ssock,
  * operations. Further accept() operations will be done automatically by 
  * the secure socket when \a on_accept_complete() callback returns non-zero.
  *
- * @param ssock		The secure socket.
- * @param pool		Pool used to allocate some internal data for the
- *			operation.
- * @param localaddr	Local address to bind on.
- * @param addr_len	Length of buffer containing local address.
+ * @param ssock		    The secure socket.
+ * @param pool		    Pool used to allocate some internal data for the
+ *			            operation.
+ * @param local_addr    Local address to bind on.
+ * @param addr_len	    Length of buffer containing local address.
  *
  * @return		PJ_SUCCESS if the operation has been successful,
  *			or the appropriate error code on failure.
@@ -1273,11 +1273,11 @@ PJ_DECL(pj_status_t) pj_ssl_sock_start_accept(pj_ssl_sock_t *ssock,
  * socket reported in \a on_accept_complete() callback when there is
  * an incoming connection.
  *
- * @param ssock		The secure socket.
- * @param pool		Pool used to allocate some internal data for the
- *			operation.
- * @param localaddr	Local address to bind on.
- * @param addr_len	Length of buffer containing local address.
+ * @param ssock		    The secure socket.
+ * @param pool		    Pool used to allocate some internal data for the
+ *			            operation.
+ * @param local_addr	Local address to bind on.
+ * @param addr_len	    Length of buffer containing local address.
  * @param newsock_param	Secure socket parameter for new accepted sockets.
  *
  * @return		PJ_SUCCESS if the operation has been successful,

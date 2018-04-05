@@ -388,8 +388,6 @@ typedef enum pj_stun_sess_msg_log_flag
  * @param grp_lock	Optional group lock to be used by this session.
  * 			If NULL, the session will create one itself.
  * @param p_sess	Pointer to receive STUN session instance.
- *
- * @return	    PJ_SUCCESS on success, or the appropriate error code.
  */
 PJ_DECL(pj_status_t) pj_stun_session_create(pj_stun_config *cfg,
 					    const char *name,
@@ -744,8 +742,6 @@ PJ_DECL(pj_status_t) pj_stun_session_on_rx_pkt(pj_stun_session *sess,
  *
  * @param sess	    The STUN session.
  * @param tdata	    The transmit data.
- *
- * @return	    PJ_SUCCESS on success, or the appropriate error code.
  */
 PJ_DECL(void) pj_stun_msg_destroy_tdata(pj_stun_session *sess,
 					pj_stun_tx_data *tdata);

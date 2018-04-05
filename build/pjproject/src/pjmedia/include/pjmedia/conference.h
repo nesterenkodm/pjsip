@@ -236,8 +236,8 @@ PJ_DECL(pj_status_t) pjmedia_conf_add_port( pjmedia_conf *conf,
 
 
 /**
- * <i><b>Warning:</b> This API has been deprecated since 1.3 and will be
- * removed in the future release, use @ref PJMEDIA_SPLITCOMB instead.</i>
+ * <b>Warning:</b> This API has been deprecated since 1.3 and will be
+ * removed in the future release, use @ref PJMEDIA_SPLITCOMB instead.
  *
  * Create and add a passive media port to the conference bridge. Unlike
  * "normal" media port that is added with #pjmedia_conf_add_port(), media

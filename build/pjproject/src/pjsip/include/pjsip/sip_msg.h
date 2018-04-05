@@ -1008,7 +1008,6 @@ typedef struct pjsip_generic_string_hdr
  *		    assign the header name with some string.
  * @param hvalue    Optional string to be assigned as the value.
  *
- * @return	    The header, or THROW exception.
  */
 PJ_DECL(pjsip_generic_string_hdr*) 
 pjsip_generic_string_hdr_create( pj_pool_t *pool, 
@@ -1050,8 +1049,6 @@ pjsip_generic_string_hdr_init( pj_pool_t *pool,
  * @param hname	    The header name to be assigned to the header, or NULL to
  *		    assign the header name with some string.
  * @param hvalue    Optional string to be assigned as the value.
- *
- * @return	    The header, or THROW exception.
  */
 PJ_DECL(void) pjsip_generic_string_hdr_init2(pjsip_generic_string_hdr *h,
 					     pj_str_t *hname,

@@ -205,12 +205,12 @@ PJ_DECL(pj_status_t) pjsip_target_set_set_current(pjsip_target_set *tset,
 /**
  * Set the status code and reason phrase of the specified target.
  *
- * @param target    The target.
- * @param pool	    The memory pool to be used to duplicate the reason phrase.
- * @param code	    The SIP status code to be set to the target.
- * @param reason    The reason phrase  to be set to the target.
+ * @param target        The target.
+ * @param pool	        The memory pool to be used to duplicate the reason phrase.
+ * @param status_code   The SIP status code to be set to the target.
+ * @param reason        The reason phrase  to be set to the target.
  *
- * @return	    PJ_SUCCESS on successful operation or the appropriate
+ * @return	            PJ_SUCCESS on successful operation or the appropriate
  *		    error code.
  */
 PJ_DECL(pj_status_t) pjsip_target_assign_status(pjsip_target *target,
