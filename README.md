@@ -1,7 +1,6 @@
-
 # PJSIP
 
-PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE.
+PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE.          
 
 ## Features
 
@@ -30,4 +29,12 @@ See [example](example/ipjsystest) folder for integration example
 1. Run [build.sh](build.sh).
 2. Drag generated libraries and headers files into your xcode project.
 
+## Call for Pull Requests
 
+It turns out that building pjsip library for iOS is not a trivial task. Since pjsip binaries has to be rebuild from time to time to automate this work I've decided to create bash scripts and share my work with a community. 
+
+It's just my private initiative and I want to state this as clear as possible that this is not an official repository. 
+
+I've finished developing my pjsip application, thats why I'm no longer interested in supporting this repository. But I know there are some people which relies on it. They may have buildtime and runtime issues which I'm not able to debug and investigate. 
+
+If you are a kind of a person that have time and will to fix and update this build scripts, and experienced enough to debug issues, please send me your pull requests — you will be more than welcome.  
