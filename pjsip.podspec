@@ -30,7 +30,8 @@ LICENSE
                           'build/pjproject/src/pjlib-util/include/**/*.h',
                           'build/pjproject/src/pjmedia/include/**/*.h',
                           'build/pjproject/src/pjnath/include/**/*.h',
-                          'build/pjproject/src/pjsip/include/**/*.h']
+                          'build/pjproject/src/pjsip/include/**/*.h',
+                          'build/pjproject/src/pjsip/include/**/*.hpp']
   s.preserve_paths      =['build/pjproject/src/pjlib/include/**/*',
                           'build/pjproject/src/pjlib-util/include/**/*',
                           'build/pjproject/src/pjmedia/include/**/*',
