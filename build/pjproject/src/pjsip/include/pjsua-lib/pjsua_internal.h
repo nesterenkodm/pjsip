@@ -1,4 +1,4 @@
-/* $Id: pjsua_internal.h 5676 2017-10-24 07:31:39Z ming $ */
+/* $Id: pjsua_internal.h 5839 2018-07-25 23:56:39Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -83,6 +83,7 @@ struct pjsua_call_media
     pj_bool_t		 tp_auto_del; /**< May delete media transport       */
     pjsua_med_tp_st	 tp_st;     /**< Media transport state		    */
     pj_bool_t            use_custom_med_tp;/**< Use custom media transport? */
+    pj_bool_t		 enable_rtcp_mux;/**< Enable RTP& RTCP multiplexing?*/
     pj_sockaddr		 rtp_addr;  /**< Current RTP source address
 					    (used to update ICE default
 					    address)			    */
@@ -138,6 +139,8 @@ struct pjsua_call
     pjsua_call_hold_type call_hold_type; /**< How to do call hold.	    */
     pj_bool_t		 local_hold;/**< Flag for call-hold by local.	    */
     void		*hold_msg;  /**< Outgoing hold tx_data.		    */
+    pj_str_t		 cname;	    /**< RTCP CNAME.			    */
+    char		 cname_buf[16];/**< cname buffer.		    */
 
     unsigned		 med_cnt;   /**< Number of media in SDP.	    */
     pjsua_call_media     media[PJSUA_MAX_CALL_MEDIA]; /**< Array of media   */
@@ -189,6 +192,7 @@ struct pjsua_call
     unsigned		 rem_vid_cnt;  /**< No of active video in last remote
 					    offer.			    */
     
+    pj_bool_t		 rx_reinv_async;/**< on_call_rx_reinvite() async.   */
     pj_timer_entry	 reinv_timer;  /**< Reinvite retry timer.	    */
     pj_bool_t	 	 reinv_pending;/**< Pending until CONFIRMED state.  */
     pj_bool_t	 	 reinv_ice_sent;/**< Has reinvite for ICE upd sent? */
@@ -448,6 +452,7 @@ struct pjsua_data
     pj_status_t		 stun_status; /**< STUN server status.		*/
     pjsua_stun_resolve	 stun_res;  /**< List of pending STUN resolution*/
     unsigned		 stun_srv_idx; /**< Resolved STUN server index	*/
+    unsigned		 stun_opt;  /**< STUN resolution option.	*/
     pj_dns_resolver	*resolver;  /**< DNS resolver.			*/   
 
     /* Detected NAT type */
@@ -619,7 +624,8 @@ void pjsua_set_state(pjsua_state new_state);
  * STUN resolution
  */
 /* Resolve the STUN server */
-pj_status_t resolve_stun_server(pj_bool_t wait, pj_bool_t retry_if_cur_error);
+pj_status_t resolve_stun_server(pj_bool_t wait, pj_bool_t retry_if_cur_error,
+				unsigned options);
 
 /** 
  * Normalize route URI (check for ";lr" and append one if it doesn't

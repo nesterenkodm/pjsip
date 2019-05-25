@@ -1,4 +1,4 @@
-/* $Id: sip_transport_tcp.h 5649 2017-09-15 05:32:08Z riza $ */
+/* $Id: sip_transport_tcp.h 5869 2018-08-28 05:42:25Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -111,6 +111,15 @@ typedef struct pjsip_tcp_transport_cfg
      * 
      */
     pj_sockopt_params	sockopt_params;
+
+
+    /**
+     * Intial timeout interval to be applied to incoming transports 
+     * (i.e. server side) when no data received after a successful connection.
+     *
+     * Default: PJSIP_TCP_INITIAL_TIMEOUT
+     */
+    unsigned		initial_timeout;
 
 } pjsip_tcp_transport_cfg;
 

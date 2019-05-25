@@ -1,4 +1,4 @@
-/* $Id: iscomposing.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: iscomposing.h 5697 2017-11-17 04:07:43Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -104,9 +104,12 @@ PJ_DECL(pjsip_msg_body*) pjsip_iscomposing_create_body( pj_pool_t *pool,
  * Parse the buffer and return message composition indication in the 
  * message.
  *
+ * Note that the input string buffer MUST be NULL terminated and have
+ * length at least len+1 (len MUST NOT include the NULL terminator).
+ *
  * @param pool		    Pool to allocate memory for the parsing process.
- * @param msg		    The message to be parsed.
- * @param len		    Length of the message.
+ * @param msg		    The message to be parsed, MUST be NULL terminated.
+ * @param len		    Length of the message, excluding NULL terminator.
  * @param p_is_composing    Optional pointer to receive iscomposing status.
  * @param p_last_active	    Optional pointer to receive last active attribute.
  * @param p_content_type    Optional pointer to receive content type attribute.

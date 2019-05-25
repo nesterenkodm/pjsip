@@ -1,4 +1,4 @@
-/* $Id: sock.h 5636 2017-08-02 02:51:59Z ming $ */
+/* $Id: sock.h 5833 2018-07-23 07:15:08Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -629,8 +629,6 @@ typedef struct pj_ip_mreq {
     pj_in_addr imr_interface;	/**< local IP address of interface. */
 } pj_ip_mreq;
 
-/* Maximum number of socket options. */
-#define PJ_MAX_SOCKOPT_PARAMS 4
 
 /**
  * Options to be set for the socket. 
@@ -1488,6 +1486,30 @@ PJ_DECL(pj_status_t) pj_sock_sendto(pj_sock_t sockfd,
 PJ_DECL(pj_status_t) pj_sock_shutdown( pj_sock_t sockfd,
 				       int how);
 #endif
+
+/*****************************************************************************
+ *
+ * Utilities.
+ *
+ *****************************************************************************
+ */
+
+/**
+ * Print socket address string. This method will enclose the address string 
+ * with square bracket if it's IPv6 address.
+ *
+ * @param host_str  The host address string.
+ * @param port	    The port address.
+ * @param buf	    Text buffer.
+ * @param size	    Size of buffer.
+ * @param flags	    Bitmask combination of these value:
+ *		    - 1: port number is included. 
+ *
+ * @return	The address string.
+ */
+PJ_DECL(char *) pj_addr_str_print( const pj_str_t *host_str, int port, 
+				   char *buf, int size, unsigned flag);
+
 
 /**
  * @}

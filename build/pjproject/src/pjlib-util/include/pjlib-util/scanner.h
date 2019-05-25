@@ -1,4 +1,4 @@
-/* $Id: scanner.h 4537 2013-06-19 06:47:43Z riza $ */
+/* $Id: scanner.h 5693 2017-11-14 08:20:15Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -216,16 +216,14 @@ typedef struct pj_scan_state
 
 
 /**
- * Initialize the scanner. Note that the input string buffer must have
- * length at least buflen+1 because the scanner will NULL terminate the
- * string during initialization.
+ * Initialize the scanner.
+ * Note that the input string buffer MUST be NULL terminated and have
+ * length at least buflen+1 (buflen MUST NOT include the NULL terminator).
  *
  * @param scanner   The scanner to be initialized.
- * @param bufstart  The input buffer to scan. Note that buffer[buflen] will be 
- *		    filled with NULL char until scanner is destroyed, so
- *		    the actual buffer length must be at least buflen+1.
+ * @param bufstart  The input buffer to scan, which must be NULL terminated.
  * @param buflen    The length of the input buffer, which normally is
- *		    strlen(bufstart).
+ *		    strlen(bufstart), hence not counting the NULL terminator.
  * @param options   Zero, or combination of PJ_SCAN_AUTOSKIP_WS or
  *		    PJ_SCAN_AUTOSKIP_WS_HEADER
  * @param callback  Callback to be called when the scanner encounters syntax

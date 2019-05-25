@@ -1,4 +1,4 @@
-/* $Id: rand.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: rand.h 5692 2017-11-13 06:06:25Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -43,20 +43,6 @@
 #  else
 #      define platform_rand rand
 #  endif
-
-#elif defined(PJ_LINUX_KERNEL) && PJ_LINUX_KERNEL != 0
-   /*
-    * Linux kernel mode random number generator.
-    */
-#  include <linux/random.h>
-#  define platform_srand(seed)
-
-   PJ_INLINE(int) platform_rand(void)
-   {
-     int value;
-     get_random_bytes((void*)&value, sizeof(value));
-     return value;
-   }
 
 #else
 #  warning "platform_rand() is not implemented"

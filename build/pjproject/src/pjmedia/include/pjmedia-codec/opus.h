@@ -1,4 +1,4 @@
-/* $Id: opus.h 5239 2016-02-04 06:11:58Z ming $ */
+/* $Id: opus.h 5831 2018-07-23 06:35:57Z ming $ */
 /*
  * Copyright (C) 2015-2016 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2012-2015 Zaark Technology AB
@@ -99,6 +99,7 @@ typedef struct pjmedia_codec_opus_config
 {
     unsigned   sample_rate; /**< Sample rate in Hz.                     */
     unsigned   channel_cnt; /**< Number of channels.                    */
+    unsigned   frm_ptime;   /**< Frame time in msec.   			*/
     unsigned   bit_rate;    /**< Encoder bit rate in bps.		*/
     unsigned   packet_loss; /**< Encoder's expected packet loss pct.	*/
     unsigned   complexity;  /**< Encoder complexity, 0-10(10 is highest)*/
@@ -138,7 +139,11 @@ pjmedia_codec_opus_get_config( pjmedia_codec_opus_config *cfg );
  * Note that the function will call #pjmedia_codec_mgr_set_default_param().
  *
  * @param cfg		Opus codec configuration.
- * @param param	    	The new default Opus codec parameter.
+ * @param param	    	On input, the default Opus codec parameter to be set.
+ *			On output, the current default Opus codec parameter
+ *			after setting. This may be different from the input
+ *			because some settings can be rejected, or overwritten
+ *			by the Opus codec configuration above.
  *
  * @return		PJ_SUCCESS on success.
  */

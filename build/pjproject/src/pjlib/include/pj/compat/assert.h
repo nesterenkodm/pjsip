@@ -1,4 +1,4 @@
-/* $Id: assert.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: assert.h 5692 2017-11-13 06:06:25Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -27,13 +27,6 @@
 
 #if defined(PJ_HAS_ASSERT_H) && PJ_HAS_ASSERT_H != 0
 #  include <assert.h>
-
-#elif defined(PJ_LINUX_KERNEL) && PJ_LINUX_KERNEL != 0
-#  define assert(expr) do { \
-			if (!(expr)) \
-			  printk("!!ASSERTION FAILED: [%s:%d] \"" #expr "\"\n",\
-				 __FILE__, __LINE__); \
-		       } while (0)
 
 #else
 #  warning "assert() is not implemented"

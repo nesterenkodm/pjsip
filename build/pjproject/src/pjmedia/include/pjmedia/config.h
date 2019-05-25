@@ -1,4 +1,4 @@
-/* $Id: config.h 5643 2017-08-22 04:59:57Z riza $ */
+/* $Id: config.h 5820 2018-07-12 08:22:31Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -72,6 +72,16 @@
  */
 #ifndef PJMEDIA_CONF_SWITCH_BOARD_BUF_SIZE
 #   define PJMEDIA_CONF_SWITCH_BOARD_BUF_SIZE    PJMEDIA_MAX_MTU
+#endif
+
+/**
+ * Specify whether the conference bridge uses AGC, an automatic adjustment to
+ * avoid dramatic change in the signal level which can cause noise.
+ *
+ * Default: 1 (enabled)
+ */
+#ifndef PJMEDIA_CONF_USE_AGC
+#   define PJMEDIA_CONF_USE_AGC    	    1
 #endif
 
 
@@ -402,10 +412,23 @@
 
 
 /**
- * DTMF/telephone-event duration, in timestamp.
+ * DTMF/telephone-event duration, in timestamp. To specify the duration in
+ * milliseconds, use the setting PJMEDIA_DTMF_DURATION_MSEC instead.
  */
 #ifndef PJMEDIA_DTMF_DURATION		
 #  define PJMEDIA_DTMF_DURATION			1600	/* in timestamp */
+#endif
+
+
+/**
+ * DTMF/telephone-event duration, in milliseconds. If the value is greater
+ * than zero, than this setting will be used instead of PJMEDIA_DTMF_DURATION.
+ *
+ * Note that for a clockrate of 8 KHz, a dtmf duration of 1600 timestamp
+ * units (the default value of PJMEDIA_DTMF_DURATION) is equivalent to 200 ms. 
+ */
+#ifndef PJMEDIA_DTMF_DURATION_MSEC		
+#  define PJMEDIA_DTMF_DURATION_MSEC		0
 #endif
 
 
@@ -540,6 +563,16 @@
  */
 #ifndef PJMEDIA_RTCP_RX_SDES_BUF_LEN
 #   define PJMEDIA_RTCP_RX_SDES_BUF_LEN		64
+#endif
+
+
+/**
+ * Specify the maximum number of RTCP Feedback capability definition.
+ * 
+ * Default: 16
+ */
+#ifndef PJMEDIA_RTCP_FB_MAX_CAP
+#   define PJMEDIA_RTCP_FB_MAX_CAP		16
 #endif
 
 
@@ -1094,6 +1127,16 @@
  */
 #ifndef PJMEDIA_HANDLE_G722_MPEG_BUG
 #   define PJMEDIA_HANDLE_G722_MPEG_BUG		    1
+#endif
+
+
+/* Setting to determine if media transport should switch RTP and RTCP
+ * remote address to the source address of the packets it receives.
+ *
+ * By default it is enabled.
+ */
+#ifndef PJMEDIA_TRANSPORT_SWITCH_REMOTE_ADDR
+#   define PJMEDIA_TRANSPORT_SWITCH_REMOTE_ADDR	    1
 #endif
 
 

@@ -1,4 +1,4 @@
-/* $Id: vid_stream.h 5479 2016-11-04 14:57:20Z riza $ */
+/* $Id: vid_stream.h 5788 2018-05-09 06:58:48Z ming $ */
 /* 
  * Copyright (C) 2011 Teluu Inc. (http://www.teluu.com)
  *
@@ -155,9 +155,14 @@ typedef struct pjmedia_vid_stream_info
     pj_sockaddr		rem_rtcp;   /**< Optional remote RTCP address. If
 					 sin_family is zero, the RTP address
 					 will be calculated from RTP.	    */
+    pj_bool_t		rtcp_mux;   /**< Use RTP and RTCP multiplexing.     */
     unsigned		tx_pt;	    /**< Outgoing codec paylaod type.	    */
     unsigned		rx_pt;	    /**< Incoming codec paylaod type.	    */
     pj_uint32_t		ssrc;	    /**< RTP SSRC.			    */
+    pj_str_t		cname; 	    /**< RTCP CNAME.			    */
+    pj_bool_t		has_rem_ssrc;/**<Has remote RTP SSRC?		    */
+    pj_uint32_t		rem_ssrc;   /**< Remote RTP SSRC.		    */
+    pj_str_t		rem_cname;  /**< Remote RTCP CNAME.		    */
     pj_uint32_t		rtp_ts;	    /**< Initial RTP timestamp.		    */
     pj_uint16_t		rtp_seq;    /**< Initial RTP sequence number.	    */
     pj_uint8_t		rtp_seq_ts_set;
