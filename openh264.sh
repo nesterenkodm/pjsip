@@ -37,7 +37,7 @@ function build() {
     fi
     mkdir -p ${PREFIX}
 
-    echo "Builing for ${ARCH}..."
+    echo "Building for ${ARCH}..."
 
     cp "${MAKEFILE}" "${MAKEFILE_BAK}"
 
