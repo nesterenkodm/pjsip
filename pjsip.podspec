@@ -60,6 +60,7 @@ LICENSE
 
   #s.dependency          = 'OpenSSL-Universal'
   #s.frameworks 		= 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'CoreMedia', 'CoreVideo', 'QuartzCore', 'OpenGLES'
+  s.frameworks = 'AppKit', 'VideoToolbox'
   s.libraries           = 'stdc++'
   s.header_mappings_dir = 'build/pjproject/src'
   s.requires_arc        = false
