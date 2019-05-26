@@ -47,11 +47,11 @@ LICENSE
                            'build/pjproject/src/pjsip/lib/*.a',
                            'build/pjproject/src/third_party/lib/*.a']
   
-  header_search_paths   =['"$(PODS_ROOT)/Headers/Public/pjsip/pjlib/include"',
-                          '"$(PODS_ROOT)/Headers/Public/pjsip/pjlib-util/include"',
-                          '"$(PODS_ROOT)/Headers/Public/pjsip/pjmedia/include"',
-                          '"$(PODS_ROOT)/Headers/Public/pjsip/pjnath/include"',
-                          '"$(PODS_ROOT)/Headers/Public/pjsip/pjsip/include"']
+  header_search_paths   =['"$(PODS_ROOT)/Headers/Public/pjsip-macosx/pjlib/include"',
+                          '"$(PODS_ROOT)/Headers/Public/pjsip-macosx/pjlib-util/include"',
+                          '"$(PODS_ROOT)/Headers/Public/pjsip-macosx/pjmedia/include"',
+                          '"$(PODS_ROOT)/Headers/Public/pjsip-macosx/pjnath/include"',
+                          '"$(PODS_ROOT)/Headers/Public/pjsip-macosx/pjsip/include"']
 
   s.xcconfig            = {
       'HEADER_SEARCH_PATHS'          => header_search_paths.join(' '),
