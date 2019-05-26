@@ -1,4 +1,4 @@
-/* $Id: config.h 5632 2017-07-27 06:45:48Z ming $ */
+/* $Id: config.h 5791 2018-05-14 01:24:43Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -79,6 +79,22 @@
  */
 #ifndef PJMEDIA_CODEC_L16_HAS_16KHZ_STEREO
 #   define PJMEDIA_CODEC_L16_HAS_16KHZ_STEREO	0
+#endif
+
+
+/**
+ * Settings to enable L16 codec 48KHz, mono. By default it is disabled.
+ */
+#ifndef PJMEDIA_CODEC_L16_HAS_48KHZ_MONO
+#   define PJMEDIA_CODEC_L16_HAS_48KHZ_MONO	0
+#endif
+
+
+/**
+ * Settings to enable L16 codec 48KHz, stereo. By default it is disabled.
+ */
+#ifndef PJMEDIA_CODEC_L16_HAS_48KHZ_STEREO
+#   define PJMEDIA_CODEC_L16_HAS_48KHZ_STEREO	0
 #endif
 
 

@@ -1,4 +1,4 @@
-/* $Id: transport.h 5478 2016-11-03 09:39:20Z riza $ */
+/* $Id: transport.h 5853 2018-08-03 09:21:51Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -257,7 +257,14 @@ typedef enum pjmedia_tranport_media_option
      * transport SRTP, media transport validation only need to be done by 
      * transport SRTP.
      */
-    PJMEDIA_TPMED_NO_TRANSPORT_CHECKING = 1
+    PJMEDIA_TPMED_NO_TRANSPORT_CHECKING = 1,
+
+    /**
+     * When this flag is specified, the transport will allow multiplexing
+     * RTP and RTCP, i.e. if the remote agrees, RTCP will be sent using
+     * the same socket for RTP.
+     */
+    PJMEDIA_TPMED_RTCP_MUX = 2
 
 } pjmedia_tranport_media_option;
 
@@ -546,7 +553,7 @@ struct pjmedia_transport_info
 
     /**
      * Remote address where RTP/RTCP originated from. In case this transport
-     * hasn't ever received packet, the 
+     * hasn't ever received packet, the address can be invalid (zero).
      */
     pj_sockaddr	    src_rtp_name;
     pj_sockaddr	    src_rtcp_name;
@@ -563,6 +570,39 @@ struct pjmedia_transport_info
 
 };
 
+/**
+ * This structure describes the data passed when calling #rtp_cb2().
+ */
+typedef struct pjmedia_tp_cb_param
+{
+    /**
+     * User data.
+     */
+    void 	       *user_data;
+
+    /**
+     * Packet buffer.
+     */
+    void 	       *pkt;
+
+    /**
+     * Packet size.
+     */
+    pj_ssize_t 		size;
+
+    /**
+     * Packet's source address.
+     */
+    pj_sockaddr	       *src_addr;
+
+    /**
+     * Should media transport switch remote address to \a rtp_src_addr?
+     * Media transport should initialize it to PJ_FALSE, and application
+     * can change the value as necessary.
+     */
+    pj_bool_t	        rem_switch;
+
+} pjmedia_tp_cb_param;
 
 /**
  * This structure describes the data passed when calling
@@ -612,6 +652,12 @@ struct pjmedia_transport_attach_param
      * Callback to be called when RTCP packet is received on the transport.
      */
     void (*rtcp_cb)(void *user_data, void *pkt, pj_ssize_t);
+
+    /**
+     * Callback to be called when RTP packet is received on the transport.
+     */
+    void (*rtp_cb2)(pjmedia_tp_cb_param *param);
+
 };
 
 /**
@@ -682,16 +728,16 @@ PJ_INLINE(void*) pjmedia_transport_info_get_spc_info(
  * @return	    PJ_SUCCESS on success, or the appropriate error code.
  */
 PJ_INLINE(pj_status_t) pjmedia_transport_attach2(pjmedia_transport *tp,
-                                      pjmedia_transport_attach_param *att_param)
+                                  pjmedia_transport_attach_param *att_param)
 {
     if (tp->op->attach2) {
-	return tp->op->attach2(tp, att_param);
+	return (*tp->op->attach2)(tp, att_param);
     } else {
-	return tp->op->attach(tp, att_param->user_data, 
-			      (pj_sockaddr_t*)&att_param->rem_addr, 
-			      (pj_sockaddr_t*)&att_param->rem_rtcp, 
-			      att_param->addr_len, att_param->rtp_cb, 
-			      att_param->rtcp_cb);
+	return (*tp->op->attach)(tp, att_param->user_data, 
+				 (pj_sockaddr_t*)&att_param->rem_addr, 
+				 (pj_sockaddr_t*)&att_param->rem_rtcp, 
+				 att_param->addr_len, att_param->rtp_cb, 
+				 att_param->rtcp_cb);
     }
 }
 
@@ -729,8 +775,22 @@ PJ_INLINE(pj_status_t) pjmedia_transport_attach(pjmedia_transport *tp,
 							        void*pkt,
 							        pj_ssize_t))
 {
-    return tp->op->attach(tp, user_data, rem_addr, rem_rtcp, addr_len, 
-			  rtp_cb, rtcp_cb);
+    if (tp->op->attach2) {
+	pjmedia_transport_attach_param param;
+
+	pj_bzero(&param, sizeof(param));
+	param.user_data = user_data;
+	pj_sockaddr_cp(&param.rem_addr, rem_addr);
+	pj_sockaddr_cp(&param.rem_rtcp, rem_rtcp);
+	param.addr_len = addr_len;
+	param.rtp_cb = rtp_cb;
+	param.rtcp_cb = rtcp_cb;
+
+	return (*tp->op->attach2)(tp, &param);
+    } else {
+	return (*tp->op->attach)(tp, user_data, rem_addr, rem_rtcp, addr_len,
+			         rtp_cb, rtcp_cb);
+    }
 }
 
 
@@ -749,7 +809,7 @@ PJ_INLINE(pj_status_t) pjmedia_transport_attach(pjmedia_transport *tp,
 PJ_INLINE(void) pjmedia_transport_detach(pjmedia_transport *tp,
 					 void *user_data)
 {
-    tp->op->detach(tp, user_data);
+    (*tp->op->detach)(tp, user_data);
 }
 
 

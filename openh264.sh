@@ -6,7 +6,7 @@ __FILE__=`realpath "$0"`
 __DIR__=`dirname "${__FILE__}"`
 
 BASEDIR_PATH="$1"
-TARGET_URL="https://github.com/cisco/openh264/archive/v1.7.0.zip"
+TARGET_URL="https://github.com/cisco/openh264/archive/v1.8.0.zip"
 TARGET_PATH="${BASEDIR_PATH}/src"
 
 # download
@@ -37,7 +37,7 @@ function build() {
     fi
     mkdir -p ${PREFIX}
 
-    echo "Builing for ${ARCH}..."
+    echo "Building for ${ARCH}..."
 
     cp "${MAKEFILE}" "${MAKEFILE_BAK}"
 

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "pjsip"
-  s.version      = "2.7.1"
+  s.version      = "2.8.0"
   s.summary      = "Open Source SIP, Media and NAT Traversal Library."
   s.homepage     = "http://www.pjsip.org"
   s.author       = 'www.pjsip.org'
@@ -59,7 +59,7 @@ LICENSE
   }
 
   s.dependency          'OpenSSL-Universal'
-  s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'CoreMedia'
+  s.frameworks          = 'CFNetwork', 'AudioToolbox', 'AVFoundation', 'CoreMedia', 'CoreVideo', 'UIKit', 'QuartzCore', 'OpenGLES'
   s.libraries           = 'stdc++'
   s.header_mappings_dir = 'build/pjproject/src'
   s.requires_arc        = false

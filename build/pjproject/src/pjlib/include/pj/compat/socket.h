@@ -1,4 +1,4 @@
-/* $Id: socket.h 5445 2016-10-05 09:52:39Z riza $ */
+/* $Id: socket.h 5692 2017-11-13 06:06:25Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -183,34 +183,6 @@
 #undef s_addr
 #undef s6_addr
 #undef sin_zero
-
-/*
- * Linux kernel specifics
- */
-#if defined(PJ_LINUX_KERNEL)
-#   include <linux/net.h>
-#   include <asm/ioctls.h>		/* FIONBIO	*/
-#   include <linux/syscalls.h>	/* sys_select() */
-#   include <asm/uaccess.h>	/* set/get_fs()	*/
-
-    typedef int socklen_t;
-#   define getsockopt  sys_getsockopt
-
-    /*
-     * Wrapper for select() in Linux kernel.
-     */
-    PJ_INLINE(int) select(int n, fd_set *inp, fd_set *outp, fd_set *exp,
-		          struct timeval *tvp)
-    {
-        int count;
-        mm_segment_t oldfs = get_fs();
-        set_fs(KERNEL_DS);
-        count = sys_select(n, inp, outp, exp, tvp);
-        set_fs(oldfs);
-        return count;
-    }
-#endif	/* PJ_LINUX_KERNEL */
-
 
 /*
  * This will finally be obsoleted, since it should be declared in

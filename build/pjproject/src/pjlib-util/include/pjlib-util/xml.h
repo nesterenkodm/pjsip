@@ -1,4 +1,4 @@
-/* $Id: xml.h 3553 2011-05-05 06:14:19Z nanang $ */
+/* $Id: xml.h 5697 2017-11-17 04:07:43Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -73,9 +73,12 @@ struct pj_xml_node
  * XML comments ("<!--"), however such constructs will be ignored and will not 
  * be included in the resulted XML node tree.
  *
+ * Note that the XML message input buffer MUST be NULL terminated and have
+ * length at least len+1 (len MUST NOT include the NULL terminator).
+ *
  * @param pool	    Pool to allocate memory from.
- * @param msg	    The XML message to parse.
- * @param len	    The length of the message.
+ * @param msg	    The XML message to parse, MUST be NULL terminated.
+ * @param len	    The length of the message, not including NULL terminator.
  *
  * @return	    XML root node, or NULL if the XML document can not be parsed.
  */

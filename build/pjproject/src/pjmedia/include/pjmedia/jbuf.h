@@ -1,4 +1,4 @@
-/* $Id: jbuf.h 3841 2011-10-24 09:28:13Z ming $ */
+/* $Id: jbuf.h 5803 2018-06-06 08:38:29Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -168,6 +168,18 @@ PJ_DECL(pj_status_t) pjmedia_jbuf_create(pj_pool_t *pool,
 					 pjmedia_jbuf **p_jb);
 
 /**
+ * Set the jitter buffer's frame duration.
+ *
+ * @param jb		The jitter buffer
+ * @param ptime		Frame duration.
+ *
+ * @return		PJ_SUCCESS on success.
+ */
+PJ_DECL(pj_status_t) pjmedia_jbuf_set_ptime( pjmedia_jbuf *jb,
+					     unsigned ptime);
+
+
+/**
  * Set the jitter buffer to fixed delay mode. The default behavior
  * is to adapt the delay with actual packet delay.
  *
@@ -269,7 +281,8 @@ PJ_DECL(void) pjmedia_jbuf_put_frame( pjmedia_jbuf *jb,
  * @param size		The frame size.
  * @param bit_info	Bit precise info of the frame, e.g: a frame may not 
  *			exactly start and end at the octet boundary, so this
- *			field may be used for specifying start & end bit offset.
+ *			field may be used for specifying start & end bit
+ *			offset.
  * @param frame_seq	The frame sequence number.
  * @param discarded	Flag whether the frame is discarded by jitter buffer.
  */
@@ -294,7 +307,8 @@ PJ_DECL(void) pjmedia_jbuf_put_frame2( pjmedia_jbuf *jb,
  * @param size		The frame size.
  * @param bit_info	Bit precise info of the frame, e.g: a frame may not 
  *			exactly start and end at the octet boundary, so this
- *			field may be used for specifying start & end bit offset.
+ *			field may be used for specifying start & end bit
+ *			offset.
  * @param frame_seq	The frame sequence number.
  * @param frame_ts	The frame timestamp.
  * @param discarded	Flag whether the frame is discarded by jitter buffer.
@@ -342,12 +356,14 @@ PJ_DECL(void) pjmedia_jbuf_get_frame( pjmedia_jbuf *jb,
  * @param jb		The jitter buffer.
  * @param frame		Buffer to receive the payload from the jitter buffer.
  *			@see pjmedia_jbuf_get_frame().    
- * @param size		Pointer to receive frame size.
+ * @param size		On input, it points to maximum buffer length.
+ *			On output, it will be filled with received frame size.
  * @param p_frm_type	Pointer to receive frame type.
  *			@see pjmedia_jbuf_get_frame().    
  * @param bit_info	Bit precise info of the frame, e.g: a frame may not 
  *			exactly start and end at the octet boundary, so this
- *			field may be used for specifying start & end bit offset.
+ *			field may be used for specifying start & end bit
+ *			offset.
  */
 PJ_DECL(void) pjmedia_jbuf_get_frame2(pjmedia_jbuf *jb, 
 				      void *frame, 
@@ -363,12 +379,14 @@ PJ_DECL(void) pjmedia_jbuf_get_frame2(pjmedia_jbuf *jb,
  * @param jb		The jitter buffer.
  * @param frame		Buffer to receive the payload from the jitter buffer.
  *			@see pjmedia_jbuf_get_frame().    
- * @param size		Pointer to receive frame size.
+ * @param size		On input, it points to maximum buffer length.
+ *			On output, it will be filled with received frame size.
  * @param p_frm_type	Pointer to receive frame type.
  *			@see pjmedia_jbuf_get_frame().    
  * @param bit_info	Bit precise info of the frame, e.g: a frame may not 
  *			exactly start and end at the octet boundary, so this
- *			field may be used for specifying start & end bit offset.
+ *			field may be used for specifying start & end bit
+ *			offset.
  * @param ts		Frame timestamp.
  * @param seq		Frame sequence number.
  */
@@ -394,7 +412,8 @@ PJ_DECL(void) pjmedia_jbuf_get_frame3(pjmedia_jbuf *jb,
  *			@see pjmedia_jbuf_get_frame().    
  * @param bit_info	Bit precise info of the frame, e.g: a frame may not 
  *			exactly start and end at the octet boundary, so this
- *			field may be used for specifying start & end bit offset.
+ *			field may be used for specifying start & end bit
+ *			offset.
  * @param ts		Frame timestamp.
  * @param seq		Frame sequence number.
  */

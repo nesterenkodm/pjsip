@@ -1,4 +1,4 @@
-/* $Id: sip_msg.h 4700 2014-01-02 01:25:22Z ming $ */
+/* $Id: sip_msg.h 5807 2018-06-20 07:56:45Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -402,6 +402,8 @@ typedef struct pjsip_status_line
  */
 typedef enum pjsip_status_code
 {
+    PJSIP_SC_NULL = 0,
+
     PJSIP_SC_TRYING = 100,
     PJSIP_SC_RINGING = 180,
     PJSIP_SC_CALL_BEING_FORWARDED = 181,

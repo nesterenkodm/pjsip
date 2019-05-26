@@ -1,4 +1,4 @@
-/* $Id: sip_config.h 5668 2017-09-29 02:43:05Z ming $ */
+/* $Id: sip_config.h 5869 2018-08-28 05:42:25Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -156,6 +156,30 @@ typedef struct pjsip_cfg_t
 	 * Default is PJ_FALSE.
 	 */
 	pj_bool_t disable_secure_dlg_check;
+
+	/**
+	 * Encode SIP headers in their short forms to reduce size. By default,
+	 * SIP headers in outgoing messages will be encoded in their full names.
+	 * If this option is enabled, then SIP headers for outgoing messages
+	 * will be encoded in their short forms, to reduce message size. 
+	 * Note that this does not affect the ability of PJSIP to parse incoming
+	 * SIP messages, as the parser always supports parsing both the long
+	 * and short version of the headers.
+	 *
+	 * Default is PJSIP_ENCODE_SHORT_HNAME
+	 */
+	pj_bool_t use_compact_form;
+
+        /**
+         * Accept multiple SDP answers on non-reliable 18X responses and the 2XX
+         * response when they are all received from the same source (same To tag).
+         *
+         * See also:
+         * https://tools.ietf.org/html/rfc6337#section-3.1.1
+         *
+         * Default is PJSIP_ACCEPT_MULTIPLE_SDP_ANSWERS.
+         */
+        pj_bool_t accept_multiple_sdp_answers;
 
     } endpt;
 
@@ -403,6 +427,20 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
 
 
 /**
+ * Accept multiple SDP answers on non-reliable 18X responses and the 2XX
+ * response when they are all received from the same source (same To tag).
+ *
+ * This option can also be controlled at run-time by the
+ * \a accept_multiple_sdp_answers setting in pjsip_cfg_t.
+ *
+ * Default is PJ_FALSE.
+ */
+#ifndef PJSIP_ACCEPT_MULTIPLE_SDP_ANSWERS
+#   define PJSIP_ACCEPT_MULTIPLE_SDP_ANSWERS        PJ_TRUE
+#endif
+
+
+/**
  * Specify whether "alias" param should be added to the Via header
  * in any outgoing request with connection oriented transport.
  *
@@ -464,18 +502,8 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
  * SIP messages, as the parser always supports parsing both the long
  * and short version of the headers.
  *
- * Note that there is also an undocumented variable defined in sip_msg.c
- * to control whether compact form should be used for encoding SIP
- * headers. The default value of this variable is PJSIP_ENCODE_SHORT_HNAME.
- * To change PJSIP behavior during run-time, application can use the 
- * following construct:
- *
- \verbatim
-   extern pj_bool_t pjsip_use_compact_form;
- 
-   // enable compact form
-   pjsip_use_compact_form = PJ_TRUE;
- \endverbatim
+ * This option can also be controlled at run-time by the
+ * \a use_compact_form setting in pjsip_cfg_t.
  *
  * Default is 0 (no)
  */
@@ -744,6 +772,21 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
 
 
 /**
+ * Initial timeout interval to be applied to incoming transports (i.e. server
+ * side) when no data received after a successful connection. Value is in
+ * seconds. Disable the timeout by setting it to 0.
+ *
+ * Note that even when this is disable, the connection might still get closed
+ * when it is idle or not referred anymore. Have a look at \a
+ * PJSIP_TRANSPORT_SERVER_IDLE_TIME
+ *
+ * Default: 0 (disabled)
+ */
+#ifndef PJSIP_TCP_INITIAL_TIMEOUT
+#   define PJSIP_TCP_INITIAL_TIMEOUT	    0
+#endif
+
+/**
  * Set the interval to send keep-alive packet for TLS transports.
  * If the value is zero, keep-alive will be disabled for TLS.
  *
@@ -799,12 +842,16 @@ PJ_INLINE(pjsip_cfg_t*) pjsip_cfg(void)
  * will slightly affect stack usage, since each entry will occupy about
  * 32 bytes of stack memory.
  *
- * Default: 8
+ * Default: 16 (or 32 if IPv6 support is enabled)
  *
  * @see PJSIP_HAS_RESOLVER
  */
 #ifndef PJSIP_MAX_RESOLVED_ADDRESSES
-#   define PJSIP_MAX_RESOLVED_ADDRESSES	    8
+#   if defined(PJ_HAS_IPV6) && PJ_HAS_IPV6
+#       define PJSIP_MAX_RESOLVED_ADDRESSES	    32
+#   else
+#       define PJSIP_MAX_RESOLVED_ADDRESSES	    16
+#   endif
 #endif
 
 

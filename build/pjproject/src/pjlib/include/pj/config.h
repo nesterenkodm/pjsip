@@ -1,4 +1,4 @@
-/* $Id: config.h 5683 2017-11-08 03:03:22Z ming $ */
+/* $Id: config.h 5879 2018-09-05 03:40:41Z riza $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -114,12 +114,6 @@
 #   undef PJ_WIN32
 #   define PJ_WIN32 1
 #   include <pj/compat/os_win32.h>
-
-#elif defined(PJ_LINUX_KERNEL) && PJ_LINUX_KERNEL!=0
-    /*
-     * Linux kernel
-     */
-#  include <pj/compat/os_linux_kernel.h>
 
 #elif defined(PJ_LINUX) || defined(linux) || defined(__linux)
     /*
@@ -918,13 +912,41 @@
 
 /**
  * Enable secure socket. For most platforms, this is implemented using
- * OpenSSL, so this will require OpenSSL to be installed. For Symbian
- * platform, this is implemented natively using CSecureSocket.
+ * OpenSSL or GnuTLS, so this will require one of those libraries to
+ * be installed. For Symbian platform, this is implemented natively
+ * using CSecureSocket.
  *
  * Default: 0 (for now)
  */
 #ifndef PJ_HAS_SSL_SOCK
 #  define PJ_HAS_SSL_SOCK	    0
+#endif
+
+
+/*
+ * Secure socket implementation.
+ * Select one of these implementations in PJ_SSL_SOCK_IMP.
+ */
+#define PJ_SSL_SOCK_IMP_NONE 	    0	/**< Disable SSL socket.    */
+#define PJ_SSL_SOCK_IMP_OPENSSL	    1	/**< Using OpenSSL.	    */
+#define PJ_SSL_SOCK_IMP_GNUTLS      2	/**< Using GnuTLS.	    */
+
+
+/**
+ * Select which SSL socket implementation to use. Currently pjlib supports
+ * PJ_SSL_SOCK_IMP_OPENSSL, which uses OpenSSL, and PJ_SSL_SOCK_IMP_GNUTLS,
+ * which uses GnuTLS. Setting this to PJ_SSL_SOCK_IMP_NONE will disable
+ * secure socket.
+ *
+ * Default is PJ_SSL_SOCK_IMP_NONE if PJ_HAS_SSL_SOCK is not set, otherwise
+ * it is PJ_SSL_SOCK_IMP_OPENSSL.
+ */
+#ifndef PJ_SSL_SOCK_IMP
+#   if PJ_HAS_SSL_SOCK==0
+#	define PJ_SSL_SOCK_IMP		    PJ_SSL_SOCK_IMP_NONE
+#   else
+#	define PJ_SSL_SOCK_IMP		    PJ_SSL_SOCK_IMP_OPENSSL
+#   endif
 #endif
 
 
@@ -969,6 +991,17 @@
 #ifndef PJ_SOCK_DISABLE_WSAECONNRESET
 #   define PJ_SOCK_DISABLE_WSAECONNRESET    1
 #endif
+
+
+/**
+ * Maximum number of socket options in pj_sockopt_params.
+ *
+ * Default: 4
+ */
+#ifndef PJ_MAX_SOCKOPT_PARAMS
+#   define PJ_MAX_SOCKOPT_PARAMS	    4
+#endif
+
 
 
 /** @} */
@@ -1290,10 +1323,10 @@ PJ_BEGIN_DECL
 #define PJ_VERSION_NUM_MAJOR	2
 
 /** PJLIB version minor number. */
-#define PJ_VERSION_NUM_MINOR	7
+#define PJ_VERSION_NUM_MINOR	8
 
 /** PJLIB version revision number. */
-#define PJ_VERSION_NUM_REV	1
+#define PJ_VERSION_NUM_REV      0
 
 /**
  * Extra suffix for the version (e.g. "-trunk"), or empty for

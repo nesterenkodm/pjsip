@@ -1,4 +1,4 @@
-/* $Id: pjsua.h 5677 2017-10-27 06:30:50Z ming $ */
+/* $Id: pjsua.h 5872 2018-09-03 07:13:40Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -352,6 +352,22 @@ typedef struct pj_stun_resolve_result pj_stun_resolve_result;
 
 
 /**
+ * Specify whether timer heap events will be polled by a separate worker
+ * thread. If this is set/enabled, a worker thread will be dedicated to
+ * poll timer heap events only, and the rest worker thread(s) will poll
+ * ioqueue/network events only.
+ *
+ * Note that if worker thread count setting (i.e: pjsua_config.thread_cnt)
+ * is set to zero, this setting will be ignored.
+ *
+ * Default: 0 (disabled)
+ */
+#ifndef PJSUA_SEPARATE_WORKER_FOR_TIMER
+#   define PJSUA_SEPARATE_WORKER_FOR_TIMER	0
+#endif
+
+
+/**
  * This enumeration represents pjsua state.
  */
 typedef enum pjsua_state
@@ -622,6 +638,52 @@ typedef enum pjsua_create_media_transport_flag
 
 
 /**
+ * Specify SRTP media transport settings.
+ */
+typedef struct pjsua_srtp_opt
+{
+    /**
+     * Specify the number of crypto suite settings. If set to zero, all
+     * available cryptos will be enabled. Note that available crypto names
+     * can be enumerated using pjmedia_srtp_enum_crypto().
+     *
+     * Default is zero.
+     */
+    unsigned			 crypto_count;
+
+    /**
+     * Specify individual crypto suite setting and its priority order.
+     *
+     * Notes for DTLS-SRTP keying:
+     *  - Currently only supports these cryptos: AES_CM_128_HMAC_SHA1_80,
+     *    AES_CM_128_HMAC_SHA1_32, AEAD_AES_256_GCM, and AEAD_AES_128_GCM.
+     *  - SRTP key is not configurable.
+     */
+    pjmedia_srtp_crypto		 crypto[PJMEDIA_SRTP_MAX_CRYPTOS];
+
+    /**
+     * Specify the number of enabled keying methods. If set to zero, all
+     * keyings will be enabled. Maximum value is PJMEDIA_SRTP_MAX_KEYINGS.
+     * Note that available keying methods can be enumerated using
+     * pjmedia_srtp_enum_keying().
+     *
+     * Default is zero (all keyings are enabled with priority order:
+     * SDES, DTLS-SRTP).
+     */
+    unsigned			 keying_count;
+
+    /**
+     * Specify enabled keying methods and its priority order. Keying method
+     * with higher priority will be given earlier chance to process the SDP,
+     * for example as currently only one keying is supported in the SDP offer,
+     * keying with first priority will be likely used in the SDP offer.
+     */
+    pjmedia_srtp_keying_method	 keying[PJMEDIA_SRTP_KEYINGS_COUNT];
+
+} pjsua_srtp_opt;
+
+
+/**
  * This enumeration specifies the contact rewrite method.
  */
 typedef enum pjsua_contact_rewrite_method
@@ -734,6 +796,52 @@ typedef union pjsua_ip_change_op_info {
 	pjsua_call_id call_id;
     } acc_reinvite_calls;
 } pjsua_ip_change_op_info;
+
+
+/**
+ * This enumeration specifies DTMF method.
+ */
+typedef enum pjsua_dtmf_method {
+    /**
+     * Send DTMF using RFC2833.
+     */
+    PJSUA_DTMF_METHOD_RFC2833,
+
+    /**
+     * Send DTMF using SIP INFO.
+     * Notes:
+     * - This method is not finalized in any standard/rfc, however it is 
+     *   commonly used.
+     * - Warning: in case the remote doesn't support SIP INFO, response might 
+     *   not be sent and the sender will deal this as timeout and disconnect
+     *   the call.
+     */
+    PJSUA_DTMF_METHOD_SIP_INFO
+
+} pjsua_dtmf_method;
+
+
+/**
+ * This will contain the information of the callback \a on_dtmf_digit2.
+ */
+typedef struct pjsua_dtmf_info {
+    /**
+     * The method used to send DTMF.
+     */
+    pjsua_dtmf_method method;
+
+    /**
+     * DTMF ASCII digit
+     */    
+    unsigned digit;
+
+    /**
+     * DTMF signal duration which might be included when sending DTMF using 
+     * SIP INFO.
+     */
+    unsigned duration;
+
+} pjsua_dtmf_info;
 
 
 /**
@@ -898,12 +1006,23 @@ typedef struct pjsua_callback
 				unsigned stream_idx);
 
     /**
-     * Notify application upon incoming DTMF digits.
+     * Notify application upon incoming DTMF digits using RFC 2833 payload 
+     * formats. This callback will not be called if app implements \a
+     * on_dtmf_digit2().
      *
      * @param call_id	The call index.
      * @param digit	DTMF ASCII digit.
      */
     void (*on_dtmf_digit)(pjsua_call_id call_id, int digit);
+
+    /**
+     * Notify application upon incoming DTMF digits using the method specified 
+     * in \a pjsua_dtmf_method.
+     *
+     * @param call_id	The call index.
+     * @param info	The DTMF info.
+     */
+    void (*on_dtmf_digit2)(pjsua_call_id call_id, const pjsua_dtmf_info *info);
 
     /**
      * Notify application on call being transferred (i.e. REFER is received).
@@ -1029,6 +1148,9 @@ typedef struct pjsua_callback
      * not defined, the default behavior is to accept the offer using
      * current call setting.
      *
+     * Note: this callback may not be called if \a on_call_rx_reinvite()
+     * is implemented.
+     *
      * @param call_id	The call index.
      * @param offer	The new offer received.
      * @param reserved	Reserved param, currently not used.
@@ -1043,6 +1165,47 @@ typedef struct pjsua_callback
 			     void *reserved,
 			     pjsip_status_code *code,
 			     pjsua_call_setting *opt);
+
+
+    /**
+     * Notify application when call has received a re-INVITE with offer
+     * from the peer. It allows more fine-grained control over the response
+     * to a re-INVITE. If application sets async to PJ_TRUE, it can send
+     * the reply manually using the function #pjsua_call_answer_with_sdp().
+     * Otherwise, by default the re-INVITE will be answered automatically
+     * after the callback returns.
+     *
+     * Currently, this callback is only called for re-INVITE with
+     * SDP, but app should be prepared to handle the case of re-INVITE
+     * without SDP.
+     *
+     * Remarks: If manually answering at a later timing, application may
+     * need to monitor on_call_tsx_state() callback to check whether
+     * the re-INVITE is already answered automatically with 487 due to
+     * being cancelled.
+     *
+     * Note: on_call_rx_offer() will still be called after this callback,
+     * but only if async is PJ_FALSE and code is 200. 
+     *
+     * @param call_id	The call index.
+     * @param offer	Remote offer.
+     * @param rdata     The received re-INVITE request.
+     * @param reserved	Reserved param, currently not used.
+     * @param async	On input, it is PJ_FALSE. Set to PJ_TRUE if
+     *			app wants to manually answer the re-INVITE.
+     * @param code	Status code to be returned for answering the
+     *			offer. On input, it contains status code 200.
+     *			Currently, valid values are only 200 and 488.
+     * @param opt	The current call setting, application can update
+     *			this setting for answering the offer.
+     */
+    void (*on_call_rx_reinvite)(pjsua_call_id call_id,
+    		                const pjmedia_sdp_session *offer,
+                                pjsip_rx_data *rdata,
+			     	void *reserved,
+			     	pj_bool_t *async,
+			     	pjsip_status_code *code,
+			     	pjsua_call_setting *opt);
 
 
     /**
@@ -1503,12 +1666,18 @@ typedef struct pjsua_callback
                                                     unsigned flags);
 
     /**
-     * This callback is called when SRTP media transport is created.
+     * Warning: deprecated and may be removed in future release. Application
+     * can set SRTP crypto settings (including keys) and keying methods
+     * via pjsua_srtp_opt in pjsua_config and pjsua_acc_config.
+     * See also ticket #2100.
+     *
+     * This callback is called before SRTP media transport is created.
      * Application can modify the SRTP setting \a srtp_opt to specify
-     * the cryptos and keys which are going to be used. Note that
-     * application should not modify the field
-     * \a pjmedia_srtp_setting.close_member_tp and can only modify
-     * the field \a pjmedia_srtp_setting.use for initial INVITE.
+     * the cryptos & keys and keying methods which are going to be used.
+     * Note that only some fields of pjmedia_srtp_setting can be overriden
+     * from this callback, i.e: "crypto_count", "crypto", "keying_count",
+     * "keying", and "use" (only for initial INVITE), any modification in
+     * other fields will be ignored.
      *
      * @param call_id       Call ID
      * @param media_idx     The media index in the SDP for which this SRTP
@@ -1886,6 +2055,12 @@ typedef struct pjsua_config
     pj_bool_t	     srtp_optional_dup_offer;
 
     /**
+     * Specify SRTP transport setting. Application can initialize it with
+     * default values using pjsua_srtp_opt_default().
+     */
+    pjsua_srtp_opt   srtp_opt;
+
+    /**
      * Disconnect other call legs when more than one 2xx responses for 
      * outgoing INVITE are received due to forking. Currently the library
      * is not able to handle simultaneous forked media, so disconnecting
@@ -1968,8 +2143,9 @@ struct pjsua_msg_data
 {
     /**
      * Optional remote target URI (i.e. Target header). If NULL, the target
-     * will be set to the remote URI (To header). At the moment this field
-     * is only used by #pjsua_call_make_call() and #pjsua_im_send().
+     * will be set to the remote URI (To header). This field is used by
+     * pjsua_call_make_call(), pjsua_im_send(), pjsua_call_reinvite(),
+     * pjsua_call_set_hold(), and pjsua_call_update().
      */
     pj_str_t    target_uri;
 
@@ -2760,6 +2936,19 @@ PJ_DECL(pj_status_t) pjsua_transport_register(pjsip_transport *tp,
 
 
 /**
+ * Register transport factory that has been created by application.
+ * This function is useful if application wants to implement custom SIP
+ * transport and use it with pjsua.
+ *
+ * @param tf		Transport factory instance.
+ * @param p_id		Optional pointer to receive transport ID.
+ *
+ * @return		PJ_SUCCESS on success, or the appropriate error code.
+ */
+PJ_DEF(pj_status_t) pjsua_tpfactory_register( pjsip_tpfactory *tf,
+					      pjsua_transport_id *p_id);
+
+/**
  * Enumerate all transports currently created in the system. This function
  * will return all transport IDs, and application may then call 
  * #pjsua_transport_get_info() function to retrieve detailed information
@@ -3192,6 +3381,7 @@ typedef enum pjsua_nat64_opt
     PJSUA_NAT64_ENABLED
     
 } pjsua_nat64_opt;
+
 
 /**
  * This structure describes account configuration to be specified when
@@ -3712,6 +3902,12 @@ typedef struct pjsua_acc_config
     pj_bool_t	     srtp_optional_dup_offer;
 
     /**
+     * Specify SRTP transport setting. Application can initialize it with
+     * default values using pjsua_srtp_opt_default().
+     */
+    pjsua_srtp_opt   srtp_opt;
+
+    /**
      * Specify interval of auto registration retry upon registration failure,
      * in seconds. Set to 0 to disable auto re-registration. Note that
      * registration will only be automatically retried for temporal failures
@@ -3812,6 +4008,16 @@ typedef struct pjsua_acc_config
      */
     pjsua_ip_change_acc_cfg ip_change_cfg;
 
+    /**
+     * Enable RTP and RTCP multiplexing.
+     */
+    pj_bool_t		enable_rtcp_mux;
+
+    /**
+     * RTCP Feedback configuration.
+     */
+    pjmedia_rtcp_fb_setting rtcp_fb_cfg;
+
 } pjsua_acc_config;
 
 
@@ -3860,6 +4066,32 @@ PJ_DECL(void) pjsua_turn_config_from_media_config(pj_pool_t *pool,
 PJ_DECL(void) pjsua_turn_config_dup(pj_pool_t *pool,
                                     pjsua_turn_config *dst,
                                     const pjsua_turn_config *src);
+
+
+/**
+ * Call this function to initialize SRTP config with default values.
+ *
+ * @param cfg	    The SRTP config to be initialized.
+ */
+PJ_DECL(void) pjsua_srtp_opt_default(pjsua_srtp_opt *cfg);
+
+
+/**
+ * Duplicate SRTP transport setting. If the \a pool argument is NULL,
+ * a simple memcpy() will be used.
+ *
+ * @param pool	    Memory to duplicate strings.
+ * @param dst	    Destination setting.
+ * @param src	    Source setting.
+ * @param check_str If set to TRUE, the function will check if strings
+ *		    are identical before copying. Identical strings
+ *		    will not be duplicated.
+ *		    If set to FALSE, all strings will be duplicated.
+ */
+PJ_DECL(void) pjsua_srtp_opt_dup(pj_pool_t *pool, pjsua_srtp_opt *dst,
+                                 const pjsua_srtp_opt *src,
+                                 pj_bool_t check_str);
+
 
 /**
  * Call this function to initialize account config with default values.
@@ -4610,7 +4842,16 @@ typedef enum pjsua_call_flag
      * in IP address change situation, after the local account's Via has
      * been updated (typically with re-registration).
      */
-    PJSUA_CALL_UPDATE_VIA = 32
+    PJSUA_CALL_UPDATE_VIA = 32,
+
+    /**
+     * Update dialog target to URI specified in pjsua_msg_data.target_uri.
+     * This flag is only valid for pjsua_call_set_hold(),
+     * pjsua_call_reinvite(), and pjsua_call_update(). This flag can be
+     * useful in IP address change scenario where IP version has been changed
+     * and application needs to update target IP address.
+     */
+    PJSUA_CALL_UPDATE_TARGET = 64
 
 } pjsua_call_flag;
 
@@ -4758,6 +4999,45 @@ typedef struct pjsua_call_vid_strm_op_param
 
 
 /**
+ * Specify the default signal duration when sending DTMF using SIP INFO.
+ *
+ * Default is 160
+ */
+#ifndef PJSUA_CALL_SEND_DTMF_DURATION_DEFAULT
+#   define PJSUA_CALL_SEND_DTMF_DURATION_DEFAULT    160
+#endif
+
+
+/**
+ * Parameters for sending DTMF. Application should use 
+ * #pjsua_call_send_dtmf_param_default() to initialize this structure
+ * with its default values.
+ */
+typedef struct pjsua_call_send_dtmf_param
+{
+    /**
+     * The method used to send DTMF.
+     *
+     * Default: PJSUA_DTMF_METHOD_RFC2833
+     */
+    pjsua_dtmf_method method;
+
+    /**
+     * The signal duration used for the DTMF.
+     *
+     * Default: PJSUA_CALL_SEND_DTMF_DURATION_DEFAULT
+     */
+    unsigned duration;
+
+    /**
+     * The DTMF digits to be sent.
+     */
+    pj_str_t digits;
+
+} pjsua_call_send_dtmf_param;
+
+
+/**
  * Initialize call settings.
  *
  * @param opt		The call setting to be initialized.
@@ -4772,6 +5052,15 @@ PJ_DECL(void) pjsua_call_setting_default(pjsua_call_setting *opt);
  */
 PJ_DECL(void)
 pjsua_call_vid_strm_op_param_default(pjsua_call_vid_strm_op_param *param);
+
+
+/**
+ * Initialize send DTMF param with default values.
+ *
+ * @param param		The send DTMF param to be initialized.
+ */
+PJ_DECL(void) 
+pjsua_call_send_dtmf_param_default(pjsua_call_send_dtmf_param *param);
 
 
 /**
@@ -4999,6 +5288,32 @@ PJ_DECL(pj_status_t) pjsua_call_answer2(pjsua_call_id call_id,
 
 
 /**
+ * Same as #pjsua_call_answer2() but this function will set the SDP
+ * answer first before sending the response.
+ *
+ * @param call_id	Incoming call identification.
+ * @param sdp		SDP answer. 
+ * @param opt		Optional call setting.
+ * @param code		Status code, (100-699).
+ * @param reason	Optional reason phrase. If NULL, default text
+ *			will be used.
+ * @param msg_data	Optional list of headers etc to be added to outgoing
+ *			response message. Note that this message data will
+ *			be persistent in all next answers/responses for this
+ *			INVITE request.
+ *
+ * @return		PJ_SUCCESS on success, or the appropriate error code.
+ */
+PJ_DECL(pj_status_t)
+pjsua_call_answer_with_sdp(pjsua_call_id call_id,
+			   const pjmedia_sdp_session *sdp, 
+			   const pjsua_call_setting *opt,
+			   unsigned code,
+			   const pj_str_t *reason,
+			   const pjsua_msg_data *msg_data);
+
+
+/**
  * Hangup call by using method that is appropriate according to the
  * call state. This function is different than answering the call with
  * 3xx-6xx response (with #pjsua_call_answer()), in that this function
@@ -5214,7 +5529,10 @@ PJ_DECL(pj_status_t) pjsua_call_xfer_replaces(pjsua_call_id call_id,
 					      const pjsua_msg_data *msg_data);
 
 /**
- * Send DTMF digits to remote using RFC 2833 payload formats.
+ * Send DTMF digits to remote using RFC 2833 payload formats. Use 
+ * #pjsua_call_send_dtmf() to send DTMF using SIP INFO or other method in 
+ * \a pjsua_dtmf_method. App can use \a on_dtmf_digit() or \a on_dtmf_digit2() 
+ * callback to monitor incoming DTMF.
  *
  * @param call_id	Call identification.
  * @param digits	DTMF string digits to be sent as described on RFC 2833 
@@ -5226,6 +5544,23 @@ PJ_DECL(pj_status_t) pjsua_call_xfer_replaces(pjsua_call_id call_id,
  */
 PJ_DECL(pj_status_t) pjsua_call_dial_dtmf(pjsua_call_id call_id, 
 					  const pj_str_t *digits);
+
+/**
+ * Send DTMF digits to remote. Use this method to send DTMF using the method in
+ * \a pjsua_dtmf_method. This method will call #pjsua_call_dial_dtmf() when
+ * sending DTMF using \a PJSUA_DTMF_METHOD_RFC2833. Note that 
+ * \a on_dtmf_digit() callback can only monitor incoming DTMF using RFC 2833. 
+ * App can use \a on_dtmf_digit2() to monitor incoming DTMF using the method in 
+ * \a pjsua_dtmf_method. Note that \a on_dtmf_digit() will not be called once
+ * \a on_dtmf_digit2() is implemented.
+ *
+ * @param call_id	Call identification.
+ * @param param		The send DTMF parameter.
+ *
+ * @return		PJ_SUCCESS on success, or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsua_call_send_dtmf(pjsua_call_id call_id, 
+			              const pjsua_call_send_dtmf_param *param);
 
 /**
  * Send instant messaging inside INVITE session.
@@ -6495,6 +6830,33 @@ PJ_DECL(void) pjsua_snd_dev_param_default(pjsua_snd_dev_param *prm);
 
 
 /**
+ * This structure specifies the parameters for conference ports connection.
+ * Use pjsua_conf_connect_param_default() to initialize this structure with
+ * default values.
+ */
+typedef struct pjsua_conf_connect_param
+{
+    /*
+     * Signal level adjustment from the source to the sink to make it
+     * louder or quieter. Value 1.0 means no level adjustment,
+     * while value 0 means to mute the port.
+     *
+     * Default: 1.0
+     */
+    float		level;
+
+} pjsua_conf_connect_param;
+
+
+/**
+ * Initialize pjsua_conf_connect_param with default values.
+ *
+ * @param prm		The parameter.
+ */
+PJ_DECL(void) pjsua_conf_connect_param_default(pjsua_conf_connect_param *prm);
+
+
+/**
  * Get maxinum number of conference ports.
  *
  * @return		Maximum number of ports in the conference bridge.
@@ -6585,6 +6947,40 @@ PJ_DECL(pj_status_t) pjsua_conf_remove_port(pjsua_conf_port_id port_id);
  */
 PJ_DECL(pj_status_t) pjsua_conf_connect(pjsua_conf_port_id source,
 					pjsua_conf_port_id sink);
+
+/**
+ * Establish unidirectional media flow from source to sink. One source
+ * may transmit to multiple destinations/sink. And if multiple
+ * sources are transmitting to the same sink, the media will be mixed
+ * together. Source and sink may refer to the same ID, effectively
+ * looping the media.
+ *
+ * Signal level from the source to the sink can be adjusted by making
+ * it louder or quieter via the parameter param. The level adjustment
+ * will apply to a specific connection only (i.e. only for the signal
+ * from the source to the sink), as compared to
+ * pjsua_conf_adjust_tx_level()/pjsua_conf_adjust_rx_level() which
+ * applies to all signals from/to that port. The signal adjustment
+ * will be cumulative, in this following order:
+ * signal from the source will be adjusted with the level specified
+ * in pjsua_conf_adjust_rx_level(), then with the level specified
+ * via this API, and finally with the level specified to the sink's
+ * pjsua_conf_adjust_tx_level().
+ *
+ * If bidirectional media flow is desired, application needs to call
+ * this function twice, with the second one having the arguments
+ * reversed.
+ *
+ * @param source	Port ID of the source media/transmitter.
+ * @param sink		Port ID of the destination media/received.
+ * @param prm		Conference port connection param. If set to
+ *			NULL, default values will be used.
+ *
+ * @return		PJ_SUCCESS on success, or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsua_conf_connect2(pjsua_conf_port_id source,
+					 pjsua_conf_port_id sink,
+					 const pjsua_conf_connect_param *prm);
 
 
 /**
@@ -7013,6 +7409,69 @@ PJ_DECL(pj_status_t) pjsua_snd_set_setting(pjmedia_aud_dev_cap cap,
  */
 PJ_DECL(pj_status_t) pjsua_snd_get_setting(pjmedia_aud_dev_cap cap,
 					   void *pval);
+
+
+/**
+ * Opaque type of extra sound device, an additional sound device
+ * beside the primary sound device (the one instantiated via
+ * pjsua_set_snd_dev() or pjsua_set_snd_dev2()). This sound device is
+ * also registered to conference bridge so it can be used as a normal
+ * conference bridge port, e.g: connect it to/from other ports,
+ * adjust/check audio level, etc. The conference bridge port ID can be
+ * queried using pjsua_ext_snd_dev_get_conf_port().
+ *
+ * Application may also use this API to improve media clock. Normally
+ * media clock is driven by sound device in master port, but unfortunately
+ * some sound devices may produce jittery clock. To improve media clock,
+ * application can install Null Sound Device (i.e: using
+ * pjsua_set_null_snd_dev()), which will act as a master port, and instantiate
+ * the sound device as extra sound device. But note that extra sound device
+ * will not have auto-close upon idle feature.
+ */
+typedef struct pjsua_ext_snd_dev pjsua_ext_snd_dev;
+
+
+/**
+ * Create an extra sound device and register it to conference bridge.
+ *
+ * @param snd_param	Sound device port param.
+ * @param p_snd		The extra sound device instance.
+ *
+ * @return		PJ_SUCCESS on success or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsua_ext_snd_dev_create(pjmedia_snd_port_param *param,
+					      pjsua_ext_snd_dev **p_snd);
+
+
+/**
+ * Destroy an extra sound device and unregister it from conference bridge.
+ *
+ * @param p_snd		The extra sound device instance.
+ *
+ * @return		PJ_SUCCESS on success or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjsua_ext_snd_dev_destroy(pjsua_ext_snd_dev *snd);
+
+
+/**
+ * Get sound port instance of an extra sound device.
+ *
+ * @param snd		The extra sound device instance.
+ *
+ * @return		The sound port instance.
+ */
+PJ_DECL(pjmedia_snd_port*) pjsua_ext_snd_dev_get_snd_port(
+					    pjsua_ext_snd_dev *snd);
+
+/**
+ * Get conference port ID of an extra sound device.
+ *
+ * @param snd		The extra sound device instance.
+ *
+ * @return		The conference port ID.
+ */
+PJ_DECL(pjsua_conf_port_id) pjsua_ext_snd_dev_get_conf_port(
+					    pjsua_ext_snd_dev *snd);
 
 
 /*****************************************************************************

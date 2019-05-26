@@ -1,4 +1,4 @@
-/* $Id: types.h 5632 2017-07-27 06:45:48Z ming $ */
+/* $Id: types.h 5791 2018-05-14 01:24:43Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -102,8 +102,12 @@ enum pjmedia_audio_pt
     //PJMEDIA_RTP_PT_L16_22KHZ_STEREO,		/**< L16 @ 22KHz, stereo    */
     //PJMEDIA_RTP_PT_L16_32KHZ_MONO,		/**< L16 @ 32KHz, mono	    */
     //PJMEDIA_RTP_PT_L16_32KHZ_STEREO,		/**< L16 @ 32KHz, stereo    */
-    //PJMEDIA_RTP_PT_L16_48KHZ_MONO,		/**< L16 @ 48KHz, mono	    */
-    //PJMEDIA_RTP_PT_L16_48KHZ_STEREO,		/**< L16 @ 48KHz, stereo    */
+#if PJMEDIA_CODEC_L16_HAS_48KHZ_MONO
+    PJMEDIA_RTP_PT_L16_48KHZ_MONO,		/**< L16 @ 48KHz, mono	    */
+#endif
+#if PJMEDIA_CODEC_L16_HAS_48KHZ_STEREO
+    PJMEDIA_RTP_PT_L16_48KHZ_STEREO,		/**< L16 @ 48KHz, stereo    */
+#endif
 
     /* Caution!
      * Ensure the value of the last pt above is <= 127.

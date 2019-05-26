@@ -8,6 +8,16 @@ build/openh264/*
 !build/openh264/lib
 !build/openh264/lib/*
 
+# opus
+!build/opus
+build/opus/*
+
+!build/opus/dependencies
+build/opus/dependencies/*
+
+!build/opus/dependencies/lib
+!build/opus/dependencies/lib/*
+
 # pjsip
 !build/pjproject
 build/pjproject/*

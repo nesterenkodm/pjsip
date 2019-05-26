@@ -1,4 +1,4 @@
-/* $Id: config.hpp 4704 2014-01-16 05:30:46Z ming $ */
+/* $Id: config.hpp 5878 2018-09-04 15:12:58Z riza $ */
 /*
  * Copyright (C) 2013 Teluu Inc. (http://www.teluu.com)
  *
@@ -39,6 +39,13 @@
 #   define PJSUA2_ERROR_HAS_EXTRA_INFO		1
 #endif
 
+/**
+ * Maximum buffer length to print SDP content for SdpSession. Set this to 0
+ * if the printed SDP is not needed.
+ */
+#ifndef PJSUA2_MAX_SDP_BUF_LEN
+#   define PJSUA2_MAX_SDP_BUF_LEN		1024
+#endif
 
 /**
  * @}  PJSUA2_CFG

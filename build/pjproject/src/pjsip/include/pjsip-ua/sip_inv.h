@@ -1,4 +1,4 @@
-/* $Id: sip_inv.h 5641 2017-08-16 04:53:44Z ming $ */
+/* $Id: sip_inv.h 5812 2018-06-25 02:58:18Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -442,6 +442,8 @@ struct pjsip_inv_session
     pj_bool_t		 following_fork;	    /**< Internal, following
 							 forked media?	    */
     pj_atomic_t		*ref_cnt;		    /**< Reference counter. */
+    pj_bool_t            updated_sdp_answer;        /**< SDP answer just been
+							 updated?	    */
 };
 
 
