@@ -1,0 +1,5 @@
+platform :ios, '7.0'
+source 'https://github.com/CocoaPods/Specs.git'
+
+pod 'pjsip', :git => 'https://github.com/chebur/pjsip.git', :commit => '890929be9d82900cba8996427725794a244725b5'
+#pod 'pjsip', :path => '/Users/chebur/Documents/Projects/ObjC/pjsip/'

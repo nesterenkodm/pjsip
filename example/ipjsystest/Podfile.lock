@@ -1,0 +1,23 @@
+PODS:
+  - OpenSSL-Universal (1.0.1.k)
+  - pjsip (2.3.0.7):
+    - OpenSSL-Universal (= 1.0.1.k)
+
+DEPENDENCIES:
+  - pjsip (from `https://github.com/chebur/pjsip.git`, commit `890929be9d82900cba8996427725794a244725b5`)
+
+EXTERNAL SOURCES:
+  pjsip:
+    :commit: 890929be9d82900cba8996427725794a244725b5
+    :git: https://github.com/chebur/pjsip.git
+
+CHECKOUT OPTIONS:
+  pjsip:
+    :commit: 890929be9d82900cba8996427725794a244725b5
+    :git: https://github.com/chebur/pjsip.git
+
+SPEC CHECKSUMS:
+  OpenSSL-Universal: 60ee5ddf6530100c0aa702c2e0c9881cfd4a89a5
+  pjsip: c969e2ccb0432bf3fbd2c4c3504524b65b806c53
+
+COCOAPODS: 0.35.0
