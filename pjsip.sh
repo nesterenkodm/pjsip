@@ -143,7 +143,11 @@ function _build() {
         export LDFLAGS=
     fi
     if [[ ${OPENSSL_PREFIX} ]]; then
-        export CFLAGS="${CFLAGS} -I${OPENSSL_PREFIX}/include"
+		if [ -d "${OPENSSL_PREFIX}/include/openssl/openssl/" ]; then
+			export CFLAGS="${CFLAGS} -I${OPENSSL_PREFIX}/include/openssl"
+		else
+			export CFLAGS="${CFLAGS} -I${OPENSSL_PREFIX}/include"
+		fi
         export LDFLAGS="${LDFLAGS} -L${OPENSSL_PREFIX}/lib"
     fi
     if [[ ${OPENH264_PREFIX} ]]; then
