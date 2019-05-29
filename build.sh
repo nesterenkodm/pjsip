@@ -19,21 +19,15 @@ function download() {
 OPENSSL_DIR="${BUILD_DIR}/openssl"
 OPENSSL_ENABLED=
 function openssl() {
-	OPENSSL_URL="https://github.com/krzyzanowskim/OpenSSL/archive/1.0.2.17.tar.gz"
-	#OPENSSL_URL="https://github.com/x2on/OpenSSL-for-iPhone/archive/1.0.2i.tar.gz"
-    #OPENSSL_URL="https://raw.githubusercontent.com/x2on/OpenSSL-for-iPhone/master/build-libssl.sh"
-    OPENSSL_SH="build.sh"
+	OPENSSL_VERSION="1.1.1b"
+	MACOS_MIN_SDK_VERSION="10.12"
+	IOS_MIN_SDK_VERSION="9.0"
 
-
-    if [ ! -f "${OPENSSL_DIR}/lib/libssl.a" ]; then
-        download ${OPENSSL_URL} ${OPENSSL_DIR}
-        pushd . > /dev/null
-        cd ${OPENSSL_DIR}
-        /bin/sh ${OPENSSL_SH}
-        mv include-macos include2
-        mkdir -p include
-        mv include2 include/openssl
-        popd > /dev/null
+	if [ ! -d "${OPENSSL_DIR}/lib/iOS" ] || [ ! -d "${OPENSSL_DIR}/lib/macOS" ]; then
+		if [ ! -d "${OPENSSL_DIR}" ]; then
+			mkdir -p "${OPENSSL_DIR}"
+		fi
+		"${__DIR__}/openssl/openssl.sh" "--version=${OPENSSL_VERSION}" "--reporoot=${OPENSSL_DIR}" "--macos-min-sdk=${MACOS_MIN_SDK_VERSION}" "--ios-min-sdk=${IOS_MIN_SDK_VERSION}"
     else
         echo "Using OpenSSL..."
     fi
