@@ -18,6 +18,14 @@ build/opus/dependencies/*
 !build/opus/dependencies/lib
 !build/opus/dependencies/lib/*
 
+# openssl
+!build/openssl
+build/openssl/*
+
+!build/openssl/lib/
+!build/openssl/lib/*
+build/openssl/lib/.DS_Store
+
 # pjsip
 !build/pjproject
 build/pjproject/*
