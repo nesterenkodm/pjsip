@@ -1,3 +1,12 @@
+---
+name: Issue/Bug report
+about: Create a report to help us improve
+title: '[Possible Bug]'
+labels: ''
+assignees: ''
+
+---
+
 ```
 Please notice that issues where this template is not filled out correctly won't receive an answer and get discarded and closed.
 
