@@ -1,5 +1,7 @@
 #!/bin/sh
 
+HAS_VIDEO=1 # set to zero to disable video
+
 # see http://stackoverflow.com/a/3915420/318790
 function realpath { echo $(cd $(dirname "$1"); pwd)/$(basename "$1"); }
 __FILE__=`realpath "$0"`
@@ -12,14 +14,14 @@ function download() {
 
 DEVELOPER=$(xcode-select --print-path)
 
-IPHONEOS_DEPLOYMENT_VERSION="9.0"
+IPHONEOS_DEPLOYMENT_VERSION=${IOS_MIN_SDK_VERSION:-"9.0"}
 IPHONEOS_PLATFORM=$(xcrun --sdk iphoneos --show-sdk-platform-path)
 IPHONEOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)
 
 IPHONESIMULATOR_PLATFORM=$(xcrun --sdk iphonesimulator --show-sdk-platform-path)
 IPHONESIMULATOR_SDK=$(xcrun --sdk iphonesimulator --show-sdk-path)
 
-OSX_DEPLOYMENT_VERSION="10.12"
+OSX_DEPLOYMENT_VERSION=${MACOS_MIN_SDK_VERSION:-"10.12"}
 OSX_PLATFORM=$(xcrun --sdk macosx --show-sdk-platform-path)
 OSX_SDK=$(xcrun --sdk macosx --show-sdk-path)
 
@@ -47,16 +49,6 @@ while [ "$#" -gt 0 ]; do
                 exit 1
             fi
             ;;
-#        --with-openh264)
-#            if [ "$#" -gt 1 ]; then
-#                OPENH264_PREFIX=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$2")
-#                shift 2
-#                continue
-#            else
-#                echo 'ERROR: Must specify a non-empty "--with-openh264 PREFIX" argument.' >&2
-#                exit 1
-#            fi
-#            ;;
         --with-opus)
             if [ "$#" -gt 1 ]; then
                 OPUS_PREFIX=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$2")
@@ -68,48 +60,18 @@ while [ "$#" -gt 0 ]; do
             fi
             ;;
     esac
-
     shift
 done
-
-function config_site() {
-    SOURCE_DIR=$1
-    PJSIP_CONFIG_PATH="${SOURCE_DIR}/pjlib/include/pj/config_site.h"
-    HAS_VIDEO=1
-
-    echo "Creating config_site.h ..."
-
-    if [ -f "${PJSIP_CONFIG_PATH}" ]; then
-        rm "${PJSIP_CONFIG_PATH}"
-    fi
-
-#	echo "#define PJ_CONFIG_IPHONE 1" >> "${PJSIP_CONFIG_PATH}"
-    echo "#define PJ_HAS_IPV6 1" >> "${PJSIP_CONFIG_PATH}" # Enable IPV6
-#    if [[ ${OPENH264_PREFIX} ]]; then
-#		echo "#define PJMEDIA_HAS_OPENH264_CODEC 1" >> "${PJSIP_CONFIG_PATH}"
-#        HAS_VIDEO=1
-#    fi
-    if [[ ${HAS_VIDEO} ]]; then
-		echo "#define PJMEDIA_HAS_VIDEO 1" >> "${PJSIP_CONFIG_PATH}"
-		echo "#define PJMEDIA_HAS_VID_TOOLBOX_CODEC 1" >> "${PJSIP_CONFIG_PATH}"
-#       echo "#define PJMEDIA_VIDEO_DEV_HAS_OPENGL 1" >> "${PJSIP_CONFIG_PATH}"
-#       echo "#define PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES 1" >> "${PJSIP_CONFIG_PATH}"
-#       echo "#define PJMEDIA_VIDEO_DEV_HAS_IOS_OPENGL 1" >> "${PJSIP_CONFIG_PATH}"
-#       echo "#include <OpenGLES/ES3/glext.h>" >> "${PJSIP_CONFIG_PATH}"
-    fi
-    echo "#include <pj/config_site_sample.h>" >> "${PJSIP_CONFIG_PATH}"
-}
 
 function configure () {
 	TYPE=$1
 	ARCH=$2
 	LOG=$3
 
-	HAS_VIDEO=1
 	PJSIP_CONFIG_PATH="${PJSIP_DIR}/pjlib/include/pj/config_site.h"
 	CONFIGURE=
 
-	echo "Creating config_site.h ..."
+	echo "Configuring for ${TYPE} ${ARCH}"
 
 	if [ -f "${PJSIP_CONFIG_PATH}" ]; then
 		rm "${PJSIP_CONFIG_PATH}"
@@ -117,19 +79,17 @@ function configure () {
 
 
 	if [ "$TYPE" == "macos" ]; then
-		# OSX
-		if [[ ${HAS_VIDEO} ]]; then
-			echo "#define PJMEDIA_HAS_VIDEO 1" >> "${PJSIP_CONFIG_PATH}"
-			echo "#define PJMEDIA_HAS_VID_TOOLBOX_CODEC 1" >> "${PJSIP_CONFIG_PATH}"
-		fi
+		# macOS
+		# Disable SDL (default: not disabled), not available on every platform
+		# Disable ffmpeg (default: not disabled), using VideoToolbox
+		CONFIGURE="./configure --disable-ffmpeg --disable-sdl"
 	elif [ "$TYPE" == "ios" ]; then
 		# iOS
+		CONFIGURE="./configure-iphone"
 		echo "#define PJ_CONFIG_IPHONE 1" >> "${PJSIP_CONFIG_PATH}"
 		echo "#undef PJ_IPHONE_OS_HAS_MULTITASKING_SUPPORT" >> "${PJSIP_CONFIG_PATH}"
 		echo "#define PJ_IPHONE_OS_HAS_MULTITASKING_SUPPORT 0" >> "${PJSIP_CONFIG_PATH}" # for iOS 9+
 		if [[ ${HAS_VIDEO} ]]; then
-			echo "#define PJMEDIA_HAS_VIDEO 1" >> "${PJSIP_CONFIG_PATH}"
-#	??		echo "#define PJMEDIA_HAS_VID_TOOLBOX_CODEC 1" >> "${PJSIP_CONFIG_PATH}"
 			echo "#define PJMEDIA_VIDEO_DEV_HAS_OPENGL 1" >> "${PJSIP_CONFIG_PATH}"
 			echo "#define PJMEDIA_VIDEO_DEV_HAS_OPENGL_ES 1" >> "${PJSIP_CONFIG_PATH}"
 			echo "#define PJMEDIA_VIDEO_DEV_HAS_IOS_OPENGL 1" >> "${PJSIP_CONFIG_PATH}"
@@ -137,9 +97,15 @@ function configure () {
 		fi
 	fi
 
+	if [[ ${HAS_VIDEO} ]]; then
+		echo "#define PJMEDIA_HAS_VIDEO 1" >> "${PJSIP_CONFIG_PATH}"
+		echo "#define PJMEDIA_HAS_VID_TOOLBOX_CODEC 1" >> "${PJSIP_CONFIG_PATH}"
+	fi
+
 	echo "#define PJ_HAS_IPV6 1" >> "${PJSIP_CONFIG_PATH}" # Enable IPV6
 	echo "#include <pj/config_site_sample.h>" >> "${PJSIP_CONFIG_PATH}" # Include example config
 
+	# flags
 	unset DEVPATH
 	unset MIN_IOS
 	unset CFLAGS
@@ -159,19 +125,6 @@ function configure () {
 			export CFLAGS="${CFLAGS}"
 			export LDFLAGS="${LDFLAGS}"
 		fi
-	fi
-
-	# configure
-	if [ "$TYPE" == "ios" ]; then
-		# iOS
-		CONFIGURE="./configure-iphone"
-	elif [ "$TYPE" == "macos" ]; then
-		# macOS
-		# Disable SDL, not available on every platform
-		# Disable ffmpeg (default: not disabled), using VideoToolbox
-		CONFIGURE="./configure --disable-ffmpeg --disable-sdl"
-	else
-		echo "[CRITICAL] [ERROR] Type is unknown: $TYPE"
 	fi
 
 
@@ -199,18 +152,15 @@ function configure () {
 	fi
 	export LDFLAGS="${LDFLAGS} -lstdc++"
 
-	# Log
+	# log
 	if [ -f "${LOG}" ]; then
 		rm ${LOG}
 		touch ${LOG}
 	fi
 
 	clean_libs ${ARCH} ${TYPE}
-	echo "Configuring for ${TYPE}, ${ARCH}"
-	echo "Configuring for ${TYPE}, ${ARCH}" > ${LOG} 2>&1
 	make distclean >> ${LOG} 2>&1
 	ARCH="-arch ${ARCH}" ${CONFIGURE} >> ${LOG} 2>&1
-	echo "Done configuring" >> ${LOG} 2>&1
 }
 
 function build () {
@@ -300,16 +250,11 @@ function do_lipo() {
 	done
 
 	while read LINE; do
-		if [ "$TYPE" == "ios" ]; then
-			lipo ${LINE}
-		else
-			lipo ${LINE}
-		fi
+		lipo ${LINE}
 	done < "${TMP}"
 }
 
 download "${PJSIP_URL}" "${PJSIP_DIR}"
-#config_site "${PJSIP_DIR}"
 
 
 build "i386" "${IPHONESIMULATOR_SDK}" "ios"

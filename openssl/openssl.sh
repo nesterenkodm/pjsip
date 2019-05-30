@@ -34,12 +34,6 @@ DEFAULTARCHS="ios_x86_64 ios_arm64 tv_x86_64 tv_arm64 mac_x86_64 watchos_armv7k 
 #DEFAULTTARGETS="ios-sim-cross-x86_64 ios64-cross-arm64 tvos-sim-cross-x86_64 tvos64-cross-arm64 macos64-x86_64 watchos-cross-armv7k watchos-cross-arm64_32"
 DEFAULTTARGETS="ios-sim-cross-i386 ios-sim-cross-x86_64 ios64-cross-arm64 ios-cross-armv7 ios-cross-armv7s macos64-x86_64" # only targeting macOS and iOS for integration with pjsip (do we really need i386???)
 
-# Minimum iOS/tvOS SDK version to build for
-MACOS_MIN_SDK_VERSION="10.11"
-IOS_MIN_SDK_VERSION="9.0"
-TVOS_MIN_SDK_VERSION="11.0"
-WATCH_MIN_SDK_VERSION="4.0"
-
 # Init optional env variables (use available variable or default to empty string)
 CURL_OPTIONS="${CURL_OPTIONS:-}"
 CONFIG_OPTIONS="${CONFIG_OPTIONS:-}"
