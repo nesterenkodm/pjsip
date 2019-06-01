@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
-  s.name         = "pjsip-apple"
+  s.name         = "pjsip"
   s.version      = "2.8.0"
   s.summary      = "pjsip for macOS (OSX)"
   s.homepage     = "http://www.pjsip.org"
   s.author       = 'www.pjsip.org'
-  s.source       = { :git => "https://github.com/welljsjs/pjsip-apple.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/chebur/pjsip.git", :tag => "#{s.version}" }
   s.description  = <<-DESC
                       PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE. It combines signaling protocol (SIP) with rich multimedia framework and NAT traversal functionality into high level API that is portable and suitable for almost any type of systems ranging from desktops, embedded systems, to mobile handsets.
 
@@ -82,11 +82,11 @@ Pod::Spec.new do |s|
   s.osx.frameworks          = 'AppKit', 'VideoToolbox', 'AudioToolbox', 'AVFoundation', 'CoreMedia', 'CoreVideo'
 
   header_search_paths     = [
-                                '"$(PODS_ROOT)/Headers/Public/pjsip_apple/pjlib/include"',
-                                '"$(PODS_ROOT)/Headers/Public/pjsip_apple/pjlib-util/include"',
-                                '"$(PODS_ROOT)/Headers/Public/pjsip_apple/pjmedia/include"',
-                                '"$(PODS_ROOT)/Headers/Public/pjsip_apple/pjnath/include"',
-                                '"$(PODS_ROOT)/Headers/Public/pjsip_apple/pjsip/include"'
+                                '"$(PODS_ROOT)/Headers/Public/pjsip/pjlib/include"',
+                                '"$(PODS_ROOT)/Headers/Public/pjsip/pjlib-util/include"',
+                                '"$(PODS_ROOT)/Headers/Public/pjsip/pjmedia/include"',
+                                '"$(PODS_ROOT)/Headers/Public/pjsip/pjnath/include"',
+                                '"$(PODS_ROOT)/Headers/Public/pjsip/pjsip/include"'
                               ]
 
   s.xcconfig                = {
