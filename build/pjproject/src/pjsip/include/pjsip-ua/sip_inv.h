@@ -1,4 +1,4 @@
-/* $Id: sip_inv.h 5812 2018-06-25 02:58:18Z nanang $ */
+/* $Id: sip_inv.h 5931 2019-01-21 08:48:02Z ming $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -259,9 +259,12 @@ typedef struct pjsip_inv_callback
      *
      * Once it has sent the ACK request, the framework will keep 
      * this ACK request in the cache. Subsequent receipt of 2xx response
-     * will not cause this callback to be called, and instead automatic
-     * retransmission of this ACK request from the cache will be done
-     * by the framework.
+     * will not cause this callback to be called (but see exception below),
+     * and instead automatic retransmission of this ACK request from
+     * the cache will be done by the framework.
+     * Exception: if app has created the ACK but has not sent it,
+     * while it receives a retransmission of 2xx response, this callback
+     * will be called again.
      *
      * This callback is optional.
      */

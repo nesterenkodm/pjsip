@@ -221,7 +221,7 @@
 #define PJ_HAS_SSL_SOCK 1
 #endif
 #ifndef PJ_SSL_SOCK_IMP
-#   define PJ_SSL_SOCK_IMP PJ_SSL_SOCK_IMP_OPENSSL
+#   define PJ_SSL_SOCK_IMP PJ_SSL_SOCK_IMP_DARWIN
 #endif
 
 

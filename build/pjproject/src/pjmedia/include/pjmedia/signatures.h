@@ -1,4 +1,4 @@
-/* $Id: signatures.h 3664 2011-07-19 03:42:28Z nanang $ */
+/* $Id: signatures.h 5939 2019-03-05 06:23:02Z nanang $ */
 /* 
  * Copyright (C) 2011-2011 Teluu Inc. (http://www.teluu.com)
  *
@@ -197,6 +197,7 @@ PJ_INLINE(const char*) pjmedia_sig_name(pjmedia_obj_sig sig, char buf[])
 #define PJMEDIA_SIG_CLASS_VID_OTHER(c,d) PJMEDIA_SIGNATURE('V','O',c,d)
 #define PJMEDIA_SIG_IS_CLASS_VID_OTHER(s) ((s)>>24=='V' && (s)>>16=='O')
 
+#define PJMEDIA_SIG_VID_CONF		PJMEDIA_SIG_CLASS_VID_OTHER('C','F')
 #define PJMEDIA_SIG_VID_PORT		PJMEDIA_SIG_CLASS_VID_OTHER('P','O')
 
 

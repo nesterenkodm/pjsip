@@ -1,4 +1,4 @@
-/* $Id: jbuf.h 5803 2018-06-06 08:38:29Z nanang $ */
+/* $Id: jbuf.h 5887 2018-09-19 08:26:41Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -102,6 +102,7 @@ typedef struct pjmedia_jb_state
     unsigned	frame_size;	    /**< Individual frame size, in bytes.   */
     unsigned	min_prefetch;	    /**< Minimum allowed prefetch, in frms. */
     unsigned	max_prefetch;	    /**< Maximum allowed prefetch, in frms. */
+    unsigned	max_count;	    /**< Jitter buffer capacity, in frames. */
 
     /* Status */
     unsigned	burst;		    /**< Current burst level, in frames	    */

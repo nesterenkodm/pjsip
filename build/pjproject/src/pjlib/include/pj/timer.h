@@ -1,4 +1,4 @@
-/* $Id: timer.h 4567 2013-07-19 06:31:28Z bennylp $ */
+/* $Id: timer.h 5971 2019-04-23 08:42:45Z nanang $ */
 /* 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -252,9 +252,9 @@ PJ_DECL(pj_status_t) pj_timer_heap_schedule( pj_timer_heap_t *ht,
  *
  * @param ht        The timer heap.
  * @param entry     The entry to be registered.
+ * @param delay     The interval to expire.
  * @param id_val    The value to be set to the "id" field of the timer entry
  * 		    once the timer is scheduled.
- * @param delay     The interval to expire.
  * @param grp_lock  The group lock.
  *
  * @return          PJ_SUCCESS, or the appropriate error code.
