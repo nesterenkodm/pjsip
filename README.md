@@ -29,6 +29,8 @@ See [example](https://github.com/chebur/pjsip/example/ipjsystest) folder for int
 1. Run [build.sh](build.sh).
 2. Drag the generated libraries and headers files into your Xcode project.
 
+See also [Getting Started: Building for Apple iPhone, iPad and iPod Touch](https://trac.pjsip.org/repos/wiki/Getting-Started/iPhone)
+
 ## Call for Pull Requests
 
 It turns out that building pjsip library for iOS is not a trivial task. Since pjsip binaries has to be rebuild from time to time to automate this work I've decided to create bash scripts and share my work with a community.
