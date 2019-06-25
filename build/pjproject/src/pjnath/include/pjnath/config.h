@@ -1,4 +1,4 @@
-/* $Id: config.h 5850 2018-08-01 08:34:19Z ming $ */
+/* $Id: config.h 5987 2019-05-14 09:31:39Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -220,6 +220,13 @@
 #   define PJ_TURN_KEEP_ALIVE_SEC		    15
 #endif
 
+/**
+ * Maximum number of TCP data connection to peer(s) that a TURN client can
+ * open/accept for each TURN allocation (or TURN control connection).
+ */
+#ifndef PJ_TURN_MAX_TCP_CONN_CNT
+#   define PJ_TURN_MAX_TCP_CONN_CNT		    8
+#endif
 
 /* **************************************************************************
  * ICE CONFIGURATION

@@ -1,4 +1,4 @@
-/* $Id: json.hpp 4704 2014-01-16 05:30:46Z ming $ */
+/* $Id: json.hpp 6026 2019-06-12 06:00:35Z nanang $ */
 /*
  * Copyright (C) 2013 Teluu Inc. (http://www.teluu.com)
  *
@@ -58,26 +58,26 @@ public:
      *
      * @param filename		The file name.
      */
-    virtual void   loadFile(const string &filename) throw(Error);
+    virtual void   loadFile(const string &filename) PJSUA2_THROW(Error);
 
     /**
      * Load this document from string.
      *
      * @param input		The string.
      */
-    virtual void   loadString(const string &input) throw(Error);
+    virtual void   loadString(const string &input) PJSUA2_THROW(Error);
 
     /**
      * Write this document to a file.
      *
      * @param filename		The file name.
      */
-    virtual void   saveFile(const string &filename) throw(Error);
+    virtual void   saveFile(const string &filename) PJSUA2_THROW(Error);
 
     /**
      * Write this document to string.
      */
-    virtual string saveString() throw(Error);
+    virtual string saveString() PJSUA2_THROW(Error);
 
     /**
      * Get the root container node for this document

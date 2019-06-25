@@ -1,4 +1,4 @@
-/* $Id: vid_port.h 4168 2012-06-18 05:59:08Z ming $ */
+/* $Id: vid_port.h 5939 2019-03-05 06:23:02Z nanang $ */
 /*
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  *
@@ -151,6 +151,21 @@ pjmedia_vid_port_get_clock_src( pjmedia_vid_port *vid_port );
 PJ_DECL(pj_status_t)
 pjmedia_vid_port_set_clock_src( pjmedia_vid_port *vid_port,
                                 pjmedia_clock_src *clocksrc );
+
+/**
+ * Subscribe media event notifications from the specified media port.
+ * Sample use case is that renderer video port needs to monitor stream port
+ * events so renderer can adjust its param whenever stream port detects
+ * format change.
+ *
+ * @param vid_port	The video port.
+ * @param port		The media port whose events to be monitored.
+ *
+ * @return		PJ_SUCCESS on success or the appropriate error code.
+ */
+PJ_DECL(pj_status_t) pjmedia_vid_port_subscribe_event(
+						pjmedia_vid_port *vid_port,
+						pjmedia_port *port);
 
 /**
  * Connect the video port to a downstream (slave) media port. This operation
