@@ -24,6 +24,7 @@ Pod::Spec.new do |s|
                     }
 
   s.ios.deployment_target   = '9.0'
+  s.ios.source_files        =
   s.ios.public_header_files = [
                                 'build/pjproject/src/pjlib/include/**/*.h',
                                 'build/pjproject/src/pjlib-util/include/**/*.h',
@@ -53,6 +54,7 @@ Pod::Spec.new do |s|
   s.ios.frameworks          = 'UIKit', 'VideoToolbox', 'AudioToolbox', 'AVFoundation', 'OpenGLES', 'QuartzCore', 'CoreMedia', 'CoreVideo'
 
   s.osx.deployment_target = '10.12'
+  s.osx.source_files        =
   s.osx.public_header_files = [
                                 'build/pjproject/src/pjlib/include/**/*.h',
                                 'build/pjproject/src/pjlib-util/include/**/*.h',
