@@ -6,7 +6,7 @@ PJSIP is a free and open source multimedia communication library written in C la
 
 - Supported platforms: iOS9+, macOS 10.12+
 - Supported architectures: (iOS) armv7, armv7s, arm64, i386, x86_64; (macOS) x86_64
-- pjsip 2.8
+- pjsip 2.9
 - IPv6 support
 - OpenSSL supported (LTS 1.1.1b)
 - Video support now provided by native frameworks ([VideoToolbox](https://developer.apple.com/documentation/videotoolbox?language=objc))
