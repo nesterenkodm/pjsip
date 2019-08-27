@@ -1,3 +1,8 @@
+[![Actions Status](https://github.com/chebur/pjsip/workflows/CI/badge.svg)](https://github.com/chebur/pjsip/actions) 
+[![PJSIP Version](https://img.shields.io/badge/pjsip-2.9-informational)](https://www.pjsip.org)
+[![OpenSSL Version](https://img.shields.io/badge/openssl-LTS_1.1.1b-informational)](https://www.openssl.org)
+[![Opus Version](https://img.shields.io/badge/opus-1.3.1-informational)](http://opus-codec.org)
+
 # PJSIP
 
 PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE.
