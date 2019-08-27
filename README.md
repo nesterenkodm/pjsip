@@ -1,9 +1,16 @@
 [![Actions Status](https://github.com/chebur/pjsip/workflows/CI/badge.svg)](https://github.com/chebur/pjsip/actions) 
 [![PJSIP Version](https://img.shields.io/badge/pjsip-2.9-informational)](https://www.pjsip.org)
-[![OpenSSL Version](https://img.shields.io/badge/openssl-LTS_1.1.1b-informational)](https://www.openssl.org)
+[![OpenSSL Version](https://img.shields.io/badge/openssl-LTS_1.1.1c-informational)](https://www.openssl.org)
 [![Opus Version](https://img.shields.io/badge/opus-1.3.1-informational)](http://opus-codec.org)
+[![ZRTP Support](https://img.shields.io/badge/zrtp-integrated-informational)](https://github.com/wernerd/ZRTP4PJ)
 
-# PJSIP
+# PJSIP for Apple
+
+This repository delivers PJSIP built for Apple devices (iOS, macOS etc.).
+
+Note that this is not the official repository for PJSIP wich you can find here: https://www.pjsip.org.
+
+This project attempts to make PJSIP available for iOS and macOS by automating the build process and adding some other nice features (also see below).
 
 PJSIP is a free and open source multimedia communication library written in C language implementing standard based protocols such as SIP, SDP, RTP, STUN, TURN, and ICE.
 
@@ -13,9 +20,11 @@ PJSIP is a free and open source multimedia communication library written in C la
 - Supported architectures: (iOS) armv7, armv7s, arm64, i386, x86_64; (macOS) x86_64
 - pjsip 2.9
 - IPv6 support
-- OpenSSL supported (LTS 1.1.1b)
+- [ZRTP](https://github.com/wernerd/ZRTP4PJ) included
+- OpenSSL supported (LTS 1.1.1c)
 - Video support now provided by native frameworks ([VideoToolbox](https://developer.apple.com/documentation/videotoolbox?language=objc))
 - OPUS now supported - this pod provides libopus (1.3.1)
+- [Available on CocoaPods](https://cocoapods.org/pods/pjsip) (see below, installation)
 
 ## Installation
 
