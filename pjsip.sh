@@ -7,11 +7,6 @@ function realpath { echo $(cd $(dirname "$1"); pwd)/$(basename "$1"); }
 __FILE__=`realpath "$0"`
 __DIR__=`dirname "${__FILE__}"`
 
-# download
-function download() {
-    "${__DIR__}/download.sh" "$1" "$2" #--no-cache
-}
-
 DEVELOPER=$(xcode-select --print-path)
 
 IPHONEOS_DEPLOYMENT_VERSION=${IOS_MIN_SDK_VERSION:-"9.0"}
@@ -26,7 +21,6 @@ OSX_PLATFORM=$(xcrun --sdk macosx --show-sdk-platform-path)
 OSX_SDK=$(xcrun --sdk macosx --show-sdk-path)
 
 BASE_DIR="$1"
-PJSIP_URL="http://www.pjsip.org/release/${PJSIP_VERSION:-2.9}/pjproject-${PJSIP_VERSION:-2.9}.tar.bz2"
 PJSIP_DIR="$1/src"
 LIB_PATHS=("pjlib/lib" \
            "pjlib-util/lib" \
@@ -253,9 +247,6 @@ function do_lipo() {
 		lipo ${LINE}
 	done < "${TMP}"
 }
-
-download "${PJSIP_URL}" "${PJSIP_DIR}"
-
 
 build "i386" "${IPHONESIMULATOR_SDK}" "ios"
 build "x86_64" "${IPHONESIMULATOR_SDK}" "ios"
