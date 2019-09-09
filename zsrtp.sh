@@ -18,22 +18,23 @@ ZRTP_SRC=${ZRTP_SOURCE:-"https://github.com/welljsjs/ZRTPCPP"}
 # Do not change anything below this line.
 
 #####################################################################################
-ZRTP4PJ_DIR="$(pwd)/build/zrtp4pj"
-ZSRTP_DIR="$(pwd)/build/zrtp4pj/zsrtp"
-PJ_THIRD_PRTY_DIR="$(pwd)/build/pjproject/src/third_party"
+REPOROOT=$(python -c "import os,sys; print os.path.realpath(sys.argv[1])" "$1")
+ZRTP4PJ_BUILD_DIR="${REPOROOT}/build/zsrtp"
+ZSRTP_DIR="${REPOROOT}/zsrtp"
+#PJ_THIRD_PRTY_DIR="$(pwd)/build/pjproject/src/third_party"
 
 # 1.
 # Create a directory for ZRTP4PJ next to opus and openssl if it does not exist.
-if [ ! -d "${ZRTP4PJ_DIR}" ]; then
-	mkdir -p ${ZRTP4PJ_DIR} && cd ${ZRTP4PJ_DIR}
+if [ ! -d "${REPOROOT}" ]; then
+	mkdir -p ${REPOROOT} && cd ${REPOROOT}
 	echo "Cloning ZRTP4PJ into $(pwd) from ${ZRTP4PJ_SRC}..."
 	git clone ${ZRTP4PJ_SRC} .
 else
 	# Change directory to existing folder ZRTP4PJ.
-	cd ${ZRTP4PJ_DIR}
+	cd ${REPOROOT}
 	if [ ! -d ".git" ]; then
-		echo "Error: ${ZRTP4PJ_DIR} source directory inconsistent."
-		echo "Remove ${ZRTP4PJ_DIR} directory and call this script again."
+		echo "Error: ${REPOROOT} source directory inconsistent."
+		echo "Remove ${REPOROOT} directory and call this script again."
 		exit 1
 	fi
 	echo "ZRTP4PJ directory already exists, not cloning."
@@ -69,33 +70,76 @@ fi
 echo "" # new line
 
 
+
+# 3.
+# Build zsrtp for all architectures
+
+# No need to change this since xcode build will only compile in the
+# necessary bits from the libraries we create
+#ARCHS="armv7 armv7s arm64 i386 x86_64"
+#
+#DEVELOPER=`xcode-select -print-path`
+#
+#for ARCH in ${ARCHS}
+#do
+#	echo "** Compiling ${ARCH}"
+#	if [ "${ARCH}" == "i386" ] || [ "${ARCH}" == "x86_64" ]; then
+#		PLATFORM="iPhoneSimulator"
+#		EXTRA_FLAGS="--with-pic"
+#		EXTRA_CFLAGS="-arch ${ARCH}"
+#		EXTRA_CONFIG="--host=${ARCH}-apple-darwin"
+#	else
+#		PLATFORM="iPhoneOS"
+#		EXTRA_CFLAGS="-arch ${ARCH}"
+#		EXTRA_CONFIG="--host=arm-apple-darwin"
+#	fi
+#
+#	mkdir -p "${INTERDIR}/${PLATFORM}${SDKVERSION}-${ARCH}.sdk"
+#
+#	# Build the application and install it to the fake SDK intermediary dir
+#	# we have set up. Make sure to clean up afterward because we will re-use
+#	# this source tree to cross-compile other targets.
+#	make dep
+#	make -j8
+#	make clean
+#done
+#
+#
+#echo "" # new line
+#echo "Finished downloading and copying zrtp files successfully."
+
+
+
+
+
+
+
 # 3.
 # Move or copy the zrtp files to pjproject.
 
 # a) Copy the content of the build directory (zsrtp) to third_party/build/.
 # That's how pjsip knows what third-party libraries it needs to build.
 # Before, remove the directory if it already exists.
-echo "Removing ${PJ_THIRD_PRTY_DIR}/build/zsrtp..."
-rm -Rf "${PJ_THIRD_PRTY_DIR}/build/zsrtp"
-if [ ! -d "${ZRTP4PJ_DIR}/build/" ]; then
-	echo "Error: Cannot find ${ZRTP4PJ_DIR}/build/."
-	echo "Error: The file structure of ZRTP4PJ seems to have changed. This script needs to be updated to match the new file structure."
-	exit 1
-fi
-echo "Copying content from ${ZRTP4PJ_DIR}/build/ to ${PJ_THIRD_PRTY_DIR}/build/..."
-cp -r "${ZRTP4PJ_DIR}/build/" "${PJ_THIRD_PRTY_DIR}/build/"
+#echo "Removing ${PJ_THIRD_PRTY_DIR}/build/zsrtp..."
+#rm -Rf "${PJ_THIRD_PRTY_DIR}/build/zsrtp"
+#if [ ! -d "${REPOROOT}/build/" ]; then
+#	echo "Error: Cannot find ${REPOROOT}/build/."
+#	echo "Error: The file structure of ZRTP4PJ seems to have changed. This script needs to be updated to match the new file structure."
+#	exit 1
+#fi
+#echo "Copying content from ${REPOROOT}/build/ to ${PJ_THIRD_PRTY_DIR}/build/..."
+#cp -r "${REPOROOT}/build/" "${PJ_THIRD_PRTY_DIR}/build/"
+#
+## b) Copy the zsrtp directory to third_party/. That's where the sources for the
+## build are located.
+## If present, remove the directory.
+#echo "Removing ${PJ_THIRD_PRTY_DIR}/zsrtp..."
+#rm -Rf "${PJ_THIRD_PRTY_DIR}/zsrtp"
+#
+#echo "Creating directory ${PJ_THIRD_PRTY_DIR}/zsrtp..."
+#mkdir -p "${PJ_THIRD_PRTY_DIR}/zsrtp"
+#
+#echo "Copying content from ${REPOROOT}/zsrtp/ to ${PJ_THIRD_PRTY_DIR}/zsrtp/..."
+#cp -r "${REPOROOT}/zsrtp/." "${PJ_THIRD_PRTY_DIR}/zsrtp/"
 
-# b) Copy the zsrtp directory to third_party/. That's where the sources for the
-# build are located.
-# If present, remove the directory.
-echo "Removing ${PJ_THIRD_PRTY_DIR}/zsrtp..."
-rm -Rf "${PJ_THIRD_PRTY_DIR}/zsrtp"
 
-echo "Creating directory ${PJ_THIRD_PRTY_DIR}/zsrtp..."
-mkdir -p "${PJ_THIRD_PRTY_DIR}/zsrtp"
-
-echo "Copying content from ${ZRTP4PJ_DIR}/zsrtp/ to ${PJ_THIRD_PRTY_DIR}/zsrtp/..."
-cp -r "${ZRTP4PJ_DIR}/zsrtp/." "${PJ_THIRD_PRTY_DIR}/zsrtp/"
-
-echo "" # new line
-echo "Finished downloading and copying zrtp files successfully."

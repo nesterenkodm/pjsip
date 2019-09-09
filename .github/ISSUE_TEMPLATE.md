@@ -1,8 +1,8 @@
 ---
 name: Issue/Bug report
 about: Create a report to help us improve
-title: '[Possible Bug]'
-labels: ''
+title: '[Short description]'
+labels: 'Status: Pending'
 assignees: ''
 
 ---
@@ -35,6 +35,14 @@ What is the current behavior?
 # Failure Information (for bugs)
 
 Please help provide information about the failure if this is a bug. If it is not a bug, please remove the rest of this template.
+
+## Podfile
+
+Please help us to reproduce the bug by copying and pasting the content of your Podfile below.
+
+```Pod
+
+```
 
 ## Steps to Reproduce
 

@@ -7,7 +7,7 @@ export OPUS_VERSION="1.3.1" # specify the opus version to use
 export MACOS_MIN_SDK_VERSION="10.12"
 export IOS_MIN_SDK_VERSION="9.0"
 export ZRTP4PJ_SOURCE="https://github.com/welljsjs/ZRTP4PJ" # specify the zrtp4pj source
-export ZRTP_SOURCE="https://github.com/welljsjs/ZRTPCPP" # specify the zrtp source
+export ZRTP_SOURCE="/Users/juliusschmidt/Documents/Xcode/ZRTPCPP" # specify the zrtp source
 
 # see http://stackoverflow.com/a/3915420/318790
 function realpath { echo $(cd $(dirname "$1"); pwd)/$(basename "$1"); }
@@ -54,9 +54,12 @@ function opus() {
 }
 
 # zrtp
+ZRTP_DIR="${BUILD_DIR}/zrtp4pj"
 ZRTP_ENABLED=
 function zrtp() {
-	"${__DIR__}/zsrtp.sh"
+	"${__DIR__}/zsrtp.sh" "${ZRTP_DIR}"
+	echo "Using ZRTP..."
+
 	ZRTP_ENABLED=1
 }
 
@@ -64,7 +67,7 @@ function zrtp() {
 PJSIP_DIR="${BUILD_DIR}/pjproject"
 PJSIP_URL="http://www.pjsip.org/release/${PJSIP_VERSION:-2.9}/pjproject-${PJSIP_VERSION:-2.9}.tar.bz2"
 function pjsip() {
-    "${__DIR__}/pjsip.sh" "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-opus "${OPUS_DIR}/dependencies"
+	"${__DIR__}/pjsip.sh" "${PJSIP_DIR}" --with-openssl "${OPENSSL_DIR}" --with-opus "${OPUS_DIR}/dependencies" --with-zrtp "${ZRTP_DIR}"
 }
 
 # First, download (and unpack) pjsip.
