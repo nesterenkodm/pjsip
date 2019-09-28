@@ -18,6 +18,18 @@ build/opus/dependencies/*
 !build/opus/dependencies/lib
 !build/opus/dependencies/lib/*
 
+# zrtp4pj
+!build/zrtp4pj
+build/zrtp4pj/*
+
+!build/zrtp4pj/lib
+!build/zrtp4pj/lib/*
+
+!build/zrtp4pj/zsrtp/include
+!build/zrtp4pj/zsrtp/include/*
+
+!build/zrtp4pj/zsrtp/zrtp/zrtp/libzrtpcpp/ZrtpCWrapper.h
+
 # openssl
 !build/openssl
 build/openssl/*
@@ -62,3 +74,4 @@ build/pjproject/src/pjsip/*
 build/pjproject/src/third_party/*
 !build/pjproject/src/third_party/lib/
 !build/pjproject/src/third_party/include/
+

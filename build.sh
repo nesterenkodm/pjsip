@@ -7,7 +7,7 @@ export OPUS_VERSION="1.3.1" # specify the opus version to use
 export MACOS_MIN_SDK_VERSION="10.12"
 export IOS_MIN_SDK_VERSION="9.0"
 export ZRTP4PJ_SOURCE="https://github.com/welljsjs/ZRTP4PJ" # specify the zrtp4pj source
-export ZRTP_SOURCE="/Users/juliusschmidt/Documents/Xcode/ZRTPCPP" # specify the zrtp source
+export ZRTP_SOURCE="https://github.com/welljsjs/ZRTPCPP" # specify the zrtp source
 
 # see http://stackoverflow.com/a/3915420/318790
 function realpath { echo $(cd $(dirname "$1"); pwd)/$(basename "$1"); }
