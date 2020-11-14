@@ -22,7 +22,7 @@ pod 'pjsip'
 
 ## Example
 
-See [example](https://github.com/chebur/pjsip/example/ipjsystest) folder for integration example
+See [example](https://github.com/chebur/pjsip/tree/master/example/ipjsystest) folder for integration example
 
 ## Build manually
 
