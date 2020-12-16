@@ -7,13 +7,19 @@ jobs:
   stale: 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/stale@v1
+    - uses: actions/stale@v3
       with: 
         repo-token: ${{ secrets.GITHUB_TOKEN }}
         stale-issue-message: 'This issue is stale because it had been open 30 days with no activity. Remove stale label or comment or this will be closed in 5 days.'
         stale-pr-message: 'This pull request is stale because it had been open 30 days with no activity. Remove stale label or comment or this PR will be closed in 5 days.'
-        stale-issue-label: 'Status: Abandoned'
-        stale-pr-label: 'Status: Abandoned'
+        close-issue-message: 'This issue got closed because the stale label has not been removed and no comment has been added within the past 5 days.'
+        close-pr-message: 'This issue got closed because the stale label has not been removed and no comment has been added within the past 5 days.'
+        stale-issue-label: 'Status: Stale'
+        stale-pr-label: 'Status: Stale'
+        close-issue-label: 'Status: Abandoned'
+        close-pr-label: 'Status: Abandoned'
+        exempt-issue-labels: "Status: Confirmed,Status: In Progress,Status: Revision Needed"
+        exempt-pr-labels: "Status: Confirmed,Status: In Progress,Status: Revision Needed"
         days-before-stale: 30
         days-before-close: 5
         
